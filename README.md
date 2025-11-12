@@ -1,6 +1,6 @@
-# Bus Tracker
+# Hangart — Online Art Gallery
 
-A modern real-time bus tracking application built with React and TypeScript.
+An online art gallery and marketplace built with React and TypeScript. Browse curated artworks, view collections in a responsive carousel, and manage a shopping cart for purchases.
 
 ## Tech Stack
 
@@ -35,8 +35,8 @@ A modern real-time bus tracking application built with React and TypeScript.
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/arnaud-devs/bus-tracker-fn.git
-cd bus-tracker
+git clone https://github.com/arnaud-devs/hangart.git
+cd hangart
 ```
 
 2. Install dependencies:
@@ -83,19 +83,14 @@ npm run build
 <p align="center">
 	<a href="https://github.com/arnaud-devs" title="SHEMA Arnaud">
 		<img src="https://github.com/arnaud-devs.png" width="96" alt="SHEMA Arnaud" />
-	</a>
-	<a href="https://github.com/frankkatu" title="frankkatu">
-		<img src="https://github.com/frankkatu.png" width="96" alt="frankkatu" />
-	</a>
-	<a href="https://github.com/MichelMUNEZERO" title="MichelMUNEZERO">
-		<img src="https://github.com/MichelMUNEZERO.png" width="96" alt="MichelMUNEZERO" />
+	<a href="https://github.com/eric2003tu" title="eric2003tu">
+		<img src="https://github.com/eric2003tu.png" width="96" alt="eric2003tu" />
 	</a>
 </p>
 
 <p align="center">
 	<strong>SHEMA Arnaud</strong> • contributor<br />
-	<strong>frankkatu</strong> • Contributor<br />
-	<strong>MichelMUNEZERO</strong> • Contributor
+	<strong>eric2003tu</strong> • Contributor
 </p>
 
 ## License

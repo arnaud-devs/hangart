@@ -1,0 +1,16 @@
+{
+  "title": "Galerie Hangart",
+  "getting_started": "Pour commencer, modifiez le fichier page.tsx.",
+  "deploy": "Déployer",
+  "documentation": "Documentation",
+  "theme_dark": "Sombre",
+  "theme_light": "Clair",
+  "language": "Langue",
+  "templates": "Modèles",
+  "learning": "Apprentissage",
+  "more_info_prefix": "Vous cherchez un point de départ ou plus d'instructions ? Rendez-vous sur ",
+  "more_info_middle": " ou le ",
+  "more_info_suffix": " centre.",
+  "next_logo_alt": "logo Next.js",
+  "vercel_alt": "logo Vercel"
+}

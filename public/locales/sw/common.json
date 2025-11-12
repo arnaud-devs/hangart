@@ -1,0 +1,16 @@
+{
+  "title": "Gallery ya Hangart",
+  "getting_started": "Ili kuanza, hariri faili ya page.tsx.",
+  "deploy": "Weka Sasa",
+  "documentation": "Nyaraka",
+  "theme_dark": "Giza",
+  "theme_light": "Nje",
+  "language": "Lugha",
+  "templates": "Violezo",
+  "learning": "Kujifunza",
+  "more_info_prefix": "Unatafuta mahali pa kuanzia au maelekezo zaidi? Nenda kwa ",
+  "more_info_middle": " au ",
+  "more_info_suffix": " kituo.",
+  "next_logo_alt": "nembo ya Next.js",
+  "vercel_alt": "nembo ya Vercel"
+}

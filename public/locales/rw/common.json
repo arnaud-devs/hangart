@@ -1,0 +1,16 @@
+{
+  "title": "Hangart Ikarita",
+  "getting_started": "Kugira utangire, hindura dosiye page.tsx.",
+  "deploy": "Shyira ku rubuga",
+  "documentation": "Inyandiko",
+  "theme_dark": "Ijuru ryijimye",
+  "theme_light": "Ubusanzwe",
+  "language": "Ururimi",
+  "templates": "Templates",
+  "learning": "Amahugurwa",
+  "more_info_prefix": "Urashaka aho utangirira cyangwa amabwiriza menshi? Jya kuri ",
+  "more_info_middle": " cyangwa ",
+  "more_info_suffix": " igicumbi.",
+  "next_logo_alt": "logo ya Next.js",
+  "vercel_alt": "ikimenyetso cya Vercel"
+}

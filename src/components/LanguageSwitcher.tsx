@@ -50,6 +50,7 @@ export default function LanguageSwitcher() {
   return (
     <div className="relative" ref={ref}>
       <button
+        suppressHydrationWarning
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="true"
         aria-expanded={open}
@@ -65,6 +66,7 @@ export default function LanguageSwitcher() {
             {LOCALES.map((l) => (
               <li key={l}>
                 <button
+                  suppressHydrationWarning
                   onClick={() => choose(l)}
                   className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${current === l ? "font-semibold" : ""}`}
                 >

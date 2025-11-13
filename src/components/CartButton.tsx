@@ -10,6 +10,7 @@ export default function CartButton() {
 
   return (
     <button
+      suppressHydrationWarning
       onClick={() => setOpen(true)}
       aria-label={`Open cart with ${count} items`}
       className="relative w-10 h-10 rounded-full bg-transparent flex items-center justify-center text-gray-800 dark:text-white"

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import ArtworkCard from "../components/ArtworkCard";
+import GalleryGrid from "../components/GalleryGrid";
 import Carousel from "../components/Carousel";
 import { Globe, Truck, Star } from "lucide-react";
 
@@ -60,6 +61,27 @@ export default async function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Gallery explorer - client component */}
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Browse the gallery</h2>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Filter and explore more artworks.</p>
+
+        <div className="mt-6">
+          {/* Map server-side artworks to the client component's expected shape */}
+          <GalleryGrid
+            artworks={artworks.map((a) => ({
+              id: a.id,
+              title: a.title,
+              imageUrl: (a as any).image || (a as any).imageUrl || "/placeholder-art.png",
+              artistName: (a as any).artist || (a as any).artistName,
+              price: (a as any).price,
+              currency: (a as any).currency,
+              category: (a as any).category,
+            }))}
+          />
         </div>
       </section>
 

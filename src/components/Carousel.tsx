@@ -56,7 +56,14 @@ export default function Carousel({ images, aspect = "", autoPlay = true, interva
             key={src + i}
             className={`absolute rounded-2xl inset-0 transition-opacity duration-500 ${i === index ? "opacity-100 z-20" : "opacity-0 pointer-events-none z-10"}`}
           >
-            <Image src={src} alt={`slide-${i}`} fill className="object-cover rounded-2xl" />
+            <Image
+              src={src}
+              alt={`slide-${i}`}
+              fill
+              className="object-cover rounded-2xl"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
           </div>
         ))}
       </div>

@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { sampleArtworks } from "@/data/sampleArtworkData";
 import { useRouter } from "next/navigation";
 
 export type Artwork = {
@@ -62,7 +63,7 @@ export default function GalleryGrid({ artworks }: Props) {
   }, [artworks]);
 
   const filtered = useMemo(() => {
-    let list = artworks.slice();
+    let list = sampleArtworks.slice();
 
     if (category !== "all") {
       list = list.filter((a) => a.category === category);
@@ -70,7 +71,7 @@ export default function GalleryGrid({ artworks }: Props) {
 
     if (priceFilter !== "all") {
       list = list.filter((a) => {
-        const price = typeof a.price === "string" ? parseFloat(a.price) : (a.price as number);
+        const price = typeof a.price === "string" ? parseFloat(a.price) : (a.price as unknown as number);
         if (Number.isNaN(price)) return false;
         switch (priceFilter) {
           case "under-500":
@@ -162,7 +163,7 @@ export default function GalleryGrid({ artworks }: Props) {
             <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm">
               <div className="relative w-full h-56 bg-gray-100 dark:bg-gray-700">
                 <Image
-                  src={art.imageUrl || "/hero-bg.png"}
+                  src={art.image || "/placeholder-art.png"}
                   alt={art.title}
                   fill
                   className="object-cover"
@@ -171,10 +172,10 @@ export default function GalleryGrid({ artworks }: Props) {
               </div>
               <div className="p-3">
                 <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{art.title}</h4>
-                <p className="text-xs text-gray-600 dark:text-gray-300">{art.artistName || "Unknown"}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-300">{art.artist || "Unknown"}</p>
                 {art.price !== undefined ? (
                   <p className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {art.currency || "$"}
+                    {"$"}
                     {art.price}
                   </p>
                 ) : null}

@@ -2,13 +2,15 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-type Artwork = {
+export type Artwork = {
   id: string | number;
   title: string;
   artist?: string;
   image?: string;
+  category?: string;
   price?: string;
 };
+
 
 export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
   const imageSrc = artwork.image || "/placeholder-art.png";
@@ -18,7 +20,11 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
       <Link href={`/artworks/${artwork.id}`} className="block">
         <div className="relative w-full h-48 bg-gray-100 dark:bg-gray-700">
           <Image
-            src={imageSrc}
+            src={
+              imageSrc
+                ? (imageSrc.startsWith("/") || imageSrc.startsWith("http") ? imageSrc : `/artwork/${imageSrc}`)
+                : "/placeholder-art.png"
+            }
             alt={artwork.title}
             fill
             sizes="(max-width: 640px) 100vw, 33vw"

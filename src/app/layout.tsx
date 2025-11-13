@@ -5,6 +5,9 @@ import ThemeToggle from "../components/ThemeToggle";
 import { User, ShoppingCart } from 'lucide-react';
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import MobileSearch from "@/components/MobileSearch";
+import { CartProvider } from "@/context/CartContext";
+import CartDrawer from "@/components/CartDrawer";
+import CartButton from "@/components/CartButton";
 import React from "react";
 import { cookies } from "next/headers";
 
@@ -64,7 +67,10 @@ const Navbar: React.FC = () => {
             <ThemeToggle />
 
             <a href="#" className="w-10 h-10 rounded-full bg-transparent flex items-center justify-center text-gray-800 dark:text-white"><User /></a>
-            <a href="#" className="w-10 h-10 rounded-full bg-transparent flex items-center justify-center text-gray-800 dark:text-white"><ShoppingCart /></a>
+            {/* Cart button (client) - shows count and opens drawer */}
+            <div className="hidden sm:block">
+              <CartButton />
+            </div>
           </div>
         </div>
       </div>
@@ -80,31 +86,54 @@ const Footer: React.FC = () => (
   </footer>
 );
 
-export default function RootLayout({ children }: RootLayoutProps) {
-  const cookieTheme = (() => {
-    try {
-      // cookies() typing may vary by Next.js version; use `any` to avoid build-time type mismatch
-      const c = (cookies() as any).get?.("theme");
-      return c?.value;
-    } catch (e) {
-      return undefined;
-    }
-  })();
+export default async function RootLayout({ children }: RootLayoutProps) {
+  // `cookies()` returns an async CookiesStore in Next.js 16+ and must be awaited
+  // before accessing `.get`. Awaiting here ensures we don't access a Promise
+  // synchronously which causes runtime errors in development.
+  let cookieTheme: string | undefined = undefined;
+  try {
+    const cookieStore = await cookies();
+    const c = (cookieStore as any).get?.("theme");
+    cookieTheme = c?.value;
+  } catch (e) {
+    cookieTheme = undefined;
+  }
 
 
   return (
-    <html>
+    <html
+      // Suppress hydration warnings for attributes that may be set very early
+      // by a small inline script reading cookies/localStorage. We also render
+      // server-side attributes when available, but the inline script below
+      // ensures the DOM is coerced to the same theme before React hydrates.
+      suppressHydrationWarning
+      {...(cookieTheme
+        ? {
+            'data-theme': cookieTheme,
+            className: cookieTheme === 'dark' ? 'dark' : undefined,
+          }
+        : undefined)}
+    >
       <head>
         {/* Inline script to set dark class early to avoid FOUC when no server cookie is present.
             If we have a server cookie we render the class on <html> so no inline script is necessary. */}
-        {!cookieTheme && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html:
-                "try{const t = localStorage.theme; if(t){document.documentElement.classList.toggle('dark', t==='dark'); document.documentElement.setAttribute('data-theme', t);} }catch(e){};",
-            }}
-          />
-        )}
+        {/* Inline script runs as early as possible and sets the html `data-theme`
+            and `class` from a `theme` cookie (preferred) or `localStorage.theme`.
+            This runs before hydration and avoids FOUC and most hydration
+            mismatches when client/server theme sources differ. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{
+              var getCookie=function(n){return document.cookie.split('; ').reduce(function(r,c){var p=c.split('=');if(p[0]===n)return decodeURIComponent(p[1]||'');return r;},undefined)};
+              var c = getCookie('theme');
+              var t = c || (typeof localStorage!=='undefined' && localStorage.getItem('theme')) || '';
+              if(t){
+                document.documentElement.classList.toggle('dark', t==='dark');
+                document.documentElement.setAttribute('data-theme', t);
+              }
+            }catch(e){};`,
+          }}
+        />
       </head>
       <body
         suppressHydrationWarning
@@ -117,7 +146,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
           - ThemeProvider (dark/light) should wrap the app here (e.g. next-themes)
         */}
 
-        <div className="flex flex-col min-h-screen">
+        <CartProvider>
+          <div className="flex flex-col min-h-screen">
           {/* Top navigation */}
           <header>
             <Navbar />
@@ -131,7 +161,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
 
           {/* Footer */}
           <Footer />
-        </div>
+          </div>
+
+          {/* Global cart drawer / UI */}
+          <CartDrawer />
+        </CartProvider>
       </body>
     </html>
   );

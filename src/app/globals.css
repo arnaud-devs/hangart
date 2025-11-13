@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
 
 /* Theme variables - default to light */
 :root {
@@ -14,7 +16,7 @@
 
 /* allow explicit theme override via data-theme on <html> */
 html[data-theme="dark"] {
-  --background: #121217; /* slightly lighter than pure black */
+  --background: #1B1B1F; /* slightly lighter than pure black */
   --foreground: #ededed;
   --muted: #9a9a9a;
   --color-background: var(--background);

@@ -2,9 +2,11 @@ import { NextResponse } from 'next/server';
 import sampleArtists from '@/data/SampleArtists';
 import sampleArtworks from '@/data/SampleArtworks';
 
-export async function GET(request: Request, { params }: { params: { artistId: string } }) {
-  const { artistId } = params;
-  const artist = sampleArtists.find((a) => a.id === artistId);
+// Relax the typed context to avoid type-check mismatches in Next's generated helpers
+export async function GET(request: Request, context: any) {
+  // Prefer context.params.artistId, fall back to parsing the URL path
+  const artistId = context?.params?.artistId ?? new URL(request.url).pathname.split('/').pop();
+  const artist = sampleArtists.find((a) => String(a.id) === String(artistId));
   if (!artist) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   // Attach artworks data if available

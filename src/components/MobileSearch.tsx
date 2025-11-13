@@ -24,7 +24,7 @@ export default function MobileSearch() {
   const popular = ["still life", "mixed media", "geometric", "horse", "landscape"];
 
   return (
-    <div className="md:hidden">
+  <div className="md:hidden" suppressHydrationWarning>
       <button
         aria-label="Open search"
         onClick={() => setOpen(true)}

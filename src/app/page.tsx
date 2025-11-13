@@ -55,8 +55,8 @@ export default async function Home() {
             </div>
 
             {/* Right carousel (interactive) */}
-            <div className="w-full md:w-1/2 hidden md:flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800">
-              <div className="relative w-full max-w-xl h-[420px] md:h-[70vh] rounded-2xl overflow-hidden">
+            <div className="w-full md:w-1/2 flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800">
+              <div className="relative w-full max-w-xl h-[40vh] md:h-[70vh] rounded-2xl overflow-hidden">
                 <Carousel images={["/pexels-tiana-18128-2956395.jpg", "/art2.svg", "/art3.svg", "/art4.svg"]} aspect="" />
               </div>
             </div>

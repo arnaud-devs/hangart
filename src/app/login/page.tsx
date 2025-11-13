@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { Label } from '@/components/ui/Label'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
+import Link from 'next/link'
 
 type FormValues = {
   email: string
@@ -65,7 +66,15 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <p className="mt-4 text-sm text-gray-600">Demo credentials: <strong>test@example.com / password</strong></p>
+        <p className="mt-4 text-sm text-gray-600">
+          Demo credentials: <strong>test@example.com / password</strong>
+        </p>
+        <p className="mt-2 text-sm text-gray-600 text-center">
+          Don't have an account?{' '}
+          <Link href="/signup" className="text-blue-600 hover:underline">
+            Sign up
+          </Link>
+        </p>
       </div>
     </main>
   )

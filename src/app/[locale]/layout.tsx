@@ -9,8 +9,6 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   return (
     <div>
       <div className="fixed right-4 top-4 z-50 flex items-center gap-3">
-        <LanguageSwitcher />
-        <ThemeToggle labels={{ dark: t.theme_dark, light: t.theme_light }} />
       </div>
       {children}
     </div>

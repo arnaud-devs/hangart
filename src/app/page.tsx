@@ -1,70 +1,120 @@
+"use server";
+
 import Image from "next/image";
-import { getTranslations } from "../lib/i18n";
+import Link from "next/link";
+import ArtworkCard from "../components/ArtworkCard";
+import Carousel from "../components/Carousel";
+import { Globe, Truck, Star } from "lucide-react";
+
+type Artwork = {
+  id: string | number;
+  title: string;
+  artist?: string;
+  image?: string;
+  price?: string;
+};
+
+async function fetchFeaturedArtworks(limit = 8): Promise<Artwork[]> {
+  try {
+    const res = await fetch(`/api/artworks?featured=true&limit=${limit}`, { cache: "no-store" });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data.slice(0, limit) : [];
+  } catch (e) {
+    return [];
+  }
+}
 
 export default async function Home() {
-  // root (/) serves the default language 'rw' or cookie-provided locale
-  const t = await getTranslations();
+  const artworks = await fetchFeaturedArtworks(8);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            {t.getting_started}
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            {t.more_info_prefix}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              
-              {t.more_info_middle}
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    // Let the root CSS variable (--background) control the page background.
+    <div>
+      {/* Hero banner (styled like attachment) */}
+      <section
+        className="relative w-full bg-center bg-no-repeat"
+        style={{ backgroundImage: "" }}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Top navigation */}
+
+          {/* Main hero content */}
+          <div className="relative flex flex-col-reverse md:flex-row items-center gap-8 pb-24 md:pb-32 min-h-screen">
+            {/* Left column */}
+            <div className="w-full md:w-1/2 text-gray-900 dark:text-gray-100 flex flex-col justify-center">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-tight text-gray-900 dark:text-gray-100">CONNECT WITH<br/>AN ARTIST</h2>
+              <p className="mt-4 max-w-md text-gray-700 dark:text-gray-300">every artwork is made by hand and tells story</p>
+
+              <div className="mt-8">
+                <Link href="/gallery" className="inline-block rounded-full bg-yellow-400 text-black px-6 py-3 font-semibold dark:bg-yellow-400 dark:text-black">
+                  SHOP WITH US
+                </Link>
+              </div>
+            </div>
+
+            {/* Right carousel (interactive) */}
+            <div className="w-full md:w-1/2 hidden md:flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800">
+              <div className="relative w-full max-w-xl h-[420px] md:h-[70vh] rounded-2xl overflow-hidden">
+                <Carousel images={["/pexels-tiana-18128-2956395.jpg", "/art2.svg", "/art3.svg", "/art4.svg"]} aspect="" />
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            {t.deploy}
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t.documentation}
-          </a>
+      </section>
+
+      {/* Featured artworks grid */}
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Featured Artworks</h2>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Hand-picked works from our curated collection.</p>
+
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {artworks.length > 0 ? (
+            artworks.map((art) => <ArtworkCard key={art.id} artwork={art} />)
+          ) : (
+            <div className="col-span-full text-center text-gray-500">No featured artworks found.</div>
+          )}
         </div>
-      </main>
+      </section>
+
+      {/* Why choose section */}
+      <section className="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Why Choose HuzaGallery</h3>
+
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-md bg-gray-100 dark:bg-gray-800">
+                <Globe className="w-6 h-6 text-gray-700 dark:text-gray-200" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100">Global Selection</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Discover original works from emerging artists around the world.</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-md bg-gray-100 dark:bg-gray-800">
+                <Truck className="w-6 h-6 text-gray-700 dark:text-gray-200" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100">Free Returns</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Hassle-free returns so you can buy with confidence.</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-md bg-gray-100 dark:bg-gray-800">
+                <Star className="w-6 h-6 text-gray-700 dark:text-gray-200" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100">Top-rated</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Thousands of 5-star reviews from collectors worldwide.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

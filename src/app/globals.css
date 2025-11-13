@@ -14,7 +14,7 @@
 
 /* allow explicit theme override via data-theme on <html> */
 html[data-theme="dark"] {
-  --background: #0a0a0a;
+  --background: #121217; /* slightly lighter than pure black */
   --foreground: #ededed;
   --muted: #9a9a9a;
   --color-background: var(--background);
@@ -23,14 +23,9 @@ html[data-theme="dark"] {
   --font-mono: var(--font-geist-mono);
 }
 
-/* respect OS preference if user hasn't chosen a theme */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --muted: #9a9a9a;
-  }
-}
+/* We use the `html[data-theme="dark"]` selector (or the `dark` class) to control
+   theme. Avoid using `prefers-color-scheme` media query here to rely strictly on
+   explicit user choice via localStorage / data-theme. */
 
 /* Removed unsupported `@theme` at-rule. CSS custom properties are defined on :root and
    html[data-theme="dark"] so editors and linters won't flag unknown at-rules. */

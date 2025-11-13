@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Carousel from "@/components/Carousel";
+import AddToCartButton from '@/components/AddToCartButton';
 import sampleArtworks from '@/data/SampleArtworks';
 
 type ArtworkDetail = {
@@ -104,13 +105,14 @@ export default async function ArtworkPage({ params }: { params: any }) {
           </dl>
 
           <div className="mt-6">
-            <button
-              type="button"
-              aria-label={`Add ${art.title} to cart`}
-              className="inline-flex items-center gap-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2"
-            >
-              Add to cart
-            </button>
+            <AddToCartButton
+              id={art.id}
+              title={art.title}
+              artistName={art.artistName}
+              image={art.image}
+              price={art.price as any}
+              currency={art.currency}
+            />
           </div>
 
           {/* Accessible accordion using native <details> */}

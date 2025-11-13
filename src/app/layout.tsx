@@ -8,6 +8,7 @@ import MobileSearch from "@/components/MobileSearch";
 import { CartProvider } from "@/context/CartContext";
 import CartDrawer from "@/components/CartDrawer";
 import CartButton from "@/components/CartButton";
+import Breadcrumbs from '@/components/Breadcrumbs';
 import React from "react";
 import { cookies } from "next/headers";
 
@@ -152,6 +153,11 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           <header>
             <Navbar />
           </header>
+
+          {/* Breadcrumbs - helpful navigation contextualizer */}
+          <div className="w-full">
+            <Breadcrumbs />
+          </div>
 
           {/* Main content area - mobile-first responsive container */}
           <main className="flex-1 w-full container mx-auto px-4 sm:px-6 lg:px-8 py-6">

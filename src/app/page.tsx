@@ -160,7 +160,7 @@ export default async function Home() {
             location="South Korea"
             medium="Acrylic On Canvas"
             dimensions="57.3 × 44.1 in"
-            price="RWF3,875"
+            price="RWF 3,875"
             image="/arts/art7.jpeg"
           />
           <ArtworkGalleryCard

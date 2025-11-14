@@ -60,7 +60,7 @@ export default async function Home() {
             {/* Right carousel (interactive) */}
             <div className="w-full md:w-1/2 flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-2xl bg-[#F6F6F7] dark:bg-gray-800">
               <div className="relative w-full max-w-xl h-[40vh] md:h-[70vh] rounded-2xl overflow-hidden">
-                <Carousel images={["/pexels-tiana-18128-2956395.jpg", "/art2.svg", "/art3.svg", "/art4.svg"]} aspect="" />
+                <Carousel images={["/arts/art1.jpeg", "/arts/art2.jpeg", "/arts/art3.jpeg", "/arts/art4.jpeg"]} aspect="" />
               </div>
             </div>
           </div>
@@ -141,7 +141,7 @@ export default async function Home() {
             medium="Acrylic On Canvas"
             dimensions="27.6 × 21.3 in"
             price="$2,765"
-            image="/art1.svg"
+            image="/arts/art1.jpeg"
           />
           <ArtworkGalleryCard
             id="2"
@@ -151,7 +151,7 @@ export default async function Home() {
             medium="Oil On Canvas"
             dimensions="51 × 35 in"
             price="$5,045"
-            image="/art2.svg"
+            image="/arts/art2.jpeg"
           />
           <ArtworkGalleryCard
             id="3"
@@ -161,7 +161,7 @@ export default async function Home() {
             medium="Acrylic On Canvas"
             dimensions="57.3 × 44.1 in"
             price="$3,875"
-            image="/art3.svg"
+            image="/arts/art3.jpeg"
           />
           <ArtworkGalleryCard
             id="4"
@@ -171,7 +171,7 @@ export default async function Home() {
             medium="Acrylic On Canvas"
             dimensions="30 × 24 in"
             price="$2,895"
-            image="/art4.svg"
+            image="/arts/art4.jpeg"
           />
         </div>
       </section>

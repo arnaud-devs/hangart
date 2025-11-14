@@ -141,7 +141,7 @@ export default async function Home() {
             medium="Acrylic On Canvas"
             dimensions="27.6 × 21.3 in"
             price="$2,765"
-            image="/arts/art1.jpeg"
+            image="/arts/art5.jpeg"
           />
           <ArtworkGalleryCard
             id="2"
@@ -151,7 +151,7 @@ export default async function Home() {
             medium="Oil On Canvas"
             dimensions="51 × 35 in"
             price="$5,045"
-            image="/arts/art2.jpeg"
+            image="/arts/art6.jpeg"
           />
           <ArtworkGalleryCard
             id="3"
@@ -161,7 +161,7 @@ export default async function Home() {
             medium="Acrylic On Canvas"
             dimensions="57.3 × 44.1 in"
             price="$3,875"
-            image="/arts/art3.jpeg"
+            image="/arts/art7.jpeg"
           />
           <ArtworkGalleryCard
             id="4"
@@ -171,7 +171,7 @@ export default async function Home() {
             medium="Acrylic On Canvas"
             dimensions="30 × 24 in"
             price="$2,895"
-            image="/arts/art4.jpeg"
+            image="/arts/art8.jpeg"
           />
         </div>
       </section>

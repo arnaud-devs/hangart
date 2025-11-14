@@ -177,7 +177,7 @@ export default function GalleryGrid({ artworks }: Props) {
                 <p className="text-xs text-gray-600 dark:text-gray-300">{art.artist || "Unknown"}</p>
                 {art.price !== undefined ? (
                   <p className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {"$"}
+                    {art.currency ?? "$"}
                     {art.price}
                   </p>
                 ) : null}

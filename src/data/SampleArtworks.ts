@@ -25,7 +25,7 @@ export const sampleArtworks: Artwork[] = [
     medium: 'Oil on canvas',
     size: '80 x 60 cm',
     price: 2200,
-    currency: '$',
+    currency: 'RWF',
     description: 'A vivid study of light and texture inspired by early morning gardens.',
     shipping: 'Ships within 7-10 business days. Returns accepted within 14 days in original condition.',
     artistBio: 'Ava Park is a contemporary painter exploring color relationships and landscape abstraction.'
@@ -40,7 +40,7 @@ export const sampleArtworks: Artwork[] = [
     medium: 'Acrylic on panel',
     size: '50 x 50 cm',
     price: 950,
-    currency: '$',
+    currency: 'RWF',
     description: 'A minimal composition exploring balance and negative space.',
     shipping: 'Local pickup available; shipping calculated at checkout.',
     artistBio: 'Liam Chen focuses on pared-back compositions that emphasize form and material.'
@@ -55,7 +55,7 @@ export const sampleArtworks: Artwork[] = [
     medium: 'Digital print',
     size: '60 x 40 cm',
     price: 350,
-    currency: '$',
+    currency: 'RWF',
     description: 'A moody, layered work that blends digital texture with painterly gestures.',
     shipping: 'Ships framed. Return policy: 30 days for full refund.',
     artistBio: 'Ava Park is a contemporary painter exploring color relationships and landscape abstraction.'
@@ -70,7 +70,7 @@ export const sampleArtworks: Artwork[] = [
     medium: 'Mixed media',
     size: '100 x 70 cm',
     price: 4200,
-    currency: '$',
+    currency: 'RWF',
     description: 'Large-scale mixed media piece capturing ephemeral light patterns.',
     shipping: 'White-glove shipping available for large works.',
     artistBio: 'Maya Rossi blends found materials with paint and collage.'

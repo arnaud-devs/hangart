@@ -77,7 +77,7 @@ export default async function ArtworkPage({ params }: { params: any }) {
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
             By{' '}
             {art.artistName ? (
-              <Link href={`/artist/${encodeURIComponent(String(art.artistId ?? art.artistName))}`} className="text-indigo-600 dark:text-indigo-400 hover:underline">
+              <Link href={`/artist/${encodeURIComponent(String(art.artistId ?? art.artistName))}`} className="text-yellow-600 dark:text-yellow-400 hover:underline">
                 {art.artistName}
               </Link>
             ) : (

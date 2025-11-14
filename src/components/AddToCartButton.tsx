@@ -32,7 +32,7 @@ export default function AddToCartButton({ id, title, artistName, image, price, c
       onClick={handle}
       disabled={loading}
       aria-label={`Add ${title} to cart`}
-      className="inline-flex items-center gap-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-[#DFDFD6] px-4 py-2 disabled:opacity-60"
+      className="inline-flex items-center gap-2 rounded-md bg-yellow-600 hover:bg-yellow-700 text-[#DFDFD6] px-4 py-2 disabled:opacity-60"
     >
       {loading ? "Adding..." : "Add to cart"}
     </button>

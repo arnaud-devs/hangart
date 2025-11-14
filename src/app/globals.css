@@ -1,0 +1,55 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+/* Theme variables - default to light */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --muted: #6b6b6b;
+  /* semantic mappings used by components */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* allow explicit theme override via data-theme on <html> */
+html[data-theme="dark"] {
+  --background: #1B1B1F; /* slightly lighter than pure black */
+  --foreground: #ededed;
+  --muted: #9a9a9a;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* We use the `html[data-theme="dark"]` selector (or the `dark` class) to control
+   theme. Avoid using `prefers-color-scheme` media query here to rely strictly on
+   explicit user choice via localStorage / data-theme. */
+
+/* Removed unsupported `@theme` at-rule. CSS custom properties are defined on :root and
+   html[data-theme="dark"] so editors and linters won't flag unknown at-rules. */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* small utilities for the header controls */
+.theme-toggle-btn {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.08);
+  color: var(--foreground);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+.lang-switch-btn {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.08);
+  color: var(--foreground);
+  padding: 6px 8px;
+  border-radius: 8px;
+}

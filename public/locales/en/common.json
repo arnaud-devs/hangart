@@ -1,0 +1,16 @@
+{
+  "title": "Hangart Gallery",
+  "getting_started": "To get started, edit the page.tsx file.",
+  "deploy": "Deploy Now",
+  "documentation": "Documentation",
+  "theme_dark": "Dark",
+  "theme_light": "Light",
+  "language": "Language",
+  "templates": "Templates",
+  "learning": "Learning",
+  "more_info_prefix": "Looking for a starting point or more instructions? Head over to ",
+  "more_info_middle": " or the ",
+  "more_info_suffix": " center.",
+  "next_logo_alt": "Next.js logo",
+  "vercel_alt": "Vercel logomark"
+}

@@ -20,7 +20,7 @@ export default function TestimonialCard({
   image,
 }: TestimonialCardProps) {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+    <div className="bg-[#F6F6F7] dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-100 dark:border-gray-700">
       {/* Rating stars */}
       <div className="flex items-center gap-1 mb-4">
         {Array.from({ length: 5 }).map((_, i) => (

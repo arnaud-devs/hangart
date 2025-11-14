@@ -25,9 +25,9 @@ export default function ArtworkGalleryCard({
   image,
 }: ArtworkGalleryCardProps) {
   return (
-    <div className="group relative bg-gray-50 dark:bg-gray-800 rounded-lg overflow-hidden">
+    <div className="group relative bg-[#F6F6F7] dark:bg-gray-800 rounded-lg overflow-hidden">
       {/* Image container with hover overlay */}
-      <div className="relative aspect-[4/3] bg-white dark:bg-gray-900 overflow-hidden">
+      <div className="relative aspect-4/3 bg-white dark:bg-gray-900 overflow-hidden">
         <Image
           src={image}
           alt={title}

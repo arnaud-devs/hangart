@@ -44,21 +44,21 @@ export default async function Home() {
           {/* Top navigation */}
 
           {/* Main hero content */}
-          <div className="relative flex flex-col-reverse md:flex-row items-center gap-8 pb-24 md:pb-32 min-h-screen">
+          <div className="relative flex flex-col-reverse justify-center md:flex-row items-center gap-8 pb-24 md:pb-32 min-h-screen">
             {/* Left column */}
             <div className="w-full md:w-1/2 text-gray-900 dark:text-gray-100 flex flex-col justify-center">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-tight text-gray-900 dark:text-gray-100">CONNECT WITH<br/>AN ARTIST</h2>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-tight text-[#3C3C43] dark:text-gray-100">CONNECT WITH<br/>AN ARTIST</h2>
               <p className="mt-4 max-w-md text-gray-700 dark:text-gray-300">every artwork is made by hand and tells story</p>
 
               <div className="mt-8">
-                <Link href="/gallery" className="inline-block rounded-full bg-yellow-400 text-black px-6 py-3 font-semibold dark:bg-yellow-400 dark:text-black">
+                <Link href="/gallery" className="inline-block rounded-full bg-yellow-400 text-[#DFDFD6] px-6 py-3 font-semibold dark:bg-yellow-400 ">
                   SHOP WITH US
                 </Link>
               </div>
             </div>
 
             {/* Right carousel (interactive) */}
-            <div className="w-full md:w-1/2 flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-2xl bg-white dark:bg-gray-800">
+            <div className="w-full md:w-1/2 flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-2xl bg-[#F6F6F7] dark:bg-gray-800">
               <div className="relative w-full max-w-xl h-[40vh] md:h-[70vh] rounded-2xl overflow-hidden">
                 <Carousel images={["/pexels-tiana-18128-2956395.jpg", "/art2.svg", "/art3.svg", "/art4.svg"]} aspect="" />
               </div>
@@ -177,13 +177,13 @@ export default async function Home() {
       </section>
 
       {/* Why choose section */}
-      <section className="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Why Choose Hangart Gallery</h3>
+      <section className="px-4 sm:px-6 lg:px-8 py-12 ">
+        <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 bg-[#F6F6F7] border-gray-100 dark:border-gray-800 dark:bg-gray-800 border-t rounded-lg">
+          <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 font-serif">Why Choose Hangart Gallery</h3>
 
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="flex items-start gap-4">
-              <div className="p-3 rounded-md bg-gray-100 dark:bg-gray-800">
+              <div className="p-3 rounded-md bg-gray-200 dark:bg-gray-700">
                 <Globe className="w-6 h-6 text-gray-700 dark:text-gray-200" />
               </div>
               <div>
@@ -193,7 +193,7 @@ export default async function Home() {
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="p-3 rounded-md bg-gray-100 dark:bg-gray-800">
+              <div className="p-3 rounded-md bg-gray-200 dark:bg-gray-700">
                 <Truck className="w-6 h-6 text-gray-700 dark:text-gray-200" />
               </div>
               <div>
@@ -203,7 +203,7 @@ export default async function Home() {
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="p-3 rounded-md bg-gray-100 dark:bg-gray-800">
+              <div className="p-3 rounded-md bg-gray-200 dark:bg-gray-700">
                 <Star className="w-6 h-6 text-gray-700 dark:text-gray-200" />
               </div>
               <div>

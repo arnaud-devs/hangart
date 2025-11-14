@@ -71,44 +71,17 @@ export default function Carousel({ images, aspect = "", autoPlay = true, interva
       {/* Controls (moved to bottom) */}
 
       {/* Indicators (moved to bottom) */}
-     <div className="flex flex-col-reverse py-2 justify-start ">
-        <div className="absolute left-1/2 -translate-x-1/2  flex items-center gap-2  py-2">
+      <div className="absolute left-1/2 -translate-x-1/2 -bottom-1  flex items-center gap-2  py-2">
         {images.map((_, i) => (
           <button
             suppressHydrationWarning
             key={i}
             onClick={() => setIndex(i)}
-            className={`w-2 h-2 rounded-full ${i === index ? "bg-white" : "bg-white/60"}`}
+            className={`w-2 h-2 rounded-full ${i === index ? "dark:bg-white bg-gray-800" : "bg-gray-400  dark:bg-white/60 "}`}
             aria-label={`Go to slide ${i + 1}`}
           />
         ))}
       </div>
-      <div className="flex flex-row-reverse  border md:mt-9 w-full py-3 px-1 rounded-2xl">
-        <div className=" flex w-full justify-end gap-10 items-center ">
-        <div className="w-[80%] h-1 bg-white"></div>
-        <div className=" text-white text-3xl font-bold tracking-widest z-30">{String(index + 1).padStart(2, "0")}</div>
-      </div>
-      <div className="flex ">
-        <button
-        suppressHydrationWarning
-        onClick={prev}
-        className=" w-10 h-10 rounded-full bg-white/90 dark:bg-black/60 shadow flex items-center justify-center pointer-events-auto z-30"
-        aria-label="Previous slide"
-      >
-        ‹
-      </button>
-
-      <button
-        suppressHydrationWarning
-        onClick={next}
-        className="w-10 h-10 rounded-full bg-white/90 dark:bg-black/60 shadow flex items-center justify-center pointer-events-auto z-30"
-        aria-label="Next slide"
-      >
-        ›
-      </button>
-      </div>
-      </div>
-     </div>
     </div>
   );
 }

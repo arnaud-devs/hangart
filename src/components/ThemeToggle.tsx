@@ -6,9 +6,12 @@ import { Moon, Sun } from "lucide-react";
 const THEME_KEY = "theme";
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<string>("light");
+  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<string>("dark");
 
   useEffect(() => {
+    setMounted(true);
+    
     try {
       // If the server already rendered a data-theme attribute on <html>, prefer that
       // to avoid changing attributes during hydration which causes mismatch warnings.
@@ -71,8 +74,24 @@ export default function ThemeToggle() {
 
   const isDark = theme === "dark";
 
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return (
+      <button
+        suppressHydrationWarning
+        aria-label="Toggle theme"
+        className="relative inline-flex items-center w-16 h-9 rounded-full p-1 bg-neutral-800"
+      >
+        <span className="relative z-10 inline-flex items-center justify-center w-8 h-8 rounded-full bg-white text-gray-900 shadow translate-x-7">
+          <Moon className="w-4 h-4 text-gray-900" />
+        </span>
+      </button>
+    );
+  }
+
   return (
     <button
+      suppressHydrationWarning
       aria-pressed={isDark}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       onClick={toggle}

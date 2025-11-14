@@ -162,7 +162,7 @@ export default function GalleryGrid({ artworks }: Props) {
             onKeyDown={(e) => (e.key === "Enter" ? handleCardClick(art.id) : undefined)}
             className="cursor-pointer transform transition-transform duration-200 hover:scale-105"
           >
-            <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm">
+            <div className="bg-[#F6F6F7] dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm">
               <div className="relative w-full h-56 bg-gray-100 dark:bg-gray-700">
                 <Image
                   src={art.image || "/placeholder-art.png"}

@@ -35,7 +35,7 @@ export default function Breadcrumbs() {
             ) : (
               <>
                 <ChevronRight className="w-4 h-4 text-gray-400 mx-2" />
-                <Link href={c.href} className={`hover:underline ${i === crumbs.length - 1 ? 'text-gray-900 dark:text-white font-medium' : ''}`}>
+                <Link href={c.href} className={`hover:underline ${i === crumbs.length - 1 ? 'text-gray-900 dark:text-[#DFDFD6] font-medium' : ''}`}>
                   {c.label}
                 </Link>
               </>

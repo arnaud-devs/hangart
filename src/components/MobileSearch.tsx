@@ -28,9 +28,9 @@ export default function MobileSearch() {
       <button
         aria-label="Open search"
         onClick={() => setOpen(true)}
-        className="w-10 h-10 rounded-full bg-white/0 flex items-center justify-center text-white"
+        className="w-10 h-10 rounded-full bg-white/0 flex items-center justify-center text-[#DFDFD6]"
       >
-        <Search className="w-5 h-5 text-black dark:text-white" />
+        <Search className="w-5 h-5 text-[#3C3C43] dark:text-[#DFDFD6]" />
       </button>
 
       {open && (

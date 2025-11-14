@@ -16,7 +16,7 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
   const imageSrc = artwork.image || "/placeholder-art.png";
 
   return (
-    <article className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+    <article className="bg-[#F6F6F7] dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
       <Link href={`/artworks/${artwork.id}`} className="block">
         <div className="relative w-full h-48 bg-gray-100 dark:bg-gray-700">
           <Image

@@ -126,8 +126,8 @@ export default function UploadArtForm() {
       </div>
 
       <div>
-        <button type="submit" disabled={submitting} className="rounded-md bg-indigo-600 text-white px-4 py-2">
-          {submitting ? 'Uploading...' : 'Upload artwork'}
+        <button type="submit" disabled={submitting} className="rounded-md bg-indigo-600 text-[#DFDFD6] px-4 py-2">
+          {submitting ? 'Uploading...' : 'Upload artwork'
         </button>
       </div>
     </form>

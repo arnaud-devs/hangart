@@ -77,7 +77,7 @@ export default function Carousel({ images, aspect = "", autoPlay = true, interva
             suppressHydrationWarning
             key={i}
             onClick={() => setIndex(i)}
-            className={`w-2 h-2 rounded-full ${i === index ? "bg-white" : "bg-white/60"}`}
+            className={`w-2 h-2 rounded-full ${i === index ? "dark:bg-white bg-gray-800" : "bg-gray-400  dark:bg-white/60 "}`}
             aria-label={`Go to slide ${i + 1}`}
           />
         ))}

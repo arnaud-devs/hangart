@@ -56,12 +56,12 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Right - actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <div className="md:hidden">
               <MobileSearch />
             </div>
 
-            <div className="hidden md:block">
+            <div className="block">
               <LanguageSwitcher />
             </div>
 

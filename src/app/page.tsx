@@ -44,7 +44,7 @@ export default async function Home() {
           {/* Top navigation */}
 
           {/* Main hero content */}
-          <div className="relative flex flex-col-reverse md:flex-row items-center gap-8 pb-24 md:pb-32 min-h-screen">
+          <div className="relative flex flex-col-reverse justify-center md:flex-row items-center gap-8 pb-24 md:pb-32 min-h-screen">
             {/* Left column */}
             <div className="w-full md:w-1/2 text-gray-900 dark:text-gray-100 flex flex-col justify-center">
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-tight text-gray-900 dark:text-gray-100">CONNECT WITH<br/>AN ARTIST</h2>

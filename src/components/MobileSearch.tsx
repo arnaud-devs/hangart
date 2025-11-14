@@ -30,7 +30,7 @@ export default function MobileSearch() {
         onClick={() => setOpen(true)}
         className="w-10 h-10 rounded-full bg-white/0 flex items-center justify-center text-white"
       >
-        <Search className="w-5 h-5" />
+        <Search className="w-5 h-5 text-black dark:text-white" />
       </button>
 
       {open && (

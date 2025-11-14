@@ -140,7 +140,7 @@ export default async function Home() {
             location="France"
             medium="Acrylic On Canvas"
             dimensions="27.6 × 21.3 in"
-            price="$2,765"
+            price="RWF 2,765"
             image="/arts/art5.jpeg"
           />
           <ArtworkGalleryCard
@@ -150,7 +150,7 @@ export default async function Home() {
             location="Poland"
             medium="Oil On Canvas"
             dimensions="51 × 35 in"
-            price="$5,045"
+            price="RWF 5,045"
             image="/arts/art6.jpeg"
           />
           <ArtworkGalleryCard
@@ -160,7 +160,7 @@ export default async function Home() {
             location="South Korea"
             medium="Acrylic On Canvas"
             dimensions="57.3 × 44.1 in"
-            price="$3,875"
+            price="RWF3,875"
             image="/arts/art7.jpeg"
           />
           <ArtworkGalleryCard
@@ -170,7 +170,7 @@ export default async function Home() {
             location="United States"
             medium="Acrylic On Canvas"
             dimensions="30 × 24 in"
-            price="$2,895"
+            price="RWF 2,895"
             image="/arts/art8.jpeg"
           />
         </div>

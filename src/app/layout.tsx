@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
               <input
                 type="search"
                 placeholder="Search for arts product"
-                className="w-full rounded-full border border-transparent bg-white/50 dark:bg-gray-700/30 px-4 py-3 text-sm shadow-md focus:outline-none text-gray-900 dark:text-gray-100"
+                className="w-full rounded-full border border-transparent bg-gray-100/50 dark:bg-gray-700/30 px-4 py-3 text-sm shadow-sm focus:outline-none text-gray-900 dark:text-gray-100"
               />
             </div>
           </div>
@@ -229,7 +229,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <body
         suppressHydrationWarning
         // background is controlled by CSS custom properties in `globals.css` (--background)
-        className={`min-h-screen text-gray-900 dark:text-gray-100 antialiased `}
+        className={`min-h-screen text-gray-900 dark:text-gray-100 overflow-x-hidden antialiased `}
       >
         {/*
           Providers placeholder

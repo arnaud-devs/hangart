@@ -8,6 +8,7 @@ export type Artwork = {
   artist?: string;
   image?: string;
   category?: string;
+  currency?: string;
   price?: string;
 };
 

@@ -51,7 +51,7 @@ export default async function Home() {
               <p className="mt-4 max-w-md text-gray-700 dark:text-gray-300">every artwork is made by hand and tells story</p>
 
               <div className="mt-8">
-                <Link href="/gallery" className="inline-block rounded-full bg-yellow-400 text-[#DFDFD6] px-6 py-3 font-semibold dark:bg-yellow-400 ">
+                <Link href="/gallery" className="inline-block rounded-full bg-yellow-600 text-white px-6 py-3 font-semibold dark:bg-yellow-600 ">
                   SHOP WITH US
                 </Link>
               </div>

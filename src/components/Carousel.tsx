@@ -71,7 +71,7 @@ export default function Carousel({ images, aspect = "", autoPlay = true, interva
       {/* Controls (moved to bottom) */}
 
       {/* Indicators (moved to bottom) */}
-        <div className="absolute left-1/2 -translate-x-1/2 -bottom-1  flex items-center gap-2  py-2">
+      <div className="absolute left-1/2 -translate-x-1/2 -bottom-1  flex items-center gap-2  py-2">
         {images.map((_, i) => (
           <button
             suppressHydrationWarning
@@ -82,6 +82,6 @@ export default function Carousel({ images, aspect = "", autoPlay = true, interva
           />
         ))}
       </div>
-     </div>
+    </div>
   );
 }

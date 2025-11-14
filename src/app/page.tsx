@@ -5,7 +5,10 @@ import Link from "next/link";
 import ArtworkCard from "../components/ArtworkCard";
 import GalleryGrid from "../components/GalleryGrid";
 import Carousel from "../components/Carousel";
-import { Globe, Truck, Star } from "lucide-react";
+import ArtworkGalleryCard from "../components/ArtworkGalleryCard";
+import TestimonialCard from "../components/TestimonialCard";
+import { Globe, Truck, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import sampleArtworks from "@/data/SampleArtworks";
 
 type Artwork = {
   id: string | number;
@@ -66,13 +69,13 @@ export default async function Home() {
 
       {/* Gallery explorer - client component */}
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Browse the gallery</h2>
+        <h2 className="text-2xl font-semibold font-serif text-gray-900 dark:text-gray-100">Browse the gallery</h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Filter and explore more artworks.</p>
 
         <div className="mt-6">
           {/* Map server-side artworks to the client component's expected shape */}
           <GalleryGrid
-            artworks={artworks.map((a) => ({
+            artworks={sampleArtworks.map((a) => ({
               id: a.id,
               title: a.title,
               imageUrl: (a as any).image || (a as any).imageUrl || "/placeholder-art.png",
@@ -87,15 +90,89 @@ export default async function Home() {
 
       {/* Featured artworks grid */}
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Featured Artworks</h2>
+        <h2 className="text-2xl font-semibold text-gray-900 font-serif dark:text-gray-100">Featured Artworks</h2>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Hand-picked works from our curated collection.</p>
 
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {artworks.length > 0 ? (
-            artworks.map((art) => <ArtworkCard key={art.id} artwork={art} />)
+          {sampleArtworks.length > 0 ? (
+            sampleArtworks.map((art) => (
+              <ArtworkCard
+                key={art.id}
+                artwork={{
+                  ...art,
+                  price: typeof (art as any).price === "number" ? String((art as any).price) : (art as any).price,
+                }}
+              />
+            ))
           ) : (
             <div className="col-span-full text-center text-gray-500">No featured artworks found.</div>
           )}
+        </div>
+      </section>
+
+      {/* Holiday 2025 Collection */}
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl md:text-3xl font-serif text-gray-900 dark:text-gray-100">Holiday 2025</h2>
+          <div className="flex items-center gap-2">
+            <button
+              suppressHydrationWarning
+              className="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="Previous artworks"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              suppressHydrationWarning
+              className="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="Next artworks"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <ArtworkGalleryCard
+            id="1"
+            title="Briancon White Painting"
+            artist="Christopher Elliot"
+            location="France"
+            medium="Acrylic On Canvas"
+            dimensions="27.6 × 21.3 in"
+            price="$2,765"
+            image="/art1.svg"
+          />
+          <ArtworkGalleryCard
+            id="2"
+            title='"Radiate - Higher Density" Painting'
+            artist="Dorota Jedrusik"
+            location="Poland"
+            medium="Oil On Canvas"
+            dimensions="51 × 35 in"
+            price="$5,045"
+            image="/art2.svg"
+          />
+          <ArtworkGalleryCard
+            id="3"
+            title="Metamorphosis Painting"
+            artist="Young Park"
+            location="South Korea"
+            medium="Acrylic On Canvas"
+            dimensions="57.3 × 44.1 in"
+            price="$3,875"
+            image="/art3.svg"
+          />
+          <ArtworkGalleryCard
+            id="4"
+            title="Life Of The Pond Painting"
+            artist="Trine Churchill"
+            location="United States"
+            medium="Acrylic On Canvas"
+            dimensions="30 × 24 in"
+            price="$2,895"
+            image="/art4.svg"
+          />
         </div>
       </section>
 
@@ -135,6 +212,62 @@ export default async function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Testimonials section */}
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl md:text-3xl font-serif text-gray-900 dark:text-gray-100 mb-2">
+            What Our Collectors Say
+          </h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Trusted by thousands of art lovers worldwide
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <TestimonialCard
+            name="Sarah Johnson"
+            role="Interior Designer"
+            location="New York, USA"
+            rating={5}
+            comment="The quality of the artwork exceeded my expectations. The piece I purchased has become the centerpiece of my living room. The shipping was fast and the packaging was excellent."
+          />
+          <TestimonialCard
+            name="Michael Chen"
+            role="Art Collector"
+            location="London, UK"
+            rating={5}
+            comment="I've been collecting art for over 20 years, and Hangart Gallery has some of the most unique pieces I've seen. The customer service team was incredibly helpful in answering all my questions."
+          />
+          <TestimonialCard
+            name="Emma Rodriguez"
+            role="Curator"
+            location="Barcelona, Spain"
+            rating={5}
+            comment="As a professional curator, I appreciate the authenticity and diversity of the collection. Every piece tells a story, and the platform makes discovering new artists so easy."
+          />
+          <TestimonialCard
+            name="David Kim"
+            location="Seoul, South Korea"
+            rating={5}
+            comment="The investment in art from this gallery has been wonderful. Not only do I love the pieces, but the value has appreciated over time. Highly recommend!"
+          />
+          <TestimonialCard
+            name="Sophie Martin"
+            role="Photography Enthusiast"
+            location="Paris, France"
+            rating={5}
+            comment="Beautiful photography collection! I found the perfect piece for my home office. The checkout process was seamless and delivery was on time."
+          />
+          <TestimonialCard
+            name="James Wilson"
+            role="Tech Entrepreneur"
+            location="San Francisco, USA"
+            rating={5}
+            comment="Love supporting emerging artists through this platform. The curation is top-notch and I've discovered several artists whose work I now follow closely."
+          />
         </div>
       </section>
     </div>

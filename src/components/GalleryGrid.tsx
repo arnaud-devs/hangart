@@ -35,6 +35,7 @@ function StyledSelect({
   return (
     <label className="inline-flex items-center gap-2">
       <select
+        suppressHydrationWarning
         aria-label={ariaLabel}
         className="h-10 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-700"
         value={value}
@@ -153,6 +154,7 @@ export default function GalleryGrid({ artworks }: Props) {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filtered.map((art) => (
           <div
+            suppressHydrationWarning
             key={art.id}
             role="button"
             tabIndex={0}

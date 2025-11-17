@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 
 const LOCALES = ["rw", "en", "fr", "es", "zh", "sw"];
 const DEFAULT_LOCALE = "rw"; // default language
@@ -17,18 +18,26 @@ function setLangCookie(lang: string) {
   document.cookie = `lang=${lang}; Path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`;
 }
 
+function getLangCookie(): string {
+  try {
+    const m = document.cookie.match(/(?:^|; )lang=([^;]+)/);
+    return m ? m[1] : DEFAULT_LOCALE;
+  } catch (e) {
+    return DEFAULT_LOCALE;
+  }
+}
+
 export default function LanguageSwitcher() {
   const [current, setCurrent] = useState<string>(DEFAULT_LOCALE);
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    try {
-      const m = document.cookie.match(/(?:^|; )lang=([^;]+)/);
-      if (m) setCurrent(m[1]);
-    } catch (e) {
-      // ignore
-    }
+    setMounted(true);
+    setCurrent(getLangCookie());
 
     function onDoc(e: MouseEvent) {
       if (!ref.current) return;
@@ -43,8 +52,23 @@ export default function LanguageSwitcher() {
     setLangCookie(lang);
     setCurrent(lang);
     setOpen(false);
-    // reload to apply language
-    window.location.reload();
+    
+    // Refresh the current page to apply new language
+    router.refresh();
+  }
+
+  if (!mounted) {
+    return (
+      <div className="relative">
+        <button
+          suppressHydrationWarning
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-white/90 dark:bg-black/60"
+          disabled
+        >
+          <span className="text-sm font-medium">{LOCALE_LABELS[DEFAULT_LOCALE]}</span>
+        </button>
+      </div>
+    );
   }
 
   return (

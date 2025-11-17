@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import ThemeToggle from "../components/ThemeToggle";
 import { User, ShoppingCart } from 'lucide-react';
@@ -12,14 +12,10 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import React from "react";
 import { cookies } from "next/headers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -229,7 +225,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <body
         suppressHydrationWarning
         // background is controlled by CSS custom properties in `globals.css` (--background)
-        className={`min-h-screen text-gray-900 dark:text-gray-100 overflow-x-hidden antialiased `}
+        className={`${inter.variable} min-h-screen text-gray-900 dark:text-gray-100 overflow-x-hidden antialiased font-sans`}
       >
         {/*
           Providers placeholder

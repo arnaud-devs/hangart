@@ -47,8 +47,8 @@ export default async function Home() {
           <div className="relative flex flex-col-reverse justify-center md:flex-row items-center gap-8 pb-24 md:pb-32 min-h-screen">
             {/* Left column */}
             <div className="w-full md:w-1/2 text-gray-900 dark:text-gray-100 flex flex-col justify-center">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-tight text-[#3C3C43] dark:text-gray-100">CONNECT WITH<br/>AN ARTIST</h2>
-              <p className="mt-4 max-w-md text-gray-700 dark:text-gray-300">every artwork is made by hand and tells story</p>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-inter font-bold leading-tight text-[#3C3C43] dark:text-gray-100"><p className="text-yellow-600">CONNECT </p>WITH AN ARTIST</h2>
+              <p className="mt-4 max-w-md text-gray-700 dark:text-gray-300 font-inter text-[24px]">Every artwork is made by hand and tells story</p>
 
               <div className="mt-8">
                 <Link href="/gallery" className="inline-block rounded-full bg-yellow-600 text-white px-6 py-3 font-semibold dark:bg-yellow-600 ">

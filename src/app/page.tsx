@@ -9,6 +9,7 @@ import ArtworkGalleryCard from "../components/ArtworkGalleryCard";
 import TestimonialCard from "../components/TestimonialCard";
 import { Globe, Truck, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import sampleArtworks from "@/data/SampleArtworks";
+import { getTranslations } from "@/lib/i18n";
 
 type Artwork = {
   id: string | number;
@@ -31,6 +32,7 @@ async function fetchFeaturedArtworks(limit = 8): Promise<Artwork[]> {
 
 export default async function Home() {
   const artworks = await fetchFeaturedArtworks(8);
+  const t = await getTranslations();
 
   return (
     // Let the root CSS variable (--background) control the page background.
@@ -47,12 +49,15 @@ export default async function Home() {
           <div className="relative flex flex-col-reverse justify-center md:flex-row items-center gap-8 pb-24 md:pb-32 min-h-screen">
             {/* Left column */}
             <div className="w-full md:w-1/2 text-gray-900 dark:text-gray-100 flex flex-col justify-center">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-tight text-[#3C3C43] dark:text-gray-100">CONNECT WITH<br/>AN ARTIST</h2>
-              <p className="mt-4 max-w-md text-gray-700 dark:text-gray-300">every artwork is made by hand and tells story</p>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-inter font-bold leading-tight text-[#3C3C43] dark:text-gray-100">
+                <p className="text-yellow-600">{t.hero_connect} </p>
+                {t.hero_with_artist}
+              </h2>
+              <p className="mt-4 max-w-md text-gray-700 dark:text-gray-300 font-inter text-[24px]">{t.hero_tagline}</p>
 
               <div className="mt-8">
                 <Link href="/gallery" className="inline-block rounded-full bg-yellow-600 text-white px-6 py-3 font-semibold dark:bg-yellow-600 ">
-                  SHOP WITH US
+                  {t.shop_with_us}
                 </Link>
               </div>
             </div>
@@ -69,8 +74,8 @@ export default async function Home() {
 
       {/* Gallery explorer - client component */}
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-2xl font-semibold font-serif text-gray-900 dark:text-gray-100">Browse the gallery</h2>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Filter and explore more artworks.</p>
+        <h2 className="text-2xl font-semibold font-serif text-gray-900 dark:text-gray-100">{t.browse_gallery}</h2>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t.browse_gallery_desc}</p>
 
         <div className="mt-6">
           {/* Map server-side artworks to the client component's expected shape */}
@@ -90,8 +95,8 @@ export default async function Home() {
 
       {/* Featured artworks grid */}
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-2xl font-semibold text-gray-900 font-serif dark:text-gray-100">Featured Artworks</h2>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Hand-picked works from our curated collection.</p>
+        <h2 className="text-2xl font-semibold text-gray-900 font-serif dark:text-gray-100">{t.featured_artworks}</h2>
+        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t.featured_artworks_desc}</p>
 
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {sampleArtworks.length > 0 ? (
@@ -105,7 +110,7 @@ export default async function Home() {
               />
             ))
           ) : (
-            <div className="col-span-full text-center text-gray-500">No featured artworks found.</div>
+            <div className="col-span-full text-center text-gray-500">{t.no_artworks}</div>
           )}
         </div>
       </section>
@@ -113,19 +118,19 @@ export default async function Home() {
       {/* Holiday 2025 Collection */}
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl md:text-3xl font-serif text-gray-900 dark:text-gray-100">Holiday 2025</h2>
+          <h2 className="text-2xl md:text-3xl font-serif text-gray-900 dark:text-gray-100">{t.holiday_2025}</h2>
           <div className="flex items-center gap-2">
             <button
               suppressHydrationWarning
               className="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Previous artworks"
+              aria-label={t.prev_artworks}
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               suppressHydrationWarning
               className="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label="Next artworks"
+              aria-label={t.next_artworks}
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -179,7 +184,7 @@ export default async function Home() {
       {/* Why choose section */}
       <section className="px-4 sm:px-6 lg:px-8 py-12 ">
         <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 bg-[#F6F6F7] border-gray-100 dark:border-gray-800 dark:bg-gray-800 border-t rounded-lg">
-          <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 font-serif">Why Choose Hangart Gallery</h3>
+          <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 font-serif">{t.why_choose}</h3>
 
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="flex items-start gap-4">
@@ -187,8 +192,8 @@ export default async function Home() {
                 <Globe className="w-6 h-6 text-gray-700 dark:text-gray-200" />
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100">Global Selection</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Discover original works from emerging artists around the world.</p>
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100">{t.global_selection}</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300">{t.global_selection_desc}</p>
               </div>
             </div>
 

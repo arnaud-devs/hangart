@@ -53,7 +53,7 @@ export default async function Home() {
                 <p className="text-yellow-600">{t.hero_connect} </p>
                 {t.hero_with_artist}
               </h2>
-              <p className="mt-4 max-w-md text-gray-700 dark:text-gray-300 font-inter text-[24px]">{t.hero_tagline}</p>
+              <p className="mt-4 max-w-md text-gray-700 dark:text-gray-300 font-inter text-[18px] md:text-[24px]">{t.hero_tagline}</p>
 
               <div className="mt-8">
                 <Link href="/gallery" className="inline-block rounded-full bg-yellow-600 text-white px-6 py-3 font-semibold dark:bg-yellow-600 ">

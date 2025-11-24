@@ -1,9 +1,24 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { cookies } from "next/headers";
 
-// Read translations from public/locales. If `locale` is not provided, try to
-// read the user's preferred locale from the `lang` cookie. Falls back to 'rw'.
+// Import all translations at build time
+import enTranslations from "@/../public/locales/en/common.json";
+import frTranslations from "@/../public/locales/fr/common.json";
+import rwTranslations from "@/../public/locales/rw/common.json";
+import esTranslations from "@/../public/locales/es/common.json";
+import zhTranslations from "@/../public/locales/zh/common.json";
+import swTranslations from "@/../public/locales/sw/common.json";
+
+const translations: Record<string, any> = {
+  en: enTranslations,
+  fr: frTranslations,
+  rw: rwTranslations,
+  es: esTranslations,
+  zh: zhTranslations,
+  sw: swTranslations,
+};
+
+// Read translations from imported JSON. If `locale` is not provided, try to
+// read the user's preferred locale from the `lang` cookie. Falls back to 'en'.
 export async function getTranslations(locale?: string) {
   let lang = (locale || "").toLowerCase();
 
@@ -19,14 +34,6 @@ export async function getTranslations(locale?: string) {
 
   if (!lang) lang = "en"; // default locale
 
-  const filePath = path.join(process.cwd(), "public", "locales", lang, "common.json");
-  try {
-    const raw = await fs.readFile(filePath, "utf8");
-    return JSON.parse(raw);
-  } catch (e) {
-    // fallback to default (en)
-    const fallback = path.join(process.cwd(), "public", "locales", "en", "common.json");
-    const raw = await fs.readFile(fallback, "utf8");
-    return JSON.parse(raw);
-  }
+  // Return the imported translation or fallback to English
+  return translations[lang] || translations["en"];
 }

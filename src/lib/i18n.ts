@@ -17,15 +17,15 @@ export async function getTranslations(locale?: string) {
     }
   }
 
-  if (!lang) lang = "rw"; // default locale
+  if (!lang) lang = "en"; // default locale
 
   const filePath = path.join(process.cwd(), "public", "locales", lang, "common.json");
   try {
     const raw = await fs.readFile(filePath, "utf8");
     return JSON.parse(raw);
   } catch (e) {
-    // fallback to default (rw)
-    const fallback = path.join(process.cwd(), "public", "locales", "rw", "common.json");
+    // fallback to default (en)
+    const fallback = path.join(process.cwd(), "public", "locales", "en", "common.json");
     const raw = await fs.readFile(fallback, "utf8");
     return JSON.parse(raw);
   }

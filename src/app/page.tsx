@@ -202,8 +202,8 @@ export default async function Home() {
                 <Truck className="w-6 h-6 text-gray-700 dark:text-gray-200" />
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100">Free Returns</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Hassle-free returns so you can buy with confidence.</p>
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100">{t.free_returns}</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300">{t.free_returns_desc}</p>
               </div>
             </div>
 
@@ -212,8 +212,8 @@ export default async function Home() {
                 <Star className="w-6 h-6 text-gray-700 dark:text-gray-200" />
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100">Top-rated</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Thousands of 5-star reviews from collectors worldwide.</p>
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100">{t.top_rated}</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300">{t.top_rated_desc}</p>
               </div>
             </div>
           </div>

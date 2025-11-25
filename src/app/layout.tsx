@@ -8,6 +8,7 @@ import MobileSearch from "@/components/MobileSearch";
 import { CartProvider } from "@/context/CartContext";
 import CartDrawer from "@/components/CartDrawer";
 import CartButton from "@/components/CartButton";
+import UserMenu from "@/components/UserMenu";
 import Breadcrumbs from '@/components/Breadcrumbs';
 import React from "react";
 import { cookies } from "next/headers";
@@ -63,7 +64,7 @@ const Navbar: React.FC = () => {
 
             <ThemeToggle />
 
-            <a href="#" className="w-10 h-10 rounded-full bg-transparent flex items-center justify-center text-gray-800 dark:text-[#DFDFD6]"><User /></a>
+            <UserMenu />
             {/* Cart button (client) - shows count and opens drawer */}
             <div className="hidden sm:block">
               <CartButton />

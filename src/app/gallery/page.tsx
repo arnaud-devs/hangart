@@ -66,7 +66,7 @@ const sampleArtworks: ArtworkItem[] = [
     title: 'Desert Dunes',
     artist: 'Sarah Johnson',
     price: '$740',
-    image: '/art1.svg',
+    image: '/arts/art1.jpeg',
     category: 'photography',
     style: 'documentary',
     size: 'large',
@@ -76,7 +76,7 @@ const sampleArtworks: ArtworkItem[] = [
     title: 'Urban Architecture',
     artist: 'Michael Chen',
     price: '$890',
-    image: '/art2.svg',
+    image: '/arts/art2.jpeg',
     category: 'photography',
     style: 'contemporary',
     size: 'medium',
@@ -86,7 +86,7 @@ const sampleArtworks: ArtworkItem[] = [
     title: 'City Rhythm',
     artist: 'David Kim',
     price: '$1,240',
-    image: '/art3.svg',
+    image: '/arts/art3.jpeg',
     category: 'photography',
     style: 'documentary',
     size: 'large',
@@ -96,7 +96,7 @@ const sampleArtworks: ArtworkItem[] = [
     title: 'Abstract Expressions',
     artist: 'Emma Rodriguez',
     price: '$2,350',
-    image: '/art4.svg',
+    image: '/arts/art4.jpeg',
     category: 'painting',
     style: 'abstract',
     size: 'xlarge',
@@ -106,7 +106,7 @@ const sampleArtworks: ArtworkItem[] = [
     title: 'Modern Portrait',
     artist: 'Sophie Martin',
     price: '$1,890',
-    image: '/art1.svg',
+    image: '/arts/art1.jpeg',
     category: 'painting',
     style: 'contemporary',
     size: 'medium',
@@ -116,7 +116,7 @@ const sampleArtworks: ArtworkItem[] = [
     title: 'Landscape Dreams',
     artist: 'James Wilson',
     price: '$3,200',
-    image: '/art2.svg',
+    image: '/arts/art2.jpeg',
     category: 'painting',
     style: 'impressionism',
     size: 'large',
@@ -156,11 +156,11 @@ export default function GalleryPage() {
     <div className="min-h-screen  ">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 ">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3 sm:mb-4">
             <a href="/" className="hover:text-gray-900 dark:hover:text-gray-100">All Artworks</a>
           </div>
-          <h1 className="text-3xl font-serif text-gray-900 dark:text-gray-100">
+          <h1 className="text-2xl sm:text-3xl font-serif text-gray-900 dark:text-gray-100">
             Original Art For Sale
           </h1>
         </div>
@@ -169,19 +169,19 @@ export default function GalleryPage() {
       {/* Category pills */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-2 sm:gap-4 overflow-x-auto pb-2 scrollbar-hide">
             {[
-              { label: 'PAINTINGS', image: '/art1.svg', category: 'painting' },
-              { label: 'PHOTOGRAPHY', image: '/art2.svg', category: 'photography' },
-              { label: 'SCULPTURE', image: '/art3.svg', category: 'sculpture' },
-              { label: 'DRAWINGS', image: '/art4.svg', category: 'drawing' },
-              { label: 'FINE ART PRINTS', image: '/art1.svg', category: 'prints' },
-              { label: 'ABSTRACT ART', image: '/art2.svg', category: 'abstract' },
+              { label: 'PAINTINGS', image: '/arts/art1.jpeg', category: 'painting' },
+              { label: 'PHOTOGRAPHY', image: '/arts/art2.jpeg', category: 'photography' },
+              { label: 'SCULPTURE', image: '/arts/art3.jpeg', category: 'sculpture' },
+              { label: 'DRAWINGS', image: '/arts/art4.jpeg', category: 'drawing' },
+              { label: 'FINE ART PRINTS', image: '/arts/art1.jpeg', category: 'prints' },
+              { label: 'ABSTRACT ART', image: '/arts/art2.jpeg', category: 'abstract' },
             ].map((item) => (
               <button
                 key={item.category}
                 suppressHydrationWarning
-                className="flex flex-col items-center gap-2 min-w-[120px] group"
+                className="flex flex-col items-center gap-1 sm:gap-2 min-w-[90px] sm:min-w-[120px] group"
               >
                 <div className="w-full aspect-[3/2] rounded-lg overflow-hidden">
                   <Image
@@ -192,7 +192,7 @@ export default function GalleryPage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                   />
                 </div>
-                <span className="text-xs font-medium text-gray-900 dark:text-gray-100 uppercase">
+                <span className="text-[10px] sm:text-xs font-medium text-gray-900 dark:text-gray-100 uppercase text-center leading-tight">
                   {item.label}
                 </span>
               </button>
@@ -203,15 +203,27 @@ export default function GalleryPage() {
 
       {/* Main content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-8">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+          {/* Mobile filter toggle */}
+          <div className="lg:hidden">
+            <button
+              suppressHydrationWarning
+              onClick={() => setFiltersVisible(!filtersVisible)}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800"
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              {filtersVisible ? 'HIDE FILTERS' : 'SHOW FILTERS'}
+            </button>
+          </div>
+
           {/* Sidebar filters */}
-          <aside className={`w-64 flex-shrink-0 ${filtersVisible ? 'block' : 'hidden'} lg:block`}>
-            <div className="sticky top-4">
-              {/* Hide filters button */}
+          <aside className={`${filtersVisible ? 'block' : 'hidden'} lg:block w-full lg:w-64 shrink-0`}>
+            <div className="lg:sticky lg:top-4">
+              {/* Hide filters button - desktop only */}
               <button
                 suppressHydrationWarning
                 onClick={() => setFiltersVisible(!filtersVisible)}
-                className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-gray-100 mb-4 hover:text-blue-600 dark:hover:text-blue-400"
+                className="hidden lg:flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-gray-100 mb-4 hover:text-blue-600 dark:hover:text-blue-400"
               >
                 <SlidersHorizontal className="w-4 h-4" />
                 HIDE FILTERS (1)
@@ -399,55 +411,55 @@ export default function GalleryPage() {
           </aside>
 
           {/* Artworks grid */}
-          <main className="flex-1">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <main className="flex-1 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
               {sampleArtworks.map((artwork) => (
                 <div key={artwork.id} className="group relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                  <div className="relative aspect-[3/4] bg-gray-100 dark:bg-gray-900 overflow-hidden">
+                  <div className="relative aspect-3/4 bg-gray-100 dark:bg-gray-900 overflow-hidden">
                     <Image
                       src={artwork.image}
                       alt={artwork.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   </div>
                   
-                  <div className="p-4">
+                  <div className="p-3 sm:p-4">
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div className="flex-1 min-w-0">
-                        <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        <p className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">
                           {artwork.price}
                         </p>
                       </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
+                      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                         <button
                           suppressHydrationWarning
                           className="text-gray-400 hover:text-red-500 transition-colors"
                           aria-label="Add to wishlist"
                         >
-                          <Heart className="w-5 h-5" />
+                          <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                         <button
                           suppressHydrationWarning
                           className="text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
                           aria-label="Quick view"
                         >
-                          <Plus className="w-5 h-5" />
+                          <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                         <button
                           suppressHydrationWarning
                           className="text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
                           aria-label="Add to cart"
                         >
-                          <ShoppingBag className="w-5 h-5" />
+                          <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
                       {artwork.title}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-500 truncate">
+                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-500 truncate">
                       {artwork.artist}
                     </p>
                   </div>

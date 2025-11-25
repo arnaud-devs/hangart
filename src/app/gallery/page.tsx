@@ -152,6 +152,69 @@ export default function GalleryPage() {
     }
   }
 
+  // Filter artworks based on selected filters
+  const filteredArtworks = sampleArtworks.filter(artwork => {
+    // Category filter
+    if (selectedCategory !== 'all' && artwork.category !== selectedCategory) {
+      return false
+    }
+
+    // Style filter
+    if (selectedStyles.length > 0 && artwork.style && !selectedStyles.includes(artwork.style)) {
+      return false
+    }
+
+    // Size filter
+    if (selectedSizes.length > 0 && artwork.size && !selectedSizes.includes(artwork.size)) {
+      return false
+    }
+
+    // Price filter
+    if (selectedPrices.length > 0) {
+      const priceNum = parseFloat(artwork.price.replace(/[$,]/g, ''))
+      let matchesPrice = false
+      
+      selectedPrices.forEach(range => {
+        if (range === 'under-500' && priceNum < 500) matchesPrice = true
+        if (range === '500-1000' && priceNum >= 500 && priceNum < 1000) matchesPrice = true
+        if (range === '1000-2500' && priceNum >= 1000 && priceNum < 2500) matchesPrice = true
+        if (range === '2500-5000' && priceNum >= 2500 && priceNum < 5000) matchesPrice = true
+        if (range === 'over-5000' && priceNum >= 5000) matchesPrice = true
+      })
+      
+      if (!matchesPrice) return false
+    }
+
+    return true
+  })
+
+  // Sort artworks
+  const sortedArtworks = [...filteredArtworks].sort((a, b) => {
+    const priceA = parseFloat(a.price.replace(/[$,]/g, ''))
+    const priceB = parseFloat(b.price.replace(/[$,]/g, ''))
+
+    switch (sortBy) {
+      case 'price-low':
+        return priceA - priceB
+      case 'price-high':
+        return priceB - priceA
+      case 'newest':
+        return b.id.localeCompare(a.id)
+      case 'popular':
+        return a.title.localeCompare(b.title)
+      default: // featured
+        return 0
+    }
+  })
+
+  // Count active filters
+  const activeFiltersCount = 
+    (selectedCategory !== 'all' ? 1 : 0) +
+    selectedStyles.length +
+    selectedSizes.length +
+    selectedPrices.length +
+    selectedOrientations.length
+
   return (
     <div className="min-h-screen  ">
       {/* Header */}
@@ -181,9 +244,14 @@ export default function GalleryPage() {
               <button
                 key={item.category}
                 suppressHydrationWarning
-                className="flex flex-col items-center gap-1 sm:gap-2 min-w-[90px] sm:min-w-[120px] group"
+                onClick={() => setSelectedCategory(item.category)}
+                className={`flex flex-col items-center gap-1 sm:gap-2 min-w-[90px] sm:min-w-[120px] group ${
+                  selectedCategory === item.category ? 'opacity-100' : 'opacity-70 hover:opacity-100'
+                }`}
               >
-                <div className="w-full aspect-[3/2] rounded-lg overflow-hidden">
+                <div className="w-full aspect-3/2 rounded-lg overflow-hidden border-2 transition-colors" style={{
+                  borderColor: selectedCategory === item.category ? '#3b82f6' : 'transparent'
+                }}>
                   <Image
                     src={item.image}
                     alt={item.label}
@@ -226,7 +294,7 @@ export default function GalleryPage() {
                 className="hidden lg:flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-gray-100 mb-4 hover:text-blue-600 dark:hover:text-blue-400"
               >
                 <SlidersHorizontal className="w-4 h-4" />
-                HIDE FILTERS (1)
+                {filtersVisible ? `HIDE FILTERS${activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}` : 'SHOW FILTERS'}
               </button>
 
               {/* Sort */}
@@ -412,8 +480,25 @@ export default function GalleryPage() {
 
           {/* Artworks grid */}
           <main className="flex-1 w-full">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
-              {sampleArtworks.map((artwork) => (
+            {sortedArtworks.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-500 dark:text-gray-400 text-lg">No artworks found matching your filters.</p>
+                <button
+                  onClick={() => {
+                    setSelectedCategory('all')
+                    setSelectedStyles([])
+                    setSelectedSizes([])
+                    setSelectedPrices([])
+                    setSelectedOrientations([])
+                  }}
+                  className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Clear All Filters
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 sm:gap-6">
+                {sortedArtworks.map((artwork) => (
                 <div key={artwork.id} className="group relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                   <div className="relative aspect-3/4 bg-gray-100 dark:bg-gray-900 overflow-hidden">
                     <Image
@@ -424,7 +509,6 @@ export default function GalleryPage() {
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   </div>
-                  
                   <div className="p-3 sm:p-4">
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div className="flex-1 min-w-0">
@@ -465,7 +549,8 @@ export default function GalleryPage() {
                   </div>
                 </div>
               ))}
-            </div>
+              </div>
+            )}
           </main>
         </div>
       </div>

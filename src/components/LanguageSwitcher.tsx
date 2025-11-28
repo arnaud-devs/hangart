@@ -3,15 +3,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
-const LOCALES = ["rw", "en", "fr", "es", "zh", "sw"];
+const LOCALES = ["rw", "en", "fr", "sw", "es", "zh"];
 const DEFAULT_LOCALE = "rw"; // default language
 const LOCALE_LABELS: Record<string, string> = {
-  rw: "RW",
-  en: "EN",
-  fr: "FR",
-  es: "ES",
+  rw: "Kinyarwanda",
+  en: "English",
+  fr: "Français",
+  es: "Español",
   zh: "中文",
-  sw: "SW",
+  sw: "Swahili",
 };
 
 function setLangCookie(lang: string) {
@@ -62,7 +62,7 @@ export default function LanguageSwitcher() {
       <div className="relative">
         <button
           suppressHydrationWarning
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-white/90 dark:bg-black/60"
+          className="flex items-center justify-center px-3 h-10 rounded-full bg-white/90 dark:bg-black/60"
           disabled
         >
           <span className="text-sm font-medium">{LOCALE_LABELS[DEFAULT_LOCALE]}</span>
@@ -78,7 +78,7 @@ export default function LanguageSwitcher() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="true"
         aria-expanded={open}
-        className="flex items-center justify-center w-10 h-10 rounded-full bg-white/90 dark:bg-black/60"
+        className="flex items-center justify-center px-3 h-10 rounded-full bg-white/90 dark:bg-black/60"
         title="Select language"
       >
         <span className="text-sm font-medium">{LOCALE_LABELS[current] || current.toUpperCase()}</span>

@@ -131,6 +131,7 @@ export default function GalleryPage() {
   const [selectedOrientations, setSelectedOrientations] = useState<string[]>([])
   const [sortBy, setSortBy] = useState('featured')
   const [filtersVisible, setFiltersVisible] = useState(true)
+  const [userRole, setUserRole] = useState<string | null>(null)
   
   const [expandedSections, setExpandedSections] = useState({
     category: true,
@@ -188,8 +189,34 @@ export default function GalleryPage() {
     return true
   })
 
+  // read demo user role client-side and restrict buyers to approved artworks only
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = localStorage.getItem('user');
+      if (raw) {
+        const u = JSON.parse(raw);
+        setUserRole(u?.role ?? null);
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, [])
+
+  const visibleArtworks = React.useMemo(() => {
+    if (userRole === 'BUYER') {
+      return filteredArtworks.filter((a: any) => {
+        if ('approved' in a) return Boolean(a.approved)
+        if ('status' in a) return a.status === 'approved'
+        // No approval metadata -> treat as NOT approved for buyers
+        return false
+      })
+    }
+    return filteredArtworks
+  }, [filteredArtworks, userRole])
+
   // Sort artworks
-  const sortedArtworks = [...filteredArtworks].sort((a, b) => {
+  const sortedArtworks = [...visibleArtworks].sort((a, b) => {
     const priceA = parseFloat(a.price.replace(/[$,]/g, ''))
     const priceB = parseFloat(b.price.replace(/[$,]/g, ''))
 

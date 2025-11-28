@@ -1,5 +1,5 @@
-'use client'
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Heart, Plus, ShoppingBag } from 'lucide-react'
 
@@ -24,6 +24,45 @@ export default function ArtworkGalleryCard({
   price,
   image,
 }: ArtworkGalleryCardProps) {
+  const [added, setAdded] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('customWishlist');
+      const list = raw ? JSON.parse(raw) : [];
+      const exists = list.some((i: any) => String(i.artworkId) === String(id));
+      setAdded(Boolean(exists));
+    } catch (e) {
+      // ignore
+    }
+  }, [id]);
+
+  const addToWishlist = () => {
+    try {
+      const rawUser = localStorage.getItem('user');
+      const user = rawUser ? JSON.parse(rawUser) : null;
+
+      const buyerId = user?.id || 'guest';
+
+      const raw = localStorage.getItem('customWishlist');
+      const list = raw ? JSON.parse(raw) : [];
+
+      const exists = list.some((i: any) => String(i.artworkId) === String(id) && i.buyerId === buyerId);
+      if (!exists) {
+        const entry = {
+          id: `w-${Date.now()}`,
+          artworkId: id,
+          buyerId,
+          addedAt: new Date().toISOString(),
+        };
+        const next = [entry, ...list];
+        localStorage.setItem('customWishlist', JSON.stringify(next));
+        setAdded(true);
+      }
+    } catch (e) {
+      // ignore storage errors
+    }
+  };
   return (
     <div className="group relative bg-[#F6F6F7] dark:bg-gray-800 rounded-lg overflow-hidden">
       {/* Image container with hover overlay */}
@@ -40,10 +79,11 @@ export default function ArtworkGalleryCard({
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
           <button
             suppressHydrationWarning
-            className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            onClick={addToWishlist}
+            className={`w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${added ? 'ring-2 ring-emerald-200' : ''}`}
             aria-label="Add to wishlist"
           >
-            <Heart className="w-5 h-5" />
+            <Heart className={`w-5 h-5 ${added ? 'text-red-500' : ''}`} />
           </button>
           <button
             suppressHydrationWarning

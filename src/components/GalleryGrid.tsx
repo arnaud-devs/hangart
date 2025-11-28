@@ -9,11 +9,14 @@ import { useRouter } from "next/navigation";
 export type Artwork = {
   id: string | number;
   title: string;
-  imageUrl?: string;
-  artistName?: string;
+  image?: string;
+  artist?: string;
   price?: number | string;
   currency?: string;
   category?: string;
+  // optional approval/status fields used elsewhere
+  approved?: boolean;
+  status?: string;
 };
 
 type Props = {
@@ -57,6 +60,18 @@ export default function GalleryGrid({ artworks }: Props) {
   const [priceFilter, setPriceFilter] = useState<string>("all");
   const [sort, setSort] = useState<string>("newest");
 
+  // determine current demo user role (client-side only)
+  let userRole: string | null = null;
+  if (typeof window !== 'undefined') {
+    try {
+      const raw = localStorage.getItem('user');
+      if (raw) userRole = JSON.parse(raw).role ?? null;
+    } catch (e) {
+      // ignore
+      userRole = null;
+    }
+  }
+
   const categories = useMemo(() => {
     const set = new Set<string>();
     artworks.forEach((a) => a.category && set.add(a.category));
@@ -64,7 +79,8 @@ export default function GalleryGrid({ artworks }: Props) {
   }, [artworks]);
 
   const filtered = useMemo(() => {
-    let list = sampleArtworks.slice();
+    // prefer the passed `artworks` prop when available, otherwise fall back to sampleArtworks
+    let list = (artworks && artworks.length ? artworks.slice() : sampleArtworks.slice());
 
     if (category !== "all") {
       list = list.filter((a) => a.category === category);
@@ -98,6 +114,19 @@ export default function GalleryGrid({ artworks }: Props) {
 
     return list;
   }, [artworks, category, priceFilter, sort]);
+
+  // If current user is a BUYER, ensure they only see approved artworks.
+  const visible = useMemo(() => {
+    if (userRole === 'BUYER') {
+      return filtered.filter((a: any) => {
+        if ('approved' in a) return Boolean(a.approved);
+        if ('status' in a) return a.status === 'approved';
+        // if artwork has no approval metadata, treat as NOT approved for buyers
+        return false;
+      });
+    }
+    return filtered;
+  }, [filtered, userRole]);
 
   function handleCardClick(id: string | number) {
     router.push(`/artwork/${id}`);
@@ -152,7 +181,7 @@ export default function GalleryGrid({ artworks }: Props) {
 
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filtered.map((art) => (
+        {visible.map((art) => (
           <div
             suppressHydrationWarning
             key={art.id}

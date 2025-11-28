@@ -10,6 +10,7 @@ import CartDrawer from "@/components/CartDrawer";
 import CartButton from "@/components/CartButton";
 import UserMenu from "@/components/UserMenu";
 import Breadcrumbs from '@/components/Breadcrumbs';
+import HideWhenDashboard from '@/components/HideWhenDashboard';
 import React from "react";
 import { cookies } from "next/headers";
 
@@ -236,15 +237,17 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 
         <CartProvider>
           <div className="flex flex-col min-h-screen">
-          {/* Top navigation */}
-          <header>
-            <Navbar />
-          </header>
+          {/* Top navigation, breadcrumbs and footer are hidden on dashboard routes */}
+          <HideWhenDashboard>
+            <header>
+              <Navbar />
+            </header>
 
-          {/* Breadcrumbs - helpful navigation contextualizer */}
-          <div className="w-full">
-            <Breadcrumbs />
-          </div>
+            {/* Breadcrumbs - helpful navigation contextualizer */}
+            <div className="w-full">
+              <Breadcrumbs />
+            </div>
+          </HideWhenDashboard>
 
           {/* Main content area - mobile-first responsive container */}
           <main className="flex-1 w-full container mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -252,8 +255,10 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             {children}
           </main>
 
-          {/* Footer */}
-          <Footer />
+          <HideWhenDashboard>
+            {/* Footer */}
+            <Footer />
+          </HideWhenDashboard>
           </div>
 
           {/* Global cart drawer / UI */}

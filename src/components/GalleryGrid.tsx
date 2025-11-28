@@ -60,6 +60,30 @@ export default function GalleryGrid({ artworks }: Props) {
   const [priceFilter, setPriceFilter] = useState<string>("all");
   const [sort, setSort] = useState<string>("newest");
 
+  // Resolve image path to public/artwork directory when applicable
+  const resolveImage = (img?: string): string => {
+    if (!img) return "/placeholder-art.png";
+    // remote or data URL
+    if (/^https?:\/\//i.test(img) || img.startsWith("data:")) return img;
+    // already points to artwork folder
+    if (img.startsWith("/artwork/")) return img;
+    // keep absolute paths that are not files (advanced cases)
+    if (img.startsWith("/") && img.split("/").length > 2 && img.includes(".")) {
+      // prefer the basename from any given path
+      const base = img.split("/").pop() as string;
+      return `/artwork/${base}`;
+    }
+    // If only a filename or any short token, prefix with /artwork/
+    const base = img.split("/").pop() as string;
+    return `/artwork/${base}`;
+  };
+
+  // Prefer the canonical image stored in sampleArtworkData.ts for a given id
+  const imageFromSampleById = (id: string | number): string | undefined => {
+    const hit = sampleArtworks.find((s) => String(s.id) === String(id));
+    return hit?.image;
+  };
+
   // determine current demo user role (client-side only)
   let userRole: string | null = null;
   if (typeof window !== 'undefined') {
@@ -194,7 +218,7 @@ export default function GalleryGrid({ artworks }: Props) {
             <div className="bg-[#F6F6F7] dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm">
               <div className="relative w-full h-56 bg-gray-100 dark:bg-gray-700">
                 <Image
-                  src={art.image || "/placeholder-art.png"}
+                  src={resolveImage(imageFromSampleById(art.id) ?? art.image)}
                   alt={art.title}
                   fill
                   className="object-cover"

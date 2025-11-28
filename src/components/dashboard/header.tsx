@@ -3,7 +3,7 @@
 import { Search, Bell, ChevronDown, Menu, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import ThemeToggle from '@/components/ThemeToggle';
 import { FiUser } from 'react-icons/fi';
@@ -48,6 +48,21 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
     }
   }, []);
 
+  // Close dropdown when route changes
+  const pathname = usePathname();
+  useEffect(() => {
+    setDropdownOpen(false);
+  }, [pathname]);
+
+  // Close on Escape key
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setDropdownOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   const handleLogout = () => {
     // Clear localStorage and reset user state
     localStorage.removeItem('authToken');
@@ -58,8 +73,8 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-sm border-b border-gray-200 dark:border-gray-700">
+      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 ">
         <div className="flex justify-between items-center h-16">
           {/* Left side - Menu and Search */}
           <div className="flex items-center">
@@ -74,12 +89,12 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
             <div className="hidden sm:block ml-4 lg:ml-0">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400" />
+                  <Search className="h-5 w-5 text-gray-400 dark:text-gray-400" />
                 </div>
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                 />
               </div>
             </div>
@@ -96,7 +111,7 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
             </div>
 
             <button 
-              className="p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 rounded-full relative"
+              className="p-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full relative"
               aria-label="Notifications"
             >
               <Bell className="w-6 h-6" />
@@ -135,7 +150,7 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
 
                 {dropdownOpen && (
                   <div 
-                    className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+                    className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="py-1" role="menu">

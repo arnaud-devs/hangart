@@ -136,38 +136,41 @@ function ArtworkModal({ onClose, onSave }: { onClose: () => void; onSave: (a: Pa
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <form onSubmit={submit} className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 z-10">
-        <h3 className="text-lg font-semibold mb-4">Add New Artwork</h3>
+    <div>
+      {/* use shared Modal styling */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+        <form onSubmit={submit} className="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 z-10 text-gray-900 dark:text-gray-100">
+          <h3 className="text-lg font-semibold mb-4">Add New Artwork</h3>
 
-        <div className="grid grid-cols-1 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Title</label>
-            <input value={title} onChange={e => setTitle(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" required />
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Title</label>
+              <input value={title} onChange={e => setTitle(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Price (USD)</label>
+              <input value={price} onChange={e => setPrice(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" type="number" min="0" step="0.01" required />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Image URL (optional)</label>
+              <input value={image} onChange={e => setImage(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="/arts/art1.jpg or https://..." />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Description</label>
+              <textarea value={description} onChange={e => setDescription(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" rows={4} />
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Price (USD)</label>
-            <input value={price} onChange={e => setPrice(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" type="number" min="0" step="0.01" required />
+          <div className="mt-4 flex justify-end gap-3">
+            <button type="button" onClick={onClose} className="px-4 py-2 border rounded">Cancel</button>
+            <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded">Save</button>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Image URL (optional)</label>
-            <input value={image} onChange={e => setImage(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" placeholder="/arts/art1.jpg or https://..." />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Description</label>
-            <textarea value={description} onChange={e => setDescription(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" rows={4} />
-          </div>
-        </div>
-
-        <div className="mt-4 flex justify-end gap-3">
-          <button type="button" onClick={onClose} className="px-4 py-2 border rounded">Cancel</button>
-          <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded">Save</button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

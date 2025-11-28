@@ -54,39 +54,39 @@ export default function Page() {
   return (
     <div className="p-6">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4">Approvals</h2>
-        <p className="text-sm text-gray-500 mb-4">Review and approve or reject pending artworks.</p>
+        <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Approvals</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-300 mb-4">Review and approve or reject pending artworks.</p>
 
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Artwork</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Artist</th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-100">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
                 {items.length === 0 && (
-                  <tr><td colSpan={3} className="px-4 py-6 text-center text-gray-500">No pending artworks.</td></tr>
+                  <tr><td colSpan={3} className="px-4 py-6 text-center text-gray-500 dark:text-gray-300">No pending artworks.</td></tr>
                 )}
                 {items.map(a => (
-                  <tr key={a.id} className="hover:bg-gray-50">
+                  <tr key={a.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-4 py-3 flex items-center gap-3">
                       <img src={a.image} alt={a.title} className="w-20 h-12 object-cover rounded" />
                       <div>
-                        <div className="font-medium">{a.title}</div>
-                        <div className="text-xs text-gray-500">{new Date(a.createdAt).toLocaleDateString()}</div>
+                        <div className="font-medium text-gray-900 dark:text-gray-100">{a.title}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-300">{new Date(a.createdAt).toLocaleDateString()}</div>
                       </div>
                     </td>
-                    <td className="px-4 py-3">{a.artistName}</td>
+                    <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{a.artistName}</td>
                     <td className="px-4 py-3 text-right">
                       <div className="inline-flex items-center gap-2">
-                        <button onClick={() => setView(a)} className="px-3 py-1 border rounded text-sm">View</button>
-                        <button onClick={() => setEdit(a)} className="px-3 py-1 border rounded text-sm">Edit</button>
-                        <button onClick={() => approve(a)} className="px-3 py-1 bg-emerald-600 text-white rounded">Approve</button>
-                        <button onClick={() => reject(a)} className="px-3 py-1 bg-red-50 text-red-600 border border-red-100 rounded">Reject</button>
+                        <button onClick={() => setView(a)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">View</button>
+                        <button onClick={() => setEdit(a)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">Edit</button>
+                        <button onClick={() => approve(a)} className="px-3 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-700">Approve</button>
+                        <button onClick={() => reject(a)} className="px-3 py-1 bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-300 border border-red-100 dark:border-red-800 rounded hover:bg-red-100 dark:hover:bg-red-800">Reject</button>
                       </div>
                     </td>
                   </tr>

@@ -1,55 +1,73 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-
-type Settings = {
-  siteName: string;
-  allowRegistration: boolean;
-};
-
-const KEY = 'adminSettings';
+import React, { useEffect, useState } from "react";
+import ThemeToggle from "@/components/ThemeToggle";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const [settings, setSettings] = useState<Settings>({ siteName: 'Hangart', allowRegistration: true });
+  const [notifications, setNotifications] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setSettings(JSON.parse(raw));
-    } catch (e) {}
+      const raw = localStorage.getItem("settings.notifications");
+      if (raw !== null) setNotifications(raw === "true");
+    } catch (e) {
+      // ignore
+    }
   }, []);
 
-  const save = () => {
+  function toggleNotifications() {
+    const next = !notifications;
+    setNotifications(next);
     try {
-      localStorage.setItem(KEY, JSON.stringify(settings));
-      alert('Settings saved');
+      localStorage.setItem("settings.notifications", String(next));
     } catch (e) {
-      console.error(e);
+      // ignore
     }
-  };
+  }
+
+  function logout() {
+    try {
+      localStorage.removeItem("user");
+      // optional: clear other demo data if desired
+    } catch (e) {
+      // ignore
+    }
+    router.push("/login");
+  }
 
   return (
     <div className="p-6">
       <div className="max-w-3xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4">Settings</h2>
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="grid grid-cols-1 gap-4">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Settings</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">Application preferences for your demo account and UI.</p>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
+          <div className="flex items-center justify-between">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Site Name</label>
-              <input value={settings.siteName} onChange={e => setSettings(s => ({ ...s, siteName: e.target.value }))} className="mt-1 block w-full border rounded px-3 py-2" />
+              <div className="font-medium text-gray-900 dark:text-gray-100">Theme</div>
+              <div className="text-sm text-gray-600 dark:text-gray-300">Toggle light / dark appearance.</div>
             </div>
+            <ThemeToggle />
+          </div>
 
-            <div className="flex items-center gap-3">
-              <input id="reg" type="checkbox" checked={settings.allowRegistration} onChange={e => setSettings(s => ({ ...s, allowRegistration: e.target.checked }))} />
-              <label htmlFor="reg" className="text-sm text-gray-700">Allow new user registration</label>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="font-medium text-gray-900 dark:text-gray-100">Email notifications</div>
+              <div className="text-sm text-gray-600 dark:text-gray-300">Receive email updates (demo only).</div>
             </div>
+            <label className="inline-flex items-center">
+              <input type="checkbox" checked={notifications} onChange={toggleNotifications} className="form-checkbox h-5 w-5 text-emerald-600" />
+            </label>
+          </div>
 
-            <div className="flex justify-end">
-              <button onClick={save} className="px-4 py-2 bg-emerald-600 text-white rounded">Save Settings</button>
-            </div>
+          <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+            <button onClick={logout} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded">Logout</button>
           </div>
         </div>
       </div>
     </div>
   );
 }
+

@@ -33,8 +33,10 @@ export default function AdminDashboard() {
 
   const pieTotalAdmin = pieDataAdmin.reduce((s, p) => s + p.value, 0) || 1;
 
+  // derived summary counts
   const pendingApprovalsCount = counts.pending;
   const totalArtworksCount = allArtworks.length;
+
   const rawCustomArtists = typeof window !== 'undefined' ? localStorage.getItem('customArtists') : null;
   const customArtists = rawCustomArtists ? JSON.parse(rawCustomArtists) : [];
   const artistIds = new Set<string>();
@@ -62,84 +64,84 @@ export default function AdminDashboard() {
     <div className="p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-          <p className="text-sm text-gray-500">High-level marketplace financial overview.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Admin Dashboard</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-300">High-level marketplace financial overview.</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Total Artworks Value</div>
-            <div className="text-2xl font-semibold">${totalValue.toFixed(2)}</div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+            <div className="text-sm text-gray-500 dark:text-gray-300">Total Artworks Value</div>
+            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">${totalValue.toFixed(2)}</div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Pending Artworks Value</div>
-            <div className="text-2xl font-semibold text-yellow-600">${pendingValue.toFixed(2)}</div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+            <div className="text-sm text-gray-500 dark:text-gray-300">Pending Artworks Value</div>
+            <div className="text-2xl font-semibold text-yellow-600 dark:text-yellow-400">${pendingValue.toFixed(2)}</div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Rejected Artworks Value</div>
-            <div className="text-2xl font-semibold text-red-600">${rejectedValue.toFixed(2)}</div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+            <div className="text-sm text-gray-500 dark:text-gray-300">Rejected Artworks Value</div>
+            <div className="text-2xl font-semibold text-red-600 dark:text-red-400">${rejectedValue.toFixed(2)}</div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Approved Artworks Value</div>
-            <div className="text-2xl font-semibold text-emerald-600">${approvedValue.toFixed(2)}</div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Total Approvals</div>
-            <div className="text-2xl font-semibold">{pendingApprovalsCount}</div>
-          </div>
-
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Total Artists</div>
-            <div className="text-2xl font-semibold">{artistsCount}</div>
-          </div>
-
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Total Artworks</div>
-            <div className="text-2xl font-semibold">{totalArtworksCount}</div>
-          </div>
-
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Total Buyers</div>
-            <div className="text-2xl font-semibold">{buyersCount}</div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+            <div className="text-sm text-gray-500 dark:text-gray-300">Approved Artworks Value</div>
+            <div className="text-2xl font-semibold text-emerald-600 dark:text-emerald-400">${approvedValue.toFixed(2)}</div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500">Museums Count</div>
-            <div className="text-2xl font-semibold">{museumsCount}</div>
-            <div className="mt-2"><a href="/dashboard/museums" className="text-sm text-emerald-600 underline">Manage Museums</a></div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+            <div className="text-sm text-gray-500 dark:text-gray-300">Total Approvals</div>
+            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{pendingApprovalsCount}</div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+            <div className="text-sm text-gray-500 dark:text-gray-300">Total Artists</div>
+            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{artistsCount}</div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+            <div className="text-sm text-gray-500 dark:text-gray-300">Total Artworks</div>
+            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{totalArtworksCount}</div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+            <div className="text-sm text-gray-500 dark:text-gray-300">Total Buyers</div>
+            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{buyersCount}</div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+            <div className="text-sm text-gray-500 dark:text-gray-300">Museums Count</div>
+            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{museumsCount}</div>
+            <div className="mt-2"><a href="/dashboard/museums" className="text-sm text-emerald-600 dark:text-emerald-400 underline">Manage Museums</a></div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white rounded-lg shadow-sm p-6">
-            <h3 className="font-semibold mb-4">Top Artworks by Price</h3>
+          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <h3 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">Top Artworks by Price</h3>
             <div className="space-y-3">
               {topByPrice.map((a) => {
                 const max = topByPrice[0]?.price || 1;
                 const width = Math.round(((a.price || 0) / max) * 100);
                 return (
                   <div key={a.id} className="flex items-center gap-4">
-                    <div className="w-40 text-sm font-medium">{a.title} — <span className="text-xs text-gray-500">{a.artistName}</span></div>
-                    <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
+                    <div className="w-40 text-sm font-medium text-gray-900 dark:text-gray-100">{a.title} — <span className="text-xs text-gray-500 dark:text-gray-300">{a.artistName}</span></div>
+                    <div className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                       <div style={{ width: `${width}%` }} className="h-3 bg-emerald-500" />
                     </div>
-                    <div className="w-32 text-right text-sm text-gray-600">${(a.price || 0).toFixed(2)}</div>
+                    <div className="w-32 text-right text-sm text-gray-600 dark:text-gray-300">${(a.price || 0).toFixed(2)}</div>
                   </div>
                 );
               })}
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="font-semibold mb-4">Status Distribution</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <h3 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">Status Distribution</h3>
             <div className="flex items-center gap-4">
               <svg width="120" height="120" viewBox="0 0 42 42" className="shrink-0">
                 <g transform="translate(21,21)">
@@ -164,9 +166,9 @@ export default function AdminDashboard() {
                   <div key={p.label} className="flex items-center justify-between text-sm mb-2">
                     <div className="flex items-center gap-2">
                       <span style={{ background: p.color }} className="w-3 h-3 rounded-full inline-block" />
-                      <span className="text-gray-700">{p.label}</span>
+                      <span className="text-gray-700 dark:text-gray-300">{p.label}</span>
                     </div>
-                    <div className="text-gray-600">{((p.value / pieTotalAdmin) * 100).toFixed(0)}%</div>
+                    <div className="text-gray-600 dark:text-gray-300">{((p.value / pieTotalAdmin) * 100).toFixed(0)}%</div>
                   </div>
                 ))}
               </div>

@@ -1,50 +1,77 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Modal from '@/components/ui/Modal';
 import type { Artist } from '@/data/SampleArtists';
 
-export default function ArtistEditModal({ artist, onClose, onSave }: { artist: Artist; onClose: () => void; onSave: (a: Artist) => void }) {
-  const [name, setName] = useState(artist.name || '');
-  const [city, setCity] = useState(artist.city || '');
-  const [country, setCountry] = useState(artist.country || '');
-  const [specialization, setSpecialization] = useState(artist.specialization || '');
+type Props = {
+  artist: Artist | null;
+  onClose: () => void;
+  onSave: (a: Artist) => void;
+};
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSave({ ...artist, name, city, country, specialization });
+export default function ArtistEditModal({ artist, onClose, onSave }: Props) {
+  const [name, setName] = useState('');
+  const [bio, setBio] = useState('');
+  const [city, setCity] = useState('');
+  const [country, setCountry] = useState('');
+  const [specialization, setSpecialization] = useState('');
+
+  useEffect(() => {
+    if (artist) {
+      setName(artist.name || '');
+      setBio(artist.bio || '');
+      setCity(artist.city || '');
+      setCountry(artist.country || '');
+      setSpecialization(artist.specialization || '');
+    }
+  }, [artist]);
+
+  if (!artist) return null;
+
+  const submit = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    const updated: Artist = {
+      ...artist,
+      id: artist.id ?? `artist-${Date.now()}`,
+      name: name.trim() || artist.name,
+      bio: bio || artist.bio || '',
+      city: city || artist.city || '',
+      country: country || artist.country || '',
+      specialization: specialization || artist.specialization || '',
+    };
+    onSave(updated);
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <form onSubmit={submit} className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 z-10">
-        <h3 className="text-lg font-semibold mb-4">Edit Artist</h3>
-
-        <div className="grid grid-cols-1 gap-3">
-          <div>
-            <label className="block text-sm text-gray-700">Name</label>
-            <input value={name} onChange={e => setName(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-700">City</label>
-            <input value={city} onChange={e => setCity(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-700">Country</label>
-            <input value={country} onChange={e => setCountry(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-700">Specialization</label>
-            <input value={specialization} onChange={e => setSpecialization(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" />
-          </div>
+    <Modal open={!!artist} onClose={onClose} title={`Edit: ${artist?.name}`}>
+      <form onSubmit={submit} className="space-y-4">
+        <div>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-200">Name</label>
+          <input value={name} onChange={e => setName(e.target.value)} className="mt-1 block w-full p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
         </div>
 
-        <div className="mt-4 flex justify-end gap-3">
-          <button type="button" onClick={onClose} className="px-4 py-2 border rounded">Cancel</button>
-          <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded">Save</button>
+        <div className="grid grid-cols-2 gap-2">
+          <input value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="mt-1 block w-full p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+          <input value={country} onChange={e => setCountry(e.target.value)} placeholder="Country" className="mt-1 block w-full p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-200">Specialization</label>
+          <input value={specialization} onChange={e => setSpecialization(e.target.value)} className="mt-1 block w-full p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-200">Bio</label>
+          <textarea value={bio} onChange={e => setBio(e.target.value)} className="mt-1 block w-full p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" rows={4} />
+        </div>
+
+        <div className="flex justify-end gap-2">
+          <button type="button" onClick={onClose} className="px-3 py-1 border rounded bg-white dark:bg-gray-700">Cancel</button>
+          <button type="submit" className="px-3 py-1 bg-emerald-600 text-white rounded">Save</button>
         </div>
       </form>
-    </div>
+    </Modal>
   );
 }

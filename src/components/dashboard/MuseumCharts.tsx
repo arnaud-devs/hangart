@@ -16,11 +16,11 @@ export default function MuseumCharts({ collections }: { collections: any[] }) {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div className="bg-white rounded-lg p-4 shadow-sm">
-        <div className="text-sm text-gray-500 mb-2">Collection Views</div>
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+        <div className="text-sm text-gray-500 dark:text-gray-300 mb-2">Collection Views</div>
         <div style={{ width: '100%', height: 260 }}>
           {barData.length === 0 ? (
-            <div className="text-sm text-gray-500 h-48 flex items-center justify-center">No data</div>
+            <div className="text-sm text-gray-500 dark:text-gray-300 h-48 flex items-center justify-center">No data</div>
           ) : (
             <ResponsiveContainer>
               <BarChart data={barData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
@@ -37,11 +37,11 @@ export default function MuseumCharts({ collections }: { collections: any[] }) {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg p-4 shadow-sm">
-        <div className="text-sm text-gray-500 mb-2">Collection Value Breakdown</div>
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+        <div className="text-sm text-gray-500 dark:text-gray-300 mb-2">Collection Value Breakdown</div>
         <div style={{ width: '100%', height: 260 }}>
           {pieData.length === 0 ? (
-            <div className="text-sm text-gray-500 h-48 flex items-center justify-center">No data</div>
+            <div className="text-sm text-gray-500 dark:text-gray-300 h-48 flex items-center justify-center">No data</div>
           ) : (
             <ResponsiveContainer>
               <PieChart>

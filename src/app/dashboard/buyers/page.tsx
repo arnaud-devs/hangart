@@ -105,39 +105,39 @@ export default function Page() {
   return (
     <div className="p-6">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4">Buyers</h2>
-        <p className="text-sm text-gray-500 mb-4">Manage buyers and their purchases.</p>
+        <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Buyers</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-300 mb-4">Manage buyers and their purchases.</p>
         <div className="flex justify-end mb-4">
-          <button onClick={() => setShowAddBuyer(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded">Add Buyer</button>
+          <button onClick={() => setShowAddBuyer(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">Add Buyer</button>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Buyer</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Spent</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Last Purchase</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Buyer</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Email</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Total Spent</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Last Purchase</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-100">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
                 {buyers.map(b => (
-                  <tr key={b.name} className="hover:bg-gray-50">
+                  <tr key={b.name} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-4 py-3">
-                      <div className="font-medium">{b.name}</div>
-                      <div className="text-xs text-gray-500">{b.purchases.length} purchases</div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100">{b.name}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-300">{b.purchases.length} purchases</div>
                     </td>
-                    <td className="px-4 py-3">{b.email || '-'}</td>
-                    <td className="px-4 py-3">${b.total.toFixed(2)}</td>
-                    <td className="px-4 py-3">{b.lastPurchase ? new Date(b.lastPurchase).toLocaleDateString() : '-'}</td>
+                    <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{b.email || '-'}</td>
+                    <td className="px-4 py-3 text-gray-900 dark:text-gray-100">${b.total.toFixed(2)}</td>
+                    <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{b.lastPurchase ? new Date(b.lastPurchase).toLocaleDateString() : '-'}</td>
                     <td className="px-4 py-3 text-right">
                       <div className="inline-flex items-center gap-2">
-                        <button onClick={() => setViewBuyer(b)} className="px-3 py-1 border rounded text-sm">View</button>
-                        <button onClick={() => setEditBuyer(b)} className="px-3 py-1 border rounded text-sm">Edit</button>
-                        <button onClick={() => deleteBuyer(b.name)} className="px-3 py-1 text-red-600 border rounded text-sm">Delete</button>
+                        <button onClick={() => setViewBuyer(b)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">View</button>
+                        <button onClick={() => setEditBuyer(b)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">Edit</button>
+                        <button onClick={() => deleteBuyer(b.name)} className="px-3 py-1 text-red-600 dark:text-red-400 border rounded text-sm bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">Delete</button>
                       </div>
                     </td>
                   </tr>

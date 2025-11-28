@@ -43,21 +43,21 @@ export default function MuseumDashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
-            <div className="bg-white rounded-lg p-4 shadow-sm">
-              <div className="text-sm text-gray-500">Total Collection</div>
-              <div className="text-2xl font-semibold mt-1">{totalCollection}</div>
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+              <div className="text-sm text-gray-500 dark:text-gray-300">Total Collection</div>
+              <div className="text-2xl font-semibold mt-1 text-gray-900 dark:text-gray-100">{totalCollection}</div>
             </div>
           </div>
           <div>
-            <div className="bg-white rounded-lg p-4 shadow-sm">
-              <div className="text-sm text-gray-500">Total Viewers</div>
-              <div className="text-2xl font-semibold mt-1">{totalViewers}</div>
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+              <div className="text-sm text-gray-500 dark:text-gray-300">Total Viewers</div>
+              <div className="text-2xl font-semibold mt-1 text-gray-900 dark:text-gray-100">{totalViewers}</div>
             </div>
           </div>
           <div>
-            <div className="bg-white rounded-lg p-4 shadow-sm">
-              <div className="text-sm text-gray-500">Total Revenues</div>
-              <div className="text-2xl font-semibold mt-1">${totalRevenue.toFixed(2)}</div>
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+              <div className="text-sm text-gray-500 dark:text-gray-300">Total Revenues</div>
+              <div className="text-2xl font-semibold mt-1 text-gray-900 dark:text-gray-100">${totalRevenue.toFixed(2)}</div>
             </div>
           </div>
         </div>

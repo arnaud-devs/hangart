@@ -1,7 +1,9 @@
+
 "use client";
 
 import React, { useEffect, useState } from 'react';
 import sampleCollections, { type CollectionItem } from '@/data/sampleMuseumCollections';
+import Modal from '@/components/ui/Modal';
 import sampleArtworks from '@/lib/sampleArtworks';
 
 const STORAGE_KEY = 'museumCollections';
@@ -74,56 +76,56 @@ export default function Page() {
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold">Collections</h1>
-            <p className="text-sm text-gray-500">Manage your museum collections and their artworks.</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Collections</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-300">Manage your museum collections and their artworks.</p>
           </div>
           <div>
             <button onClick={() => { setEditing(null); setShowForm(true); }} className="px-4 py-2 bg-emerald-600 text-white rounded">Add Collection</button>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-x-auto">
           <table className="min-w-full table-auto">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Artworks</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Value</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Views</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Title</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Description</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Artworks</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Total Value</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Views</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Created</th>
+                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody className="divide-y bg-white dark:bg-gray-800 dark:divide-gray-700">
               {collections.map(c => (
-                <tr key={c.id} className="hover:bg-gray-50">
+                <tr key={c.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                   <td className="px-4 py-3 align-top">
-                    <div className="font-semibold">{c.title}</div>
-                    <div className="text-xs text-gray-400">{(c.artworks||[]).length} items</div>
+                    <div className="font-semibold text-gray-900 dark:text-gray-100">{c.title}</div>
+                    <div className="text-xs text-gray-400 dark:text-gray-300">{(c.artworks||[]).length} items</div>
                   </td>
-                  <td className="px-4 py-3 align-top text-sm text-gray-600">{c.description || <span className="text-gray-300">—</span>}</td>
+                  <td className="px-4 py-3 align-top text-sm text-gray-600 dark:text-gray-300">{c.description || <span className="text-gray-300 dark:text-gray-500">—</span>}</td>
                   <td className="px-4 py-3 align-top">
                     <div className="flex items-center gap-2">
                       {(c.artworks||[]).slice(0,4).map(aid => {
                         const art = sampleArtworks.find(s => String(s.id) === String(aid));
                         return art ? (
-                          <div key={aid} className="w-10 h-10 bg-gray-100 rounded overflow-hidden">
+                          <div key={aid} className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded overflow-hidden">
                             <img src={art.image} alt={art.title} className="w-full h-full object-cover" />
                           </div>
                         ) : null
                       })}
-                      {(c.artworks||[]).length > 4 ? <div className="text-xs text-gray-500">+{(c.artworks||[]).length - 4}</div> : null}
+                      {(c.artworks||[]).length > 4 ? <div className="text-xs text-gray-500 dark:text-gray-300">+{(c.artworks||[]).length - 4}</div> : null}
                     </div>
                   </td>
-                  <td className="px-4 py-3 align-top text-sm">${((c.totalValue)||0).toFixed(2)}</td>
-                  <td className="px-4 py-3 align-top text-sm">{c.views || 0}</td>
-                  <td className="px-4 py-3 align-top text-sm text-gray-500">{c.createdAt ? new Date(c.createdAt).toLocaleDateString() : '-'}</td>
+                  <td className="px-4 py-3 align-top text-sm text-gray-900 dark:text-gray-100">${((c.totalValue)||0).toFixed(2)}</td>
+                  <td className="px-4 py-3 align-top text-sm text-gray-900 dark:text-gray-100">{c.views || 0}</td>
+                  <td className="px-4 py-3 align-top text-sm text-gray-500 dark:text-gray-300">{c.createdAt ? new Date(c.createdAt).toLocaleDateString() : '-'}</td>
                   <td className="px-4 py-3 align-top text-right">
                     <div className="inline-flex items-center gap-2">
-                      <button onClick={() => setViewCollection(c)} className="px-3 py-1 border rounded text-sm">View</button>
-                      <button onClick={() => { setEditing(c); setShowForm(true); }} className="px-3 py-1 border rounded text-sm">Edit</button>
-                      <button onClick={() => remove(c.id)} className="px-3 py-1 text-red-600 border rounded text-sm">Delete</button>
+                      <button onClick={() => setViewCollection(c)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700">View</button>
+                      <button onClick={() => { setEditing(c); setShowForm(true); }} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700">Edit</button>
+                      <button onClick={() => remove(c.id)} className="px-3 py-1 text-red-600 border rounded text-sm bg-white dark:bg-gray-700">Delete</button>
                     </div>
                   </td>
                 </tr>
@@ -133,24 +135,21 @@ export default function Page() {
         </div>
 
         {showForm && (
-          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
-              <h3 className="text-lg font-semibold mb-4">{editing ? 'Edit Collection' : 'New Collection'}</h3>
-              <CollectionForm initial={editing || undefined} onCancel={() => setShowForm(false)} onSave={(p)=>{ save(p); setShowForm(false); }} />
-            </div>
-          </div>
+          <Modal open={showForm} onClose={() => setShowForm(false)} title={editing ? 'Edit Collection' : 'New Collection'}>
+            <CollectionForm initial={editing || undefined} onCancel={() => setShowForm(false)} onSave={(p) => { save(p); setShowForm(false); }} />
+          </Modal>
         )}
 
         {viewCollection && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-3xl">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold">{viewCollection.title}</h3>
-                  <div className="text-sm text-gray-500">{viewCollection.description}</div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{viewCollection.title}</h3>
+                  <div className="text-sm text-gray-500 dark:text-gray-300">{viewCollection.description}</div>
                 </div>
                 <div>
-                  <button onClick={() => setViewCollection(null)} className="px-3 py-1 border rounded">Close</button>
+                  <button onClick={() => setViewCollection(null)} className="px-3 py-1 border rounded bg-white dark:bg-gray-700">Close</button>
                 </div>
               </div>
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -158,12 +157,12 @@ export default function Page() {
                   const art = sampleArtworks.find(s => String(s.id) === String(aid));
                   if (!art) return null;
                   return (
-                    <div key={aid} className="flex items-center gap-3 p-2 border rounded">
-                      <div className="w-16 h-16 bg-gray-100 overflow-hidden rounded"><img src={art.image} alt={art.title} className="w-full h-full object-cover" /></div>
+                    <div key={aid} className="flex items-center gap-3 p-2 border rounded bg-white dark:bg-gray-700">
+                      <div className="w-16 h-16 bg-gray-100 dark:bg-gray-600 overflow-hidden rounded"><img src={art.image} alt={art.title} className="w-full h-full object-cover" /></div>
                       <div>
-                        <div className="font-medium">{art.title}</div>
-                        <div className="text-xs text-gray-500">{art.artistName}</div>
-                        <div className="text-xs text-gray-600 mt-1">{art.currency ?? '$'}{art.price}</div>
+                        <div className="font-medium text-gray-900 dark:text-gray-100">{art.title}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-300">{art.artistName}</div>
+                        <div className="text-xs text-gray-600 dark:text-gray-200 mt-1">{art.currency ?? '$'}{art.price}</div>
                       </div>
                     </div>
                   )

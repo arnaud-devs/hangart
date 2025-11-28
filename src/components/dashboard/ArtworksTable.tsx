@@ -44,8 +44,8 @@ export default function ArtworksTable({ artworks, onUpdate, onDelete }: Props) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-100">
-            {artworks.map((a) => (
-              <tr key={a.id} className="hover:bg-gray-50">
+            {artworks.map((a, idx) => (
+              <tr key={`${a.id}-${a.createdAt || idx}`} className="hover:bg-gray-50">
                 <td className="px-4 py-3 flex items-center gap-3">
                   <img src={a.image} alt={a.title} className="w-16 h-12 object-cover rounded" />
                   <div>

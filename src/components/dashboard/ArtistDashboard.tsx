@@ -50,54 +50,54 @@ export default function ArtistDashboard() {
     <div className="p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold">Analytics</h1>
-          <p className="text-sm text-gray-500">Overview of your artworks performance and sales.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Analytics</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-300">Overview of your artworks performance and sales.</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl p-4 shadow-sm flex items-center gap-3">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm flex items-center gap-3">
             <div className="p-2 bg-emerald-50 rounded-md">
               <svg className="w-6 h-6 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h18M3 12h18M3 17h18" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
             <div>
-              <div className="text-sm text-gray-500">Artworks</div>
-              <div className="text-2xl font-semibold">{total}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-300">Artworks</div>
+              <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{total}</div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 shadow-sm flex items-center gap-3">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm flex items-center gap-3">
             <div className="p-2 bg-emerald-50 rounded-md">
               <svg className="w-6 h-6 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 12l2 2 4-4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
             <div>
-              <div className="text-sm text-gray-500">Approved</div>
+              <div className="text-sm text-gray-500 dark:text-gray-300">Approved</div>
               <div className="text-2xl font-semibold text-emerald-600">{approved}</div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 shadow-sm flex items-center gap-3">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm flex items-center gap-3">
             <div className="p-2 bg-yellow-50 rounded-md">
               <svg className="w-6 h-6 text-yellow-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 8v4l3 3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
             <div>
-              <div className="text-sm text-gray-500">Pending</div>
+              <div className="text-sm text-gray-500 dark:text-gray-300">Pending</div>
               <div className="text-2xl font-semibold text-yellow-600">{pending}</div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 shadow-sm flex items-center gap-3">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm flex items-center gap-3">
             <div className="p-2 bg-indigo-50 rounded-md">
               <svg className="w-6 h-6 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1v22" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
             <div>
-              <div className="text-sm text-gray-500">Income</div>
-              <div className="text-2xl font-semibold">${income.toFixed(2)}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-300">Income</div>
+              <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">${income.toFixed(2)}</div>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white rounded-lg shadow-sm p-6">
+          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
             <h3 className="font-semibold mb-4">Views by Artwork</h3>
             {topByViews.length === 0 ? (
               <div className="text-sm text-gray-500">No artworks to show.</div>
@@ -109,10 +109,10 @@ export default function ArtistDashboard() {
                   return (
                     <div key={a.id} className="flex items-center gap-4">
                       <div className="w-40 text-sm font-medium">{a.title}</div>
-                      <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
-                        <div style={{ width: `${width}%` }} className="h-3 bg-emerald-500" />
+                      <div className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
+                        <div style={{ width: `${width}%` }} className="h-3 bg-emerald-500 dark:bg-emerald-400" />
                       </div>
-                      <div className="w-16 text-right text-sm text-gray-600">{a.views}</div>
+                      <div className="w-16 text-right text-sm text-gray-600 dark:text-gray-200">{a.views}</div>
                     </div>
                   );
                 })}
@@ -120,12 +120,13 @@ export default function ArtistDashboard() {
             )}
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
             <h3 className="font-semibold mb-4">Status Distribution</h3>
 
             <div className="flex items-center gap-4">
               {/* Pie chart using SVG circle segments via stroke-dasharray */}
-              <svg width="120" height="120" viewBox="0 0 42 42" className="shrink-0">
+              <svg width="120" height="120" viewBox="0 0 42 42" className="shrink-0" role="img" aria-label="Status distribution">
+                <title>Status distribution</title>
                 <defs>
                   <linearGradient id="g1" x1="0%" x2="100%">
                     <stop offset="0%" stopColor="#60A5FA" />
@@ -166,9 +167,9 @@ export default function ArtistDashboard() {
                   <div key={p.label} className="flex items-center justify-between text-sm mb-2">
                     <div className="flex items-center gap-2">
                       <span style={{ background: p.color }} className="w-3 h-3 rounded-full inline-block" />
-                      <span className="text-gray-700">{p.label}</span>
+                      <span className="text-gray-700 dark:text-gray-200">{p.label}</span>
                     </div>
-                    <div className="text-gray-600">{((p.value / pieTotal) * 100).toFixed(0)}%</div>
+                    <div className="text-gray-600 dark:text-gray-300">{((p.value / pieTotal) * 100).toFixed(0)}%</div>
                   </div>
                 ))}
               </div>
@@ -177,27 +178,27 @@ export default function ArtistDashboard() {
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 flex items-center gap-3">
             <div className="p-2 bg-gray-50 rounded-md">
               <svg className="w-6 h-6 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 17h5l-1.405-1.405" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
             <div>
               <div className="text-sm text-gray-500">Total Views</div>
-              <div className="text-xl font-semibold">{views}</div>
+              <div className="text-xl font-semibold text-gray-900 dark:text-gray-100">{views}</div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 flex items-center gap-3">
             <div className="p-2 bg-emerald-50 rounded-md">
               <svg className="w-6 h-6 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h18" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
             <div>
               <div className="text-sm text-gray-500">Transactions</div>
-              <div className="text-xl font-semibold">{txs.length}</div>
+              <div className="text-xl font-semibold text-gray-900 dark:text-gray-100">{txs.length}</div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
             <div className="grid grid-cols-1 gap-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -205,11 +206,11 @@ export default function ArtistDashboard() {
                     <svg className="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 12l2 2 4-4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Completed</div>
-                    <div className="text-lg font-semibold">{txCompleted}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-300">Completed</div>
+                    <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">{txCompleted}</div>
                   </div>
                 </div>
-                <div className="text-sm text-gray-500">{((txCompleted / (txs.length || 1)) * 100).toFixed(0)}%</div>
+                <div className="text-sm text-gray-500 dark:text-gray-300">{((txCompleted / (txs.length || 1)) * 100).toFixed(0)}%</div>
               </div>
 
               <div className="flex items-center justify-between">
@@ -218,11 +219,11 @@ export default function ArtistDashboard() {
                     <svg className="w-5 h-5 text-yellow-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 8v4l3 3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Pending</div>
-                    <div className="text-lg font-semibold">{txPending}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-300">Pending</div>
+                    <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">{txPending}</div>
                   </div>
                 </div>
-                <div className="text-sm text-gray-500">{((txPending / (txs.length || 1)) * 100).toFixed(0)}%</div>
+                <div className="text-sm text-gray-500 dark:text-gray-300">{((txPending / (txs.length || 1)) * 100).toFixed(0)}%</div>
               </div>
 
               <div className="flex items-center justify-between">
@@ -231,11 +232,11 @@ export default function ArtistDashboard() {
                     <svg className="w-5 h-5 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2l1.5 4.5L18 8l-4 2.5L14.5 17 12 13.5 9.5 17 10 10.5 6 8l4.5-1.5L12 2z" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Refunded</div>
-                    <div className="text-lg font-semibold">{txRefunded}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-300">Refunded</div>
+                    <div className="text-lg font-semibold text-gray-900 dark:text-gray-100">{txRefunded}</div>
                   </div>
                 </div>
-                <div className="text-sm text-gray-500">{((txRefunded / (txs.length || 1)) * 100).toFixed(0)}%</div>
+                <div className="text-sm text-gray-500 dark:text-gray-300">{((txRefunded / (txs.length || 1)) * 100).toFixed(0)}%</div>
               </div>
             </div>
           </div>

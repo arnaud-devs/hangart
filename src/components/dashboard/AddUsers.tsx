@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import api from '@/lib/api';
+import Modal from '@/components/ui/Modal';
 
 interface AddUserFormProps {
   onClose: () => void;
@@ -45,20 +46,8 @@ export const AddUserForm = ({ onClose, onUserAdded }: AddUserFormProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-600/70 bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center sticky top-0 bg-white border-b p-4 z-10">
-          <h2 className="text-xl font-semibold text-gray-800">Add New User</h2>
-          <button 
-            onClick={onClose} 
-            className="text-gray-500 hover:text-gray-700 focus:outline-none"
-            disabled={isSubmitting}
-          >
-            ✕
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 w-full">
+    <Modal open={true} onClose={onClose} title="Add New User">
+      <form onSubmit={handleSubmit} className="p-6 space-y-4 w-full">
           {error && (
             <div className="p-3 bg-red-100 text-red-700 rounded-md">
               {error}
@@ -173,11 +162,11 @@ export const AddUserForm = ({ onClose, onUserAdded }: AddUserFormProps) => {
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 sticky bottom-0 bg-white pb-4">
+          <div className="flex justify-end gap-3 pt-4 sticky bottom-0 bg-white dark:bg-gray-800 pb-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
               disabled={isSubmitting}
             >
               Cancel
@@ -191,7 +180,6 @@ export const AddUserForm = ({ onClose, onUserAdded }: AddUserFormProps) => {
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </Modal>
   );
 };

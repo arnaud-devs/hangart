@@ -89,11 +89,11 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className="bg-white p-8 rounded-lg shadow-md">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-semibold mb-4">Sign in</h1>
 
-          {error && <div className="mb-4 text-sm text-red-700">{error}</div>}
-          {success && <div className="mb-4 text-sm text-green-700">{success}</div>}
+          {error && <div className="mb-4 text-sm text-red-700 dark:text-red-400">{error}</div>}
+          {success && <div className="mb-4 text-sm text-green-700 dark:text-green-400">{success}</div>}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
@@ -114,18 +114,18 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6">
-            <div className="text-sm text-gray-600 mb-2">Quick demo logins</div>
+            <div className="text-sm text-gray-600 dark:text-gray-300 mb-2">Quick demo logins</div>
             <div className="flex flex-wrap gap-2">
               {DEMO_USERS.map(u => (
-                <button key={u.id} onClick={() => demoLogin(u)} className="px-3 py-2 border rounded text-sm hover:bg-gray-50">{u.label}</button>
+                <button key={u.id} onClick={() => demoLogin(u)} className="px-3 py-2 border rounded text-sm hover:bg-gray-50 dark:hover:bg-gray-700">{u.label}</button>
               ))}
             </div>
           </div>
 
-          <p className="mt-4 text-sm text-gray-600">
+          <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
             Demo credentials are available; pick a role to preview the dashboard.
           </p>
-          <p className="mt-2 text-sm text-gray-600 text-center">
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 text-center">
             Don't have an account?{' '}
             <Link href="/signup" className="text-emerald-600 hover:underline">
               Sign up

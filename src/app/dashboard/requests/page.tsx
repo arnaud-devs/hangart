@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -48,29 +49,29 @@ export default function Page() {
     <div className="p-6">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold">Requests</h1>
-          <p className="text-sm text-gray-500">Loan & acquisition requests from external organisations.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Requests</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-300">Loan & acquisition requests from external organisations.</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
           <div className="divide-y">
             {requests.map(r => (
               <div key={r.id} className="p-4 flex items-start justify-between">
                 <div>
-                  <div className="font-semibold">{r.artworkTitle || r.artworkId}</div>
-                  <div className="text-xs text-gray-500">From: {r.requesterName} {r.requesterOrg ? `• ${r.requesterOrg}` : ''}</div>
-                  <div className="text-sm text-gray-700 mt-2">{r.message}</div>
-                  <div className="text-xs text-gray-400 mt-1">{r.createdAt ? new Date(r.createdAt).toLocaleString() : ''}</div>
+                  <div className="font-semibold text-gray-900 dark:text-gray-100">{r.artworkTitle || r.artworkId}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-300">From: {r.requesterName} {r.requesterOrg ? `• ${r.requesterOrg}` : ''}</div>
+                  <div className="text-sm text-gray-700 dark:text-gray-300 mt-2">{r.message}</div>
+                  <div className="text-xs text-gray-400 dark:text-gray-400 mt-1">{r.createdAt ? new Date(r.createdAt).toLocaleString() : ''}</div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={`px-2 py-1 rounded text-xs ${r.status === 'pending' ? 'bg-yellow-50 text-yellow-700' : r.status === 'approved' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}`}>{r.status}</span>
+                  <span className={`px-2 py-1 rounded text-xs ${r.status === 'pending' ? 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300' : r.status === 'approved' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300' : 'bg-rose-50 text-rose-700 dark:bg-rose-900 dark:text-rose-300'}`}>{r.status}</span>
                   {r.status === 'pending' && (
                     <>
                       <button onClick={() => updateStatus(r.id, 'approved')} className="px-3 py-1 bg-emerald-600 text-white rounded text-sm">Approve</button>
                       <button onClick={() => updateStatus(r.id, 'rejected')} className="px-3 py-1 bg-rose-600 text-white rounded text-sm">Reject</button>
                     </>
                   )}
-                  <button onClick={() => remove(r.id)} className="px-3 py-1 border rounded text-sm">Delete</button>
+                  <button onClick={() => remove(r.id)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700">Delete</button>
                 </div>
               </div>
             ))}

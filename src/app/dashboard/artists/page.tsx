@@ -146,16 +146,17 @@ export default function Page() {
   return (
     <div className="p-6">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4">Artists</h2>
-        <p className="text-sm text-gray-500 mb-4">Manage registered artists.</p>
+        <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Artists</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-300 mb-4">Manage registered artists.</p>
         <div className="flex justify-end mb-4">
-          <button onClick={() => setShowAddArtist(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded">Add Artist</button>
+          <button onClick={() => setShowAddArtist(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">Add Artist</button>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700" aria-label="Artists table">
+              <caption className="sr-only">Artists table showing registered artists, artworks and stats</caption>
+              <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Artist</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
@@ -165,36 +166,36 @@ export default function Page() {
                     <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-100">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
                 {artists.map(a => (
-                  <tr key={a.id} className="hover:bg-gray-50">
+                  <tr key={a.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="px-4 py-3">
-                          <div className="font-medium">{a.name}</div>
-                          <div className="text-xs text-gray-500">{a.specialization || ''}</div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100">{a.name}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-300">{a.specialization || ''}</div>
                         </td>
-                        <td className="px-4 py-3">{a.city}, {a.country}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600">
+                        <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{a.city}, {a.country}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
                           {(() => {
                             const s = artistStats.get(a.id);
                             return s ? s.count : 0;
                           })()}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{(() => {
+                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">{(() => {
                           const s = artistStats.get(a.id);
                           return s ? `$${s.total.toFixed(2)}` : '$0.00';
                         })()}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{(() => {
+                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">{(() => {
                           const s = artistStats.get(a.id);
                           return s ? s.sold : 0;
                         })()}</td>
                         <td className="px-4 py-3 text-right">
                           <div className="inline-flex items-center gap-2">
-                            <button onClick={() => setViewArtist(a)} className="px-3 py-1 border rounded text-sm">View</button>
-                            <button onClick={() => setEditArtist(a)} className="px-3 py-1 border rounded text-sm">Edit</button>
-                            <button onClick={() => toggleVerified(a.id)} className={`px-3 py-1 rounded text-sm ${a.verifiedByAdmin ? 'bg-emerald-600 text-white' : 'bg-gray-50 text-gray-700 border'}`}>
+                            <button onClick={() => setViewArtist(a)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">View</button>
+                            <button onClick={() => setEditArtist(a)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">Edit</button>
+                            <button onClick={() => toggleVerified(a.id)} className={`px-3 py-1 rounded text-sm ${a.verifiedByAdmin ? 'bg-emerald-600 text-white' : 'bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 border'}`}>
                               {a.verifiedByAdmin ? 'Verified' : 'Verify'}
                             </button>
-                            <button onClick={() => deleteArtist(a.id)} className="px-3 py-1 text-red-600 border rounded text-sm">Delete</button>
+                            <button onClick={() => deleteArtist(a.id)} className="px-3 py-1 text-red-600 dark:text-red-400 border rounded text-sm bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">Delete</button>
                           </div>
                         </td>
                       </tr>

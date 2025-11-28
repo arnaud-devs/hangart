@@ -88,42 +88,42 @@ export default function Page() {
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold">Manage Museums</h1>
-            <p className="text-sm text-gray-500">Create, edit and remove museums.</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Manage Museums</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-300">Create, edit and remove museums.</p>
           </div>
           <div>
-            <button onClick={() => { setEditing(null); setShowAdd(true); }} className="px-4 py-2 bg-emerald-600 text-white rounded">Add Museum</button>
+            <button onClick={() => { setEditing(null); setShowAdd(true); }} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded">Add Museum</button>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Artworks</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Name</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Location</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Total Artworks</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Status</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-100">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
                 {museums.map(m => (
-                  <tr key={m.id} className="hover:bg-gray-50">
+                  <tr key={m.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-4 py-3">
-                      <div className="font-medium">{m.name}</div>
-                      <div className="text-xs text-gray-500">{m.website}</div>
+                      <div className="font-medium text-gray-900 dark:text-gray-100">{m.name}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-300">{m.website}</div>
                     </td>
-                    <td className="px-4 py-3">{m.city}, {m.country}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{(museumArts.filter((a:any) => a.museumName === m.name) || []).length}</td>
+                    <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{m.city}, {m.country}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">{(museumArts.filter((a:any) => a.museumName === m.name) || []).length}</td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs ${m.status === 'active' ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-50 text-gray-700'}`}>{m.status}</span>
+                      <span className={`px-2 py-1 rounded-full text-xs ${m.status === 'active' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300' : 'bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}>{m.status}</span>
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="inline-flex items-center gap-2">
-                        <button onClick={() => { setEditing(m); setShowAdd(true); }} className="px-3 py-1 border rounded text-sm">Edit</button>
-                        <button onClick={() => remove(m.id)} className="px-3 py-1 text-red-600 border rounded text-sm">Delete</button>
+                        <button onClick={() => { setEditing(m); setShowAdd(true); }} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">Edit</button>
+                        <button onClick={() => remove(m.id)} className="px-3 py-1 text-red-600 dark:text-red-400 border rounded text-sm bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">Delete</button>
                       </div>
                     </td>
                   </tr>

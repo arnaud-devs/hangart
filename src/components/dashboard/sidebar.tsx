@@ -118,6 +118,16 @@ export const Sidebar = ({
     };
   }, [pathname]);
 
+  // Close sidebar on route change (mobile) and on Escape key
+  useEffect(() => {
+    if (pathname) setIsOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [pathname, setIsOpen]);
+
   const getSidebarItems = () => {
     const roleKey = user?.role ? user.role.toUpperCase() : "ADMIN";
     return sidebarItemsByRole[roleKey] || sidebarItemsByRole["ADMIN"];
@@ -152,17 +162,18 @@ export const Sidebar = ({
               setIsOpen(false);
             }
           }}
+          aria-current={active ? 'page' : undefined}
           className={`group flex items-center w-full px-4 py-3.5 text-sm font-medium rounded-xl transition-all duration-200 relative ${
             active
-              ? 'bg-gradient-to-r from-emerald-50 to-emerald-100/80 text-emerald-700 shadow-sm border border-emerald-200/50'
-              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:scale-[1.02]'
+              ? 'bg-gradient-to-r from-emerald-50 to-emerald-100/80 text-emerald-700 shadow-sm border border-emerald-200/50 dark:from-emerald-700 dark:to-emerald-800 dark:text-emerald-200'
+              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:scale-[1.02] dark:hover:bg-gray-700 dark:hover:text-gray-100'
           }`}
           style={{ paddingLeft: `${depth * 16 + 16}px` }}
         >
           <Icon className={`w-5 h-5 mr-4 transition-all duration-200 ${
             active 
-              ? 'text-emerald-600' 
-              : 'text-gray-400 group-hover:text-gray-600'
+              ? 'text-emerald-600 dark:text-emerald-300' 
+              : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-200'
           }`} />
           <span className="font-semibold">{item.label}</span>
           
@@ -199,17 +210,18 @@ export const Sidebar = ({
         <div 
           className="fixed inset-0 bg-black/30 backdrop-blur-sm transition-all duration-300 lg:hidden z-40"
           onClick={() => setIsOpen(false)}
+          aria-hidden
         />
       )}
       
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-2xl transform transition-all duration-300 ease-out border-r border-gray-100 flex flex-col h-screen lg:h-screen lg:top-0 lg:left-0 lg:translate-x-0 ${
+      <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-gray-800 shadow-2xl transform transition-all duration-300 ease-out border-r border-gray-100 dark:border-gray-700 flex flex-col h-screen lg:h-screen lg:top-0 lg:left-0 lg:translate-x-0 ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
+      }`} role="navigation" aria-label="Main sidebar">
         
         {/* Fixed Header */}
         <div className="flex-shrink-0">
-          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-teal-50">
+          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-700 dark:to-teal-700">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
                 <Image className="w-6 h-6 text-white" />
@@ -218,33 +230,33 @@ export const Sidebar = ({
                 <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                   Hangart
                 </span>
-                <p className="text-xs text-gray-500 -mt-0.5">Online Art Gallery</p>
+                <p className="text-xs text-gray-500 dark:text-white -mt-0.5">Online Art Gallery</p>
               </div>
             </div>
             <button 
               onClick={() => setIsOpen(false)}
-              className="lg:hidden p-2 rounded-xl hover:bg-white/50 transition-colors group"
+              className="lg:hidden p-2 rounded-xl hover:bg-white/50 dark:hover:bg-gray-700 transition-colors group"
             >
-              <X className="w-5 h-5 text-gray-500 group-hover:text-gray-700" />
+              <X className="w-5 h-5 text-gray-500 dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-gray-100" />
             </button>
           </div>
         </div>
         
         {/* Scrollable Navigation */}
-        <div className="flex-1 overflow-y-auto">
-          <nav className="px-4 py-6 space-y-2">
+          <div className="flex-1 overflow-y-auto">
+          <nav className="px-4 py-6 space-y-2" aria-label="Sidebar links">
             {getSidebarItems().map((item: SidebarItem, index: number) => renderSidebarItem(item, index))}
           </nav>
         </div>
 
         {/* Fixed Footer */}
-        <div className="px-4 py-4 border-t border-gray-100">
+        <div className="px-4 py-4 border-t border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img src={user?.profileImage || '/person-m-3.webp'} alt="avatar" className="w-10 h-10 rounded-full object-cover" />
               <div>
-                <div className="text-sm font-semibold">{user?.firstName} {user?.lastName}</div>
-                <div className="text-xs text-gray-500">{user?.role}</div>
+                <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">{user?.firstName} {user?.lastName}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-300">{user?.role}</div>
               </div>
             </div>
 
@@ -252,24 +264,25 @@ export const Sidebar = ({
               <button
                 onClick={() => { setShowUserMenu(prev => !prev); }}
                 aria-label="Open user menu"
-                className="p-2 rounded-lg hover:bg-gray-50"
+                className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+                title="User menu"
               >
-                <User className="w-4 h-4 text-gray-600" />
+                <User className="w-4 h-4 text-gray-600 dark:text-gray-300" />
               </button>
               <button
                 onClick={() => onLogout()}
                 aria-label="Logout"
-                className="p-2 rounded-lg hover:bg-gray-50"
+                className="p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                <LogOut className="w-4 h-4 text-gray-600" />
+                <LogOut className="w-4 h-4 text-gray-600 dark:text-gray-300" />
               </button>
             </div>
           </div>
 
           {showUserMenu && (
-            <div className="mt-3 bg-white border border-gray-100 rounded-lg p-3 shadow-sm">
-              <button onClick={() => { onProfileClick(); setShowUserMenu(false); setIsOpen(false); }} className="w-full text-left px-3 py-2 rounded hover:bg-gray-50">Profile</button>
-              <button onClick={() => { onLogout(); setShowUserMenu(false); setIsOpen(false); }} className="w-full text-left px-3 py-2 rounded hover:bg-gray-50">Logout</button>
+            <div className="mt-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg p-3 shadow-sm">
+              <button onClick={() => { onProfileClick(); setShowUserMenu(false); setIsOpen(false); }} className="w-full text-left px-3 py-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700">Profile</button>
+              <button onClick={() => { onLogout(); setShowUserMenu(false); setIsOpen(false); }} className="w-full text-left px-3 py-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700">Logout</button>
             </div>
           )}
         </div>

@@ -83,7 +83,7 @@ export default async function Home() {
             artworks={sampleArtworks.map((a) => ({
               id: a.id,
               title: a.title,
-              imageUrl: (a as any).image || (a as any).imageUrl || "/placeholder-art.png",
+              image: a.image,
               artistName: (a as any).artist || (a as any).artistName,
               price: (a as any).price,
               currency: (a as any).currency,

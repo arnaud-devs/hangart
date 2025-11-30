@@ -7,9 +7,10 @@ import { Label } from '@/components/ui/Label'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
+import { getMe } from '@/lib/authClient'
 
 type FormValues = {
-  email: string
+  identifier: string // username or email
   password: string
 }
 
@@ -31,10 +32,12 @@ export default function LoginPage() {
     setError(null)
     setSuccess(null)
     try {
+      // Backend expects username. We pass identifier as username; cookies are set server-side.
+      const payload = { username: data.identifier, password: data.password }
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       })
 
       const json = await res.json().catch(() => ({}))
@@ -44,12 +47,27 @@ export default function LoginPage() {
         return
       }
 
-      // If API returns user, persist it; otherwise keep token-only demo behavior
-      if (json.user) {
-        try { localStorage.setItem('user', JSON.stringify(json.user)) } catch {}
-      }
+      // Optionally persist non-sensitive bits in localStorage; tokens are in httpOnly cookies
+      try { localStorage.setItem('auth_ok', 'true') } catch {}
+      // Fetch user to determine role-based redirect
+      let rolePath = '/dashboard';
+      try {
+        const me = await getMe();
+        const role = (me?.role || '').toLowerCase();
+        // Persist a minimal user snapshot for client features
+        try { localStorage.setItem('user', JSON.stringify(me)) } catch {}
+        if (role === 'artist') {
+          rolePath = '/dashboard/artworks';
+        } else if (role === 'buyer') {
+          rolePath = '/dashboard/wishlist';
+        } else if (role === 'museum') {
+          rolePath = '/dashboard/museum';
+        } else if (role === 'admin') {
+          rolePath = '/dashboard/approvals';
+        }
+      } catch {}
       setSuccess('Logged in')
-      router.push('/dashboard')
+      router.push(rolePath)
     } catch (e: any) {
       setError(String(e?.message ?? e))
     }
@@ -97,9 +115,9 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" {...register('email', { required: 'Email is required' })} />
-              {errors.email && <p className="text-sm text-red-600">{String(errors.email.message)}</p>}
+              <Label htmlFor="identifier">Username or Email</Label>
+              <Input id="identifier" type="text" placeholder="e.g. amina or amina@example.com" {...register('identifier', { required: 'Username or email is required' })} />
+              {errors.identifier && <p className="text-sm text-red-600">{String(errors.identifier.message)}</p>}
             </div>
 
             <div>

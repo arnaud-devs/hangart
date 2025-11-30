@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import { getPublicArtistProfile } from '@/lib/authClient'
 import Link from 'next/link'
@@ -8,26 +8,44 @@ import Link from 'next/link'
 export default function ArtistPublicPage() {
   const params = useParams() as { id?: string }
   const userId = params?.id || ''
-  const [profile, setProfile] = useState<any>(null)
+  interface ArtistProfile {
+    username?: string
+    profile_photo?: string
+    specialization?: string
+    experience_years?: number
+    country?: string
+    city?: string
+    verified_by_admin?: boolean
+    bio?: string
+    website?: string
+    instagram?: string
+    facebook?: string
+    twitter_x?: string
+    youtube?: string
+    tiktok?: string
+    linkedin?: string
+  }
+  const [profile, setProfile] = useState<ArtistProfile | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
+  const cancelRef = useRef(false)
   useEffect(() => {
-    let mounted = true
-    (async () => {
+    cancelRef.current = false
+    ;(async () => {
       try {
         setLoading(true)
         const data = await getPublicArtistProfile(userId)
-        if (!mounted) return
+        if (cancelRef.current) return
         setProfile(data)
       } catch (e: any) {
-        if (!mounted) return
+        if (cancelRef.current) return
         setError(String(e?.message ?? e))
       } finally {
-        if (mounted) setLoading(false)
+        if (!cancelRef.current) setLoading(false)
       }
     })()
-    return () => { mounted = false }
+    return () => { cancelRef.current = true }
   }, [userId])
 
   return (

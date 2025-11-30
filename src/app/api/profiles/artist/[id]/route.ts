@@ -1,10 +1,11 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 const BASE_URL = 'https://hangart.pythonanywhere.com/api';
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+// Adjusted signature for Next.js 16: context.params may be a Promise per validator typing
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     if (!id) return NextResponse.json({ ok: false, message: 'Missing user_id' }, { status: 400 });
 
     const res = await fetch(`${BASE_URL}/profiles/artist/${encodeURIComponent(id)}/`, {

@@ -7,10 +7,14 @@ import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 
 type FormValues = {
-  name: string
+  username: string
   email: string
   password: string
-  confirmPassword: string
+  password2: string
+  role: 'artist' | 'buyer'
+  first_name?: string
+  last_name?: string
+  phone?: string
 }
 
 export default function SignupPage() {
@@ -25,19 +29,24 @@ export default function SignupPage() {
     setError(null)
     setSuccess(null)
 
-    if (data.password !== data.confirmPassword) {
+    if (data.password !== data.password2) {
       setError('Passwords do not match')
       return
     }
 
     try {
-      const res = await fetch('/api/auth/signup', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: data.name,
+          username: data.username,
           email: data.email,
           password: data.password,
+          password2: data.password2,
+          role: data.role,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          phone: data.phone,
         }),
       })
 
@@ -55,7 +64,7 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#1B1B1F]">
+    <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#1B1B1F] px-4">
       <div className="w-full max-w-md dark:border p-8 rounded shadow bg-gray-50 dark:bg-[#1B1B1F]">
         <h1 className="text-2xl font-semibold mb-4">Create Account</h1>
 
@@ -64,13 +73,13 @@ export default function SignupPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <Label htmlFor="name">Full Name</Label>
+            <Label htmlFor="username">Username</Label>
             <Input 
-              id="name" 
+              id="username" 
               type="text" 
-              {...register('name', { required: 'Name is required' })} 
+              {...register('username', { required: 'Username is required' })} 
             />
-            {errors.name && <p className="text-sm text-red-600">{String(errors.name.message)}</p>}
+            {errors.username && <p className="text-sm text-red-600">{String(errors.username.message)}</p>}
           </div>
 
           <div>
@@ -97,8 +106,8 @@ export default function SignupPage() {
               {...register('password', { 
                 required: 'Password is required',
                 minLength: {
-                  value: 6,
-                  message: 'Password must be at least 6 characters'
+                  value: 8,
+                  message: 'Password must be at least 8 characters'
                 }
               })} 
             />
@@ -106,16 +115,42 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Label htmlFor="password2">Confirm Password</Label>
             <Input 
-              id="confirmPassword" 
+              id="password2" 
               type="password" 
-              {...register('confirmPassword', { 
+              {...register('password2', { 
                 required: 'Please confirm your password',
                 validate: (value) => value === password || 'Passwords do not match'
               })} 
             />
-            {errors.confirmPassword && <p className="text-sm text-red-600">{String(errors.confirmPassword.message)}</p>}
+            {errors.password2 && <p className="text-sm text-red-600">{String(errors.password2.message)}</p>}
+          </div>
+
+          <div>
+            <Label htmlFor="role">Role</Label>
+            <select id="role" className="mt-1 block w-full border rounded px-3 py-2" {...register('role', { required: 'Role is required' })}>
+              <option value="">Select role</option>
+              <option value="artist">Artist</option>
+              <option value="buyer">Buyer</option>
+            </select>
+            {errors.role && <p className="text-sm text-red-600">{String(errors.role.message)}</p>}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <Label htmlFor="first_name">First Name (optional)</Label>
+              <Input id="first_name" type="text" {...register('first_name')} />
+            </div>
+            <div>
+              <Label htmlFor="last_name">Last Name (optional)</Label>
+              <Input id="last_name" type="text" {...register('last_name')} />
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="phone">Phone (optional)</Label>
+            <Input id="phone" type="tel" {...register('phone')} />
           </div>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>

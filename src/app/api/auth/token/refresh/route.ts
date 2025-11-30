@@ -2,17 +2,12 @@ import { NextResponse } from 'next/server'
 
 const BASE_URL = 'https://hangart.pythonanywhere.com/api';
 
-// Proxies login to backend. Accepts JSON { username or email, password }.
+// Proxies token refresh: expects { refresh }
 export async function POST(req: Request) {
   try {
-    const incoming = await req.json();
-    // Backend expects username + password. If client sent email, pass as username for compatibility.
-    const body = {
-      username: incoming.username ?? incoming.email ?? incoming.identifier,
-      password: incoming.password,
-    };
+    const body = await req.json();
 
-    const res = await fetch(`${BASE_URL}/auth/login/`, {
+    const res = await fetch(`${BASE_URL}/auth/token/refresh/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -24,9 +19,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, ...data }, { status: res.status });
     }
 
-    // Expecting { access, refresh } from backend.
     const access = data?.access;
-    const refresh = data?.refresh;
     const response = NextResponse.json({ ok: true, ...data });
     if (access) {
       response.cookies.set('access_token', access, {
@@ -35,15 +28,6 @@ export async function POST(req: Request) {
         sameSite: 'lax',
         path: '/',
         maxAge: 60 * 60, // 1 hour
-      });
-    }
-    if (refresh) {
-      response.cookies.set('refresh_token', refresh, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'lax',
-        path: '/',
-        maxAge: 7 * 24 * 60 * 60, // 7 days
       });
     }
 

@@ -6,28 +6,25 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const page = searchParams.get("page") || "1";
-    const category = searchParams.get("category") || undefined;
-    const medium = searchParams.get("medium") || undefined;
-    const artist = searchParams.get("artist") || undefined;
-    const search = searchParams.get("search") || undefined;
-    const ordering = searchParams.get("ordering") || undefined;
+    const q = searchParams.get("q");
+    const country = searchParams.get("country");
+    const specialization = searchParams.get("specialization");
 
-    const backendUrl = new URL("/api/artworks/", BACKEND_BASE);
+    const backendUrl = new URL("/api/artists/", BACKEND_BASE);
     backendUrl.searchParams.set("page", page);
-    if (category) backendUrl.searchParams.set("category", category);
-    if (medium) backendUrl.searchParams.set("medium", medium);
-    if (artist) backendUrl.searchParams.set("artist", artist);
-    if (search) backendUrl.searchParams.set("search", search);
-    if (ordering) backendUrl.searchParams.set("ordering", ordering);
+    if (q) backendUrl.searchParams.set("q", q);
+    if (country) backendUrl.searchParams.set("country", country);
+    if (specialization) backendUrl.searchParams.set("specialization", specialization);
 
-    // Forward cookies if present to allow role-based visibility (artist/admin)
-    // Public users will just get approved + available by backend logic
+    // Backend should only return verified artists; if a flag exists, ensure it's set
+    backendUrl.searchParams.set("verified", "true");
+
     const res = await fetch(backendUrl.toString(), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        ...(req.headers.get("cookie") ? { cookie: req.headers.get("cookie")! } : {}),
       },
+      // Public endpoint; no credentials/cookies required
     });
 
     const data = await res.json();
@@ -35,7 +32,7 @@ export async function GET(req: NextRequest) {
     if (!res.ok) {
       return new Response(
         JSON.stringify({
-          error: "Failed to fetch artworks",
+          error: "Failed to fetch artists",
           status: res.status,
           details: data,
         }),
@@ -54,4 +51,3 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-// Removed duplicate GET handler that returned sample data to avoid build conflict.

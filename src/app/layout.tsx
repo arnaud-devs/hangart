@@ -137,7 +137,7 @@ const Footer: React.FC = () => (
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
             Subscribe to get updates on new artworks and exclusive offers.
           </p>
-          <form className="flex flex-col sm:flex-row gap-2">
+          <form className="flex flex-col gap-2">
             <input
               suppressHydrationWarning
               type="email"

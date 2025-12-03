@@ -114,18 +114,24 @@ export const adminService = {
   // Get all users (admin only)
   // The backend may not expose `/admin/users/`. Try admin endpoint first, fall back to public endpoints.
   getUsers: async (params?: any) => {
-    // If caller is asking for artists, use the public `/artists/` endpoint (per Swagger)
-    const role = params?.role;
-    if (role === 'artist') {
-      return await appClient.get('/artists/', params);
-    }
-
-    // For other roles, prefer admin endpoint only if current user is admin
+    // Prefer using the public `/artists/` endpoint (backend exposes verified artists)
+    // If caller explicitly requests other roles via `params.role`, we still try to serve
+    // artists by default because backend does not expose `/admin/users/` in this deployment.
     try {
+      // If role explicitly artist, or no role specified, return artists list
+      const role = params?.role;
+      if (!role || role === 'artist') {
+        const res = await appClient.get('/artists/', params);
+        // Backend may return artist profile objects. Return as-is and let UI normalize.
+        return res;
+      }
+
+      // If role requested is not artist, try admin endpoint only if current user is admin
       const current = appClient.getStoredUser && appClient.getStoredUser();
       if (current?.role === 'admin') {
         return await appClient.get('/admin/users/', params);
       }
+
       // Non-admins cannot list users; return empty paginated response
       return { count: 0, next: null, previous: null, results: [] };
     } catch (e: any) {

@@ -32,17 +32,18 @@ export default function AdminDashboard() {
     try {
       setLoading(true);
       // In a real implementation, you'd have a dedicated dashboard endpoint
-      // For now, we'll simulate by fetching multiple endpoints
-      const [artworks, artists, buyers] = await Promise.all([
+      // Fetch artworks and artists. Backend does not expose a buyers listing endpoint.
+      const [artworks, artists] = await Promise.all([
         artworkService.listArtworks(),
         adminService.getUsers({ role: 'artist' }),
-        adminService.getUsers({ role: 'buyer' }),
       ]);
+
+      const buyers: any[] = [];
 
       const dashboardStats: DashboardStats = {
         total_artworks: artworks.count || artworks.length || 0,
         total_artists: artists.count || artists.length || 0,
-        total_buyers: buyers.count || buyers.length || 0,
+        total_buyers: (buyers as any)?.count || (buyers as any)?.length || 0,
         total_orders: 0, // You'd fetch from orders endpoint
         total_revenue: 0, // You'd calculate from orders
         pending_approvals: artworks.results?.filter((a: any) => a.status === 'submitted').length || 0,

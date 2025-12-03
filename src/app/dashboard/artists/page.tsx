@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { adminService } from '@/services/apiServices'; 
+import { adminService, artistService } from '@/services/apiServices'; 
 import VerifyArtistModal from '@/components/dashboard/VerifyArtistModal';
 import { useAuth } from '@/lib/authProvider';
 import ArtistViewModal from '@/components/dashboard/ArtistViewModal';
@@ -48,10 +48,9 @@ export default function ArtistsPage() {
   const loadArtists = async () => {
     try {
       setLoading(true);
-      // For now, we'll use the artists list endpoint
-      // In a real admin panel, you'd have an admin endpoint for all artists
-      const response = await adminService.getUsers({ role: 'artist' });
-      setArtists(response.results || response);
+      // Use the public artists listing exposed by the backend
+      const response = await artistService.listArtists();
+      setArtists(response.results || response || []);
     } catch (err: any) {
       setError(err.message || 'Failed to load artists');
       console.error('Error loading artists:', err);
@@ -175,33 +174,33 @@ export default function ArtistsPage() {
                         <div className="flex-shrink-0 h-10 w-10">
                           <img
                             className="h-10 w-10 rounded-full"
-                            src={artist.profile_photo || '/avatars/default.jpg'}
-                            alt={artist.user.username}
+                            src={(artist as any).profile_photo || '/avatars/default.jpg'}
+                            alt={(artist as any).user?.username || `artist-${artist.id}`}
                           />
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                            {artist.user.first_name} {artist.user.last_name}
+                            {((artist as any).user?.first_name || (artist as any).user?.username || (artist as any).email || `Artist ${artist.id}`)}
                           </div>
                           <div className="text-sm text-gray-500 dark:text-gray-300">
-                            @{artist.user.username}
+                            @{(artist as any).user?.username || (artist as any).email || `artist-${artist.id}`}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900 dark:text-gray-100">
-                        {artist.user.email}
+                        {(artist as any).user?.email || (artist as any).email || 'No email'}
                       </div>
                       <div className="text-sm text-gray-500 dark:text-gray-300">
-                        {artist.user.phone || 'No phone'}
+                        {(artist as any).user?.phone || (artist as any).phone || 'No phone'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                      {artist.city && artist.country ? `${artist.city}, ${artist.country}` : 'Not specified'}
+                        {((artist as any).city || (artist as any).country) ? `${(artist as any).city || ''}${(artist as any).city && (artist as any).country ? ', ' : ''}${(artist as any).country || ''}` : 'Not specified'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                      {artist.specialization || 'Not specified'}
+                      {(artist as any).specialization || 'Not specified'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span

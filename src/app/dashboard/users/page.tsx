@@ -18,7 +18,26 @@ export default function UsersPage() {
     try {
       setLoading(true);
       const res: any = await adminService.getUsers();
-      const list = res.results || res;
+      // Backend may return artist profile objects (with nested `user`) or full user objects.
+      const rawList = res?.results ?? res ?? [];
+      const list = (rawList as any[]).map((item: any) => {
+        // If item represents an ArtistProfile (no top-level username), normalize to user-like shape
+        if (!item.username && item.user) {
+          return {
+            id: item.user.id,
+            username: item.user.username,
+            email: item.user.email,
+            role: item.user.role || 'artist',
+            is_verified: item.user.is_verified ?? item.verified_by_admin ?? (item.user?.is_verified ?? false),
+            artist_profile: item.user.artist_profile || item,
+            buyer_profile: item.user.buyer_profile || null,
+            admin_profile: item.user.admin_profile || null,
+          };
+        }
+
+        // If item already looks like a User, keep as-is
+        return item;
+      });
       setUsers(list as any[]);
     } catch (err: any) {
       setError(err.message || 'Failed to load users');

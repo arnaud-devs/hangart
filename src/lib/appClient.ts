@@ -276,25 +276,49 @@ export { apiFetch as rawFetch };
 
 // Admin / User helpers
 export async function listUsers(params?: Record<string, any>): Promise<UserDTO[] | Paginated<UserDTO>> {
-  return get('/users/', params) as Promise<UserDTO[] | Paginated<UserDTO>>;
+  // If caller is requesting artists specifically, use the public artists endpoint
+  if (params && params.role === 'artist') {
+    // Return artist profiles (verified artists) from public endpoint
+    return get('/artists/', params) as Promise<UserDTO[] | Paginated<UserDTO>>;
+  }
+
+  const user = getStoredUser && getStoredUser();
+  if (user?.role === 'admin') {
+    // Admin endpoints may exist on some deployments; prefer admin listing when admin
+    return get('/admin/users/', params) as Promise<UserDTO[] | Paginated<UserDTO>>;
+  }
+
+  // For non-admins, only artist listing is allowed via public endpoint
+  throw new Error('Forbidden: admin only');
 }
 
 export async function getUser(id: number): Promise<UserDTO> {
-  return get(`/users/${id}/`) as Promise<UserDTO>;
+  const user = getStoredUser && getStoredUser();
+  if (user?.role === 'admin') {
+    return get(`/admin/users/${id}/`) as Promise<UserDTO>;
+  }
+  // Fallback: try to read public artist profile if available
+  return get(`/profiles/artist/${id}/`) as Promise<any>;
 }
 
 export async function createUser(payload: AdminUserCreatePayload | FormData): Promise<UserDTO> {
+  const user = getStoredUser && getStoredUser();
+  if (user?.role !== 'admin') throw new Error('Forbidden: admin only');
   if (payload instanceof FormData) return post('/admin/users/', payload);
-  return post('/users/', payload);
+  return post('/admin/users/', payload);
 }
 
 export async function updateUser(id: number, payload: AdminUserUpdatePayload | FormData): Promise<UserDTO> {
+  const user = getStoredUser && getStoredUser();
+  if (user?.role !== 'admin') throw new Error('Forbidden: admin only');
   if (payload instanceof FormData) return patch(`/admin/users/${id}/`, payload);
-  return patch(`/users/${id}/`, payload as any) as Promise<UserDTO>;
+  return patch(`/admin/users/${id}/`, payload as any) as Promise<UserDTO>;
 }
 
 export async function deleteUser(id: number): Promise<void> {
-  await del(`/users/${id}/`);
+  const user = getStoredUser && getStoredUser();
+  if (user?.role !== 'admin') throw new Error('Forbidden: admin only');
+  await del(`/admin/users/${id}/`);
 }
 
 // Admin artist/buyer/admin-profile management
@@ -311,11 +335,19 @@ export async function verifyArtistByAdmin(id: number, verified: boolean): Promis
 }
 
 export async function listAdminBuyers(params?: Record<string, any>): Promise<BuyerProfileDTO[] | Paginated<BuyerProfileDTO>> {
-  return get('/buyers/', params) as Promise<BuyerProfileDTO[] | Paginated<BuyerProfileDTO>>;
+  const user = getStoredUser && getStoredUser();
+  if (user?.role === 'admin') {
+    return get('/admin/buyers/', params) as Promise<BuyerProfileDTO[] | Paginated<BuyerProfileDTO>>;
+  }
+  throw new Error('Forbidden: admin only');
 }
 
 export async function listAdminAdmins(params?: Record<string, any>): Promise<AdminProfileDTO[] | Paginated<AdminProfileDTO>> {
-  return get('/admin/admins/', params) as Promise<AdminProfileDTO[] | Paginated<AdminProfileDTO>>;
+  const user = getStoredUser && getStoredUser();
+  if (user?.role === 'admin') {
+    return get('/admin/admins/', params) as Promise<AdminProfileDTO[] | Paginated<AdminProfileDTO>>;
+  }
+  throw new Error('Forbidden: admin only');
 }
 
 // Authentication helpers (Auth endpoints)

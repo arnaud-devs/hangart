@@ -66,16 +66,18 @@ function AdminView() {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const [artworks, artists, buyers] = await Promise.all([
+      const [artworks, artists] = await Promise.all([
         artworkService.listArtworks(),
         adminService.getUsers({ role: 'artist' }),
-        adminService.getUsers({ role: 'buyer' }),
       ]);
+
+      // Backend does not expose a public buyers listing endpoint; leave buyers empty for now.
+      const buyers: any[] = [];
 
       const dashboardStats: DashboardStats = {
         total_artworks: (artworks as any).count || (artworks as any).length || 0,
         total_artists: (artists as any).count || (artists as any).length || 0,
-        total_buyers: (buyers as any).count || (buyers as any).length || 0,
+        total_buyers: (buyers as any)?.count || (buyers as any)?.length || 0,
         total_orders: 0,
         total_revenue: 0,
         pending_approvals: (artworks as any).results?.filter((a: any) => a.status === 'submitted').length || 0,

@@ -43,8 +43,8 @@ export default function BuyersPage() {
   const loadBuyers = async () => {
     try {
       setLoading(true);
-      const response = await adminService.getUsers({ role: 'buyer' });
-      setBuyers(response.results || response);
+      // Backend does not expose a buyers listing endpoint. Leave buyers empty for now.
+      setBuyers([]);
     } catch (err: any) {
       setError(err.message || 'Failed to load buyers');
       console.error('Error loading buyers:', err);

@@ -7,8 +7,13 @@ export interface CartItem {
   id: number;
   title: string;
   price: number;
-  main_image: string;
-  artist_name: string;
+  main_image?: string;
+  // Backwards-compatible fields used throughout the app
+  image?: string;
+  artist_name?: string;
+  artistName?: string;
+  // currency may be provided by some components
+  currency?: string;
   quantity: number;
   is_available?: boolean; // Added for stock validation
 }
@@ -40,9 +45,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (savedCart) {
       try {
         const parsedItems = JSON.parse(savedCart);
-        // Validate that parsed items have the required structure
+        // Normalize parsed items to ensure compatibility with components
         if (Array.isArray(parsedItems)) {
-          setItems(parsedItems);
+          const normalized = parsedItems.map((it: any) => ({
+            ...it,
+            // prefer existing image, otherwise map from main_image
+            image: it.image || it.main_image || '',
+            artistName: it.artistName || it.artist_name || '',
+            currency: it.currency || '$',
+          }));
+          setItems(normalized);
         }
       } catch (error) {
         console.error('Failed to parse cart from localStorage:', error);
@@ -74,7 +86,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             : item
         );
       } else {
-        return [...prevItems, { ...newItem, quantity }];
+        // Ensure backwards-compatible fields are present when adding
+        const normalizedNew = {
+          ...newItem,
+          quantity,
+          image: (newItem as any).image || (newItem as any).main_image || '',
+          artistName: (newItem as any).artistName || (newItem as any).artist_name || '',
+          currency: (newItem as any).currency || '$',
+        } as CartItem;
+        return [...prevItems, normalizedNew];
       }
     });
   };

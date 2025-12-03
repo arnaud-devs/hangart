@@ -1,143 +1,208 @@
+// app/dashboard/buyers/page.tsx
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import sampleTransactions, { type Transaction } from '@/lib/sampleTransactions';
+import { adminService } from '@/services/apiServices';
+import { useAuth } from '@/lib/authProvider';
 import BuyerViewModal from '@/components/dashboard/BuyerViewModal';
 import BuyerEditModal from '@/components/dashboard/BuyerEditModal';
-import AddBuyerModal from '@/components/dashboard/AddBuyerModal';
 
-const CUSTOM_KEY = 'customBuyers';
-
-type Buyer = {
-  name: string;
+interface Buyer {
+  id: number;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    phone?: string;
+    is_verified: boolean;
+  };
+  profile_photo?: string;
+  phone?: string;
   email?: string;
-  total: number;
-  purchases: Array<{ title: string; amount: number; status: string; date: string }>;
-  lastPurchase?: string;
-  deleted?: boolean;
-};
+  address?: string;
+  city?: string;
+  country?: string;
+  date_of_birth?: string;
+}
 
-export default function Page() {
+export default function BuyersPage() {
   const [buyers, setBuyers] = useState<Buyer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [viewBuyer, setViewBuyer] = useState<Buyer | null>(null);
   const [editBuyer, setEditBuyer] = useState<Buyer | null>(null);
-  const [showAddBuyer, setShowAddBuyer] = useState(false);
+  // admins cannot create buyers here; use registration flow
+  const { user } = useAuth();
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const custom: Buyer[] = raw ? JSON.parse(raw) : [];
-
-      const map = new Map<string, Buyer>();
-      sampleTransactions.forEach((tx: Transaction) => {
-        const existing = map.get(tx.buyerName);
-        const amount = tx.amount || 0;
-        const purchase = { title: tx.artworkTitle || 'Artwork', amount, status: tx.status || 'completed', date: tx.date || new Date().toISOString() };
-        if (existing) {
-          existing.total += amount;
-          existing.purchases.push(purchase);
-          existing.lastPurchase = purchase.date;
-        } else {
-          map.set(tx.buyerName, { name: tx.buyerName, email: (tx as any).buyerEmail, total: amount, purchases: [purchase], lastPurchase: purchase.date });
-        }
-      });
-
-      // apply customs (overrides/deletions)
-      custom.forEach(c => {
-        if (c.deleted) {
-          map.delete(c.name);
-        } else {
-          map.set(c.name, c);
-        }
-      });
-
-      setBuyers(Array.from(map.values()));
-    } catch (e) {
-      console.error(e);
-      setBuyers([]);
-    }
+    loadBuyers();
   }, []);
 
-  const saveBuyer = (b: Buyer) => {
-    setBuyers(prev => prev.map(x => x.name === b.name ? b : x));
+  const loadBuyers = async () => {
     try {
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: Buyer[] = raw ? JSON.parse(raw) : [];
-      const filtered = list.filter(i => i.name !== b.name);
-      filtered.unshift(b);
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(filtered));
-    } catch (e) {
-      console.error(e);
+      setLoading(true);
+      const response = await adminService.getUsers({ role: 'buyer' });
+      setBuyers(response.results || response);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load buyers');
+      console.error('Error loading buyers:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const deleteBuyer = (name: string) => {
-    setBuyers(prev => prev.filter(b => b.name !== name));
+  const updateBuyer = async (updatedBuyer: Buyer) => {
     try {
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: Buyer[] = raw ? JSON.parse(raw) : [];
-      list.unshift({ name, deleted: true } as any);
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
-    } catch (e) {
-      console.error(e);
+      setBuyers(prev => 
+        prev.map(buyer => 
+          buyer.id === updatedBuyer.id ? updatedBuyer : buyer
+        )
+      );
+      setEditBuyer(null);
+    } catch (err: any) {
+      setError(err.message || 'Failed to update buyer');
     }
   };
 
-  const addBuyer = (payload: any) => {
+  const addBuyer = async (buyerData: any) => {
     try {
-      const b = {
-        name: payload.name,
-        email: payload.email || '',
-        total: 0,
-        purchases: [],
-        lastPurchase: undefined
+      const newBuyer: Buyer = {
+        id: Date.now(),
+        user: {
+          id: Date.now(),
+          username: buyerData.username,
+          email: buyerData.email,
+          first_name: buyerData.first_name,
+          last_name: buyerData.last_name,
+          phone: buyerData.phone,
+          is_verified: false,
+        },
+        address: buyerData.address,
+        city: buyerData.city,
+        country: buyerData.country,
       };
-      setBuyers(prev => [b, ...prev]);
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: Buyer[] = raw ? JSON.parse(raw) : [];
-      list.unshift(b);
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
-    } catch (e) {
-      console.error(e);
+      setBuyers(prev => [newBuyer, ...prev]);
+    } catch (err: any) {
+      setError(err.message || 'Failed to add buyer');
     }
   };
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="animate-pulse">Loading buyers...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Buyers</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-300 mb-4">Manage buyers and their purchases.</p>
-        <div className="flex justify-end mb-4">
-          <button onClick={() => setShowAddBuyer(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">Add Buyer</button>
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+              Buyers Management
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-300">
+              Manage registered buyers and their information
+            </p>
+          </div>
+          
+          {user?.role === 'admin' && (
+            <div className="text-sm text-gray-500">Admin: view buyers here. New users register via the public signup form.</div>
+          )}
         </div>
+
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Buyer</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Email</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Total Spent</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Last Purchase</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Buyer
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Contact
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Location
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
-                {buyers.map(b => (
-                  <tr key={b.name} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td className="px-4 py-3">
-                      <div className="font-medium text-gray-900 dark:text-gray-100">{b.name}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-300">{b.purchases.length} purchases</div>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {buyers.map((buyer) => (
+                  <tr key={buyer.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10">
+                          <img
+                            className="h-10 w-10 rounded-full"
+                            src={buyer.profile_photo || '/avatars/default.jpg'}
+                            alt={buyer.user.username}
+                          />
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                            {buyer.user.first_name} {buyer.user.last_name}
+                          </div>
+                          <div className="text-sm text-gray-500 dark:text-gray-300">
+                            @{buyer.user.username}
+                          </div>
+                        </div>
+                      </div>
                     </td>
-                    <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{b.email || '-'}</td>
-                    <td className="px-4 py-3 text-gray-900 dark:text-gray-100">${b.total.toFixed(2)}</td>
-                    <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{b.lastPurchase ? new Date(b.lastPurchase).toLocaleDateString() : '-'}</td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="inline-flex items-center gap-2">
-                        <button onClick={() => setViewBuyer(b)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">View</button>
-                        <button onClick={() => setEditBuyer(b)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">Edit</button>
-                        <button onClick={() => deleteBuyer(b.name)} className="px-3 py-1 text-red-600 dark:text-red-400 border rounded text-sm bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">Delete</button>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900 dark:text-gray-100">
+                        {buyer.user.email}
+                      </div>
+                      <div className="text-sm text-gray-500 dark:text-gray-300">
+                        {buyer.user.phone || buyer.phone || 'No phone'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                      {buyer.city && buyer.country ? `${buyer.city}, ${buyer.country}` : 'Not specified'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex px-2 text-xs font-semibold rounded-full ${
+                          buyer.user.is_verified
+                            ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
+                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'
+                        }`}
+                      >
+                        {buyer.user.is_verified ? 'Verified' : 'Pending'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex justify-end space-x-2">
+                        <button
+                          onClick={() => setViewBuyer(buyer)}
+                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                          View
+                        </button>
+                        <button
+                          onClick={() => setEditBuyer(buyer)}
+                          className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
+                        >
+                          Edit
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -146,11 +211,33 @@ export default function Page() {
             </table>
           </div>
         </div>
+
+        {buyers.length === 0 && !loading && (
+          <div className="text-center py-12">
+            <div className="text-gray-500 dark:text-gray-300">
+              No buyers found
+            </div>
+          </div>
+        )}
       </div>
 
-      {viewBuyer && <BuyerViewModal buyer={viewBuyer} onClose={() => setViewBuyer(null)} />}
-      {editBuyer && <BuyerEditModal buyer={editBuyer} onClose={() => setEditBuyer(null)} onSave={saveBuyer} />}
-      {showAddBuyer && <AddBuyerModal onClose={() => setShowAddBuyer(false)} onSave={addBuyer} />}
+      {/* Modals */}
+      {viewBuyer && (
+        <BuyerViewModal
+          buyer={viewBuyer}
+          onClose={() => setViewBuyer(null)}
+        />
+      )}
+
+      {editBuyer && (
+        <BuyerEditModal
+          buyer={editBuyer}
+          onClose={() => setEditBuyer(null)}
+          onSave={updateBuyer}
+        />
+      )}
+
+      {/* Admins cannot add buyers from the dashboard — users must register via signup. */}
     </div>
   );
 }

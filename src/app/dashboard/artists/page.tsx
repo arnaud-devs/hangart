@@ -1,214 +1,295 @@
+// app/dashboard/artists/page.tsx
 "use client";
 
-import React, { useEffect, useMemo, useState } from 'react';
-import sampleArtists, { type Artist } from '@/data/SampleArtists';
-import sampleArtworks from '@/lib/sampleArtworks';
-import sampleTransactions from '@/lib/sampleTransactions';
+import React, { useEffect, useState } from 'react';
+import { adminService } from '@/services/apiServices'; 
+import VerifyArtistModal from '@/components/dashboard/VerifyArtistModal';
+import { useAuth } from '@/lib/authProvider';
 import ArtistViewModal from '@/components/dashboard/ArtistViewModal';
 import ArtistEditModal from '@/components/dashboard/ArtistEditModal';
-import AddArtistModal from '@/components/dashboard/AddArtistModal';
 
-const CUSTOM_KEY = 'customArtists';
+interface Artist {
+  id: number;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    phone?: string;
+    is_verified: boolean;
+  };
+  bio?: string;
+  profile_photo?: string;
+  specialization?: string;
+  experience_years: number;
+  country?: string;
+  city?: string;
+  verified_by_admin: boolean;
+  website?: string;
+  instagram?: string;
+  facebook?: string;
+}
 
-export default function Page() {
+export default function ArtistsPage() {
   const [artists, setArtists] = useState<Artist[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [viewArtist, setViewArtist] = useState<Artist | null>(null);
   const [editArtist, setEditArtist] = useState<Artist | null>(null);
-  const [showAddArtist, setShowAddArtist] = useState(false);
-
-  const artistStats = useMemo(() => {
-    try {
-      const raw = localStorage.getItem('customArtworks');
-      const custom: any[] = raw ? JSON.parse(raw) : [];
-
-      const map = new Map<string, { count: number; total: number; sold: number }>();
-      // initialize map with artists
-      [...sampleArtists, ...artists].forEach(a => {
-        map.set(a.id, { count: 0, total: 0, sold: 0 });
-      });
-
-      const allArtworks = [...sampleArtworks, ...custom];
-      allArtworks.forEach((art: any) => {
-        const stats = map.get(art.artistId) || { count: 0, total: 0, sold: 0 };
-        stats.count += 1;
-        stats.total += Number(art.price || 0);
-        map.set(art.artistId, stats);
-      });
-
-      // sold count from transactions
-      sampleTransactions.forEach(tx => {
-        const art = allArtworks.find(a => a.id === tx.artworkId);
-        if (art && tx.status === 'completed') {
-          const stats = map.get(art.artistId) || { count: 0, total: 0, sold: 0 };
-          stats.sold += 1;
-          map.set(art.artistId, stats);
-        }
-      });
-
-      return map;
-    } catch (e) {
-      return new Map();
-    }
-  }, [artists]);
+  const [verifyTarget, setVerifyTarget] = useState<Artist | null>(null);
+  // admins cannot create users — only verify; remove add artist UI
+  const { user } = useAuth();
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const custom: any[] = raw ? JSON.parse(raw) : [];
-      const map = new Map<string, Artist>();
-      [...sampleArtists, ...custom].forEach(a => map.set(a.id, a));
-      // filter deleted
-      const merged = Array.from(map.values()).filter(a => !(a as any).deleted);
-      setArtists(merged);
-    } catch (e) {
-      setArtists(sampleArtists);
-    }
+    loadArtists();
   }, []);
 
-  const toggleVerified = (id: string) => {
-    setArtists(prev => prev.map(a => a.id === id ? { ...a, verifiedByAdmin: !a.verifiedByAdmin } : a));
+  const loadArtists = async () => {
     try {
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: any[] = raw ? JSON.parse(raw) : [];
-      const found = list.find(i => i.id === id);
-      if (found) {
-        found.verifiedByAdmin = !found.verifiedByAdmin;
-        localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
-      } else {
-        const base = sampleArtists.find(s => s.id === id);
-        if (base) {
-          const updated = { ...base, verifiedByAdmin: !base.verifiedByAdmin } as Artist;
-          list.unshift(updated);
-          localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
-        }
-      }
-    } catch (e) {
-      console.error(e);
+      setLoading(true);
+      // For now, we'll use the artists list endpoint
+      // In a real admin panel, you'd have an admin endpoint for all artists
+      const response = await adminService.getUsers({ role: 'artist' });
+      setArtists(response.results || response);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load artists');
+      console.error('Error loading artists:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const saveArtist = (updated: Artist) => {
-    setArtists(prev => prev.map(a => a.id === updated.id ? updated : a));
+  const toggleVerification = async (artistId: number) => {
+    // deprecated: use modal-based verify flow
+    setVerifyTarget(artists.find(a => a.id === artistId) || null);
+  };
+
+  const updateArtist = async (updatedArtist: Artist) => {
     try {
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: any[] = raw ? JSON.parse(raw) : [];
-      const filtered = list.filter(i => i.id !== updated.id);
-      filtered.unshift(updated);
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(filtered));
-    } catch (e) {
-      console.error(e);
+      // This would typically call an admin endpoint to update artist
+      setArtists(prev => 
+        prev.map(artist => 
+          artist.id === updatedArtist.id ? updatedArtist : artist
+        )
+      );
+      setEditArtist(null);
+    } catch (err: any) {
+      setError(err.message || 'Failed to update artist');
     }
   };
 
-  const addArtist = (payload: Partial<Artist>) => {
+  const addArtist = async (artistData: any) => {
     try {
-      const id = `artist-${Date.now()}`;
+      // This would typically call an admin endpoint to create artist
+      // For now, we'll simulate adding
       const newArtist: Artist = {
-        id,
-        userId: payload.name?.toLowerCase().replace(/\s+/g, '-') || id,
-        name: payload.name || 'Unnamed',
-        bio: payload.bio || '',
-        avatarUrl: '/avatars/default.jpg',
-        profilePhotoUrl: '/profiles/default.jpg',
-        website: '',
-        specialization: payload.specialization || '',
-        experienceYears: 0,
-        country: payload.country || '',
-        city: payload.city || '',
-        verifiedByAdmin: false,
-        socialLinks: [],
-        artworks: []
+        id: Date.now(),
+        user: {
+          id: Date.now(),
+          username: artistData.username,
+          email: artistData.email,
+          first_name: artistData.first_name,
+          last_name: artistData.last_name,
+          phone: artistData.phone,
+          is_verified: false,
+        },
+        bio: artistData.bio,
+        specialization: artistData.specialization,
+        experience_years: artistData.experience_years || 0,
+        country: artistData.country,
+        city: artistData.city,
+        verified_by_admin: false,
       };
       setArtists(prev => [newArtist, ...prev]);
-      // persist
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: any[] = raw ? JSON.parse(raw) : [];
-      list.unshift(newArtist);
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
-    } catch (e) {
-      console.error(e);
+      // setShowAddArtist(false);
+    } catch (err: any) {
+      setError(err.message || 'Failed to add artist');
     }
   };
 
-  const deleteArtist = (id: string) => {
-    setArtists(prev => prev.filter(a => a.id !== id));
-    try {
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: any[] = raw ? JSON.parse(raw) : [];
-      // mark deleted
-      list.unshift({ id, deleted: true });
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="animate-pulse">Loading artists...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Artists</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-300 mb-4">Manage registered artists.</p>
-        <div className="flex justify-end mb-4">
-          <button onClick={() => setShowAddArtist(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">Add Artist</button>
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+              Artists Management
+            </h2>
+            <p className="text-sm text-gray-500 dark:text-gray-300">
+              Manage registered artists and their verification status
+            </p>
+          </div>
+          
+          {user?.role === 'admin' && (
+            <div className="text-sm text-gray-500">Admin: manage and verify artists from the Users page.</div>
+          )}
         </div>
+
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700" aria-label="Artists table">
-              <caption className="sr-only">Artists table showing registered artists, artworks and stats</caption>
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Artist</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Artworks</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Value</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sold</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Artist
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Contact
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Location
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Specialization
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
-                {artists.map(a => (
-                  <tr key={a.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                        <td className="px-4 py-3">
-                          <div className="font-medium text-gray-900 dark:text-gray-100">{a.name}</div>
-                          <div className="text-xs text-gray-500 dark:text-gray-300">{a.specialization || ''}</div>
-                        </td>
-                        <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{a.city}, {a.country}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
-                          {(() => {
-                            const s = artistStats.get(a.id);
-                            return s ? s.count : 0;
-                          })()}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">{(() => {
-                          const s = artistStats.get(a.id);
-                          return s ? `$${s.total.toFixed(2)}` : '$0.00';
-                        })()}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">{(() => {
-                          const s = artistStats.get(a.id);
-                          return s ? s.sold : 0;
-                        })()}</td>
-                        <td className="px-4 py-3 text-right">
-                          <div className="inline-flex items-center gap-2">
-                            <button onClick={() => setViewArtist(a)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">View</button>
-                            <button onClick={() => setEditArtist(a)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">Edit</button>
-                            <button onClick={() => toggleVerified(a.id)} className={`px-3 py-1 rounded text-sm ${a.verifiedByAdmin ? 'bg-emerald-600 text-white' : 'bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 border'}`}>
-                              {a.verifiedByAdmin ? 'Verified' : 'Verify'}
-                            </button>
-                            <button onClick={() => deleteArtist(a.id)} className="px-3 py-1 text-red-600 dark:text-red-400 border rounded text-sm bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">Delete</button>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {artists.map((artist) => (
+                  <tr key={artist.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10">
+                          <img
+                            className="h-10 w-10 rounded-full"
+                            src={artist.profile_photo || '/avatars/default.jpg'}
+                            alt={artist.user.username}
+                          />
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                            {artist.user.first_name} {artist.user.last_name}
                           </div>
-                        </td>
-                      </tr>
+                          <div className="text-sm text-gray-500 dark:text-gray-300">
+                            @{artist.user.username}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900 dark:text-gray-100">
+                        {artist.user.email}
+                      </div>
+                      <div className="text-sm text-gray-500 dark:text-gray-300">
+                        {artist.user.phone || 'No phone'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                      {artist.city && artist.country ? `${artist.city}, ${artist.country}` : 'Not specified'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                      {artist.specialization || 'Not specified'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex px-2 text-xs font-semibold rounded-full ${
+                          artist.verified_by_admin
+                            ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
+                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'
+                        }`}
+                      >
+                        {artist.verified_by_admin ? 'Verified' : 'Pending'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex justify-end space-x-2">
+                        <button
+                          onClick={() => setViewArtist(artist)}
+                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                          View
+                        </button>
+                        <button
+                          onClick={() => setEditArtist(artist)}
+                          className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
+                        >
+                          Edit
+                        </button>
+                        {user?.role === 'admin' && (
+                          <button
+                            onClick={() => toggleVerification(artist.id)}
+                            className={`${
+                              artist.verified_by_admin
+                                ? 'text-orange-600 hover:text-orange-900 dark:text-orange-400 dark:hover:text-orange-300'
+                                : 'text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300'
+                            }`}
+                          >
+                            {artist.verified_by_admin ? 'Unverify' : 'Verify'}
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </div>
+
+        {artists.length === 0 && !loading && (
+          <div className="text-center py-12">
+            <div className="text-gray-500 dark:text-gray-300">
+              No artists found
+            </div>
+          </div>
+        )}
       </div>
-      {viewArtist && <ArtistViewModal artist={viewArtist} onClose={() => setViewArtist(null)} />}
-      {editArtist && <ArtistEditModal artist={editArtist} onClose={() => setEditArtist(null)} onSave={saveArtist} />}
-      {showAddArtist && <AddArtistModal onClose={() => setShowAddArtist(false)} onSave={addArtist} />}
+
+      {/* Modals */}
+      {viewArtist && (
+        <ArtistViewModal
+          artist={viewArtist}
+          onClose={() => setViewArtist(null)}
+        />
+      )}
+
+      {editArtist && (
+        <ArtistEditModal
+          artist={editArtist}
+          onClose={() => setEditArtist(null)}
+          onSave={updateArtist}
+        />
+      )}
+
+        {/* Admins cannot add artists directly; user registration is through public register endpoint. */}
+
+      {verifyTarget && (
+        <VerifyArtistModal
+          artist={verifyTarget}
+          onClose={() => setVerifyTarget(null)}
+          onConfirm={async (verified: boolean, adminComment?: string) => {
+            try {
+              await adminService.verifyArtist(verifyTarget!.id, verified);
+              setArtists(prev => prev.map(a => a.id === verifyTarget!.id ? { ...a, verified_by_admin: verified } : a));
+            } catch (err: any) {
+              setError(err.message || 'Failed to update verification');
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
-

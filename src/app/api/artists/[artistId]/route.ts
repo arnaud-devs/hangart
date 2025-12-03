@@ -1,16 +1,17 @@
 import { NextResponse } from 'next/server';
-import sampleArtists from '@/data/SampleArtists';
-import sampleArtworks from '@/data/SampleArtworks';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://hangart.pythonanywhere.com/api';
 
-// Relax the typed context to avoid type-check mismatches in Next's generated helpers
+// Proxy the request to the external API so the frontend can use a single origin
 export async function GET(request: Request, context: any) {
-  // Prefer context.params.artistId, fall back to parsing the URL path
   const artistId = context?.params?.artistId ?? new URL(request.url).pathname.split('/').pop();
-  const artist = sampleArtists.find((a) => String(a.id) === String(artistId));
-  if (!artist) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  if (!artistId) return NextResponse.json({ error: 'Not found' }, { status: 400 });
 
-  // Attach artworks data if available
-  const artworks = (artist.artworks || []).map((id) => sampleArtworks.find((s) => String(s.id) === String(id))).filter(Boolean);
-
-  return NextResponse.json({ ...artist, artworks });
+  try {
+    const res = await fetch(`${API_BASE}/profiles/artists/${artistId}/`);
+    if (!res.ok) return NextResponse.json({ error: 'Not found' }, { status: res.status });
+    const artist = await res.json();
+    return NextResponse.json(artist);
+  } catch (e) {
+    return NextResponse.json({ error: 'Failed to fetch artist' }, { status: 502 });
+  }
 }

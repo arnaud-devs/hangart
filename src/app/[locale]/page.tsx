@@ -3,7 +3,8 @@ import { getTranslations } from "../../lib/i18n";
 
 export default async function LocaleHome({ params }: { params: any }) {
   // Keep supporting direct /<locale> requests, but prefer cookie when available
-  const t = await getTranslations(params?.locale ?? undefined);
+  const resolvedParams = await params;
+  const t = await getTranslations(resolvedParams?.locale ?? undefined);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black/50">

@@ -5,6 +5,8 @@ import { Label } from '@/components/ui/Label'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
+import { post, get, saveTokens } from '@/lib/appClient'
+import { useRouter } from 'next/navigation'
 
 type FormValues = {
   username: string
@@ -18,6 +20,7 @@ type FormValues = {
 }
 
 export default function SignupPage() {
+  const router = useRouter()
   const { register, handleSubmit, formState, watch } = useForm<FormValues>()
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)
@@ -35,26 +38,38 @@ export default function SignupPage() {
     }
 
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: data.username,
-          email: data.email,
-          password: data.password,
-          password2: data.password2,
-          role: data.role,
-          first_name: data.first_name,
-          last_name: data.last_name,
-          phone: data.phone,
-        }),
-      })
+      const payload = {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        password2: data.password2,
+        role: data.role,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        phone: data.phone,
+      }
 
-      const json = await res.json().catch(() => ({}))
+      const json = await post('/auth/register/', payload);
 
-      if (!res.ok) {
-        setError(json?.message ?? 'Signup failed')
-        return
+      // If backend returns tokens, save them and fetch user
+      if (json?.tokens) {
+        const refresh = json.tokens.refresh;
+        const access = json.tokens.access;
+        saveTokens(access, refresh);
+        try {
+          const me = await get('/auth/me/');
+          try { localStorage.setItem('user', JSON.stringify(me)); } catch {}
+          // redirect based on role
+          const role = (me?.role || '').toLowerCase();
+          if (role === 'artist') router.push('/dashboard/artworks');
+          else if (role === 'buyer') router.push('/dashboard/wishlist');
+          else if (role === 'museum') router.push('/dashboard/museum');
+          else if (role === 'admin') router.push('/dashboard/approvals');
+          else router.push('/dashboard');
+          return;
+        } catch (e) {
+          // ignore; fall through to show success message
+        }
       }
 
       setSuccess('Account created successfully! You can now log in.')

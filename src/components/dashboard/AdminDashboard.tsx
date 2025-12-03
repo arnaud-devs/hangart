@@ -1,177 +1,237 @@
+// app/dashboard/page.tsx
 "use client";
 
-import React from 'react';
-import sampleArtworks from '@/lib/sampleArtworks';
-import type { Artwork } from '@/lib/sampleArtworks';
-import sampleTransactions from '@/lib/sampleTransactions';
-import sampleArtists from '@/data/SampleArtists';
-import sampleMuseums from '@/data/SampleMuseums';
+import React, { useEffect, useState } from 'react';
+import { adminService, artworkService } from '@/services/apiServices';
+import { useAuth } from '@/lib/authProvider';
+
+interface DashboardStats {
+  total_artworks: number;
+  total_artists: number;
+  total_buyers: number;
+  total_orders: number;
+  total_revenue: number;
+  pending_approvals: number;
+  recent_artworks: any[];
+  top_artists: any[];
+}
 
 export default function AdminDashboard() {
-  const rawCustom = typeof window !== 'undefined' ? localStorage.getItem('customArtworks') : null;
-  const custom: Artwork[] = rawCustom ? JSON.parse(rawCustom) : [];
-  const allArtworks = [...sampleArtworks, ...custom];
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const { user, loading: authLoading } = useAuth();
 
-  const totalValue = allArtworks.reduce((s, a) => s + (a.price || 0), 0);
-  const pendingValue = allArtworks.filter(a => a.status === 'pending').reduce((s, a) => s + (a.price || 0), 0);
-  const rejectedValue = allArtworks.filter(a => a.status === 'rejected').reduce((s, a) => s + (a.price || 0), 0);
-  const approvedValue = allArtworks.filter(a => a.status === 'approved').reduce((s, a) => s + (a.price || 0), 0);
+  useEffect(() => {
+    if (!authLoading) {
+      loadDashboardData();
+    }
+  }, [authLoading]);
 
-  const topByPrice = [...allArtworks].sort((a, b) => (b.price || 0) - (a.price || 0)).slice(0, 8);
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true);
+      // In a real implementation, you'd have a dedicated dashboard endpoint
+      // For now, we'll simulate by fetching multiple endpoints
+      const [artworks, artists, buyers] = await Promise.all([
+        artworkService.listArtworks(),
+        adminService.getUsers({ role: 'artist' }),
+        adminService.getUsers({ role: 'buyer' }),
+      ]);
 
-  const counts = {
-    approved: allArtworks.filter(a => a.status === 'approved').length,
-    pending: allArtworks.filter(a => a.status === 'pending').length,
-    rejected: allArtworks.filter(a => a.status === 'rejected').length,
+      const dashboardStats: DashboardStats = {
+        total_artworks: artworks.count || artworks.length || 0,
+        total_artists: artists.count || artists.length || 0,
+        total_buyers: buyers.count || buyers.length || 0,
+        total_orders: 0, // You'd fetch from orders endpoint
+        total_revenue: 0, // You'd calculate from orders
+        pending_approvals: artworks.results?.filter((a: any) => a.status === 'submitted').length || 0,
+        recent_artworks: artworks.results?.slice(0, 5) || [],
+        top_artists: artists.results?.slice(0, 5) || [],
+      };
+
+      setStats(dashboardStats);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load dashboard data');
+      console.error('Error loading dashboard:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const pieDataAdmin = [
-    { label: 'Approved', value: counts.approved, color: '#10b981' },
-    { label: 'Pending', value: counts.pending, color: '#f59e0b' },
-    { label: 'Rejected', value: counts.rejected, color: '#ef4444' },
-  ];
-
-  const pieTotalAdmin = pieDataAdmin.reduce((s, p) => s + p.value, 0) || 1;
-
-  // derived summary counts
-  const pendingApprovalsCount = counts.pending;
-  const totalArtworksCount = allArtworks.length;
-
-  const rawCustomArtists = typeof window !== 'undefined' ? localStorage.getItem('customArtists') : null;
-  const customArtists = rawCustomArtists ? JSON.parse(rawCustomArtists) : [];
-  const artistIds = new Set<string>();
-  [...sampleArtists, ...customArtists].forEach((a: any) => artistIds.add(a.id));
-  const artistsCount = artistIds.size;
-
-  const buyerNames = new Set<string>(sampleTransactions.map(t => t.buyerName));
-  const rawCustomBuyers = typeof window !== 'undefined' ? localStorage.getItem('customBuyers') : null;
-  const customBuyers = rawCustomBuyers ? JSON.parse(rawCustomBuyers) : [];
-  if (Array.isArray(customBuyers)) {
-    customBuyers.forEach((b: any) => {
-      if (b.name) buyerNames.add(b.name);
-      if (b.buyerName) buyerNames.add(b.buyerName);
-    });
+  // Show loading state while auth is initializing
+  if (authLoading) {
+    return (
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="animate-pulse">Loading authentication...</div>
+        </div>
+      </div>
+    );
   }
-  const buyersCount = buyerNames.size;
 
-  const rawCustomMuseums = typeof window !== 'undefined' ? localStorage.getItem('customMuseums') : null;
-  const customMuseums = rawCustomMuseums ? JSON.parse(rawCustomMuseums) : [];
-  const museumIds = new Set<string>();
-  [...sampleMuseums, ...customMuseums].forEach((m: any) => museumIds.add(m.id));
-  const museumsCount = museumIds.size;
+  // Redirect or show error if user is not admin
+  if (user?.role !== 'admin') {
+    return (
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            Access denied. Admin privileges required.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="animate-pulse">Loading dashboard...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Admin Dashboard</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-300">High-level marketplace financial overview.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Admin Dashboard
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-300">
+            Welcome back, {user?.first_name}! Here's your marketplace overview.
+          </p>
         </div>
 
+        {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-300">Total Artworks Value</div>
-            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">${totalValue.toFixed(2)}</div>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-300">Pending Artworks Value</div>
-            <div className="text-2xl font-semibold text-yellow-600 dark:text-yellow-400">${pendingValue.toFixed(2)}</div>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-300">Rejected Artworks Value</div>
-            <div className="text-2xl font-semibold text-red-600 dark:text-red-400">${rejectedValue.toFixed(2)}</div>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-300">Approved Artworks Value</div>
-            <div className="text-2xl font-semibold text-emerald-600 dark:text-emerald-400">${approvedValue.toFixed(2)}</div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-300">Total Approvals</div>
-            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{pendingApprovalsCount}</div>
+            <div className="text-sm text-gray-500 dark:text-gray-300">Total Artworks</div>
+            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+              {stats?.total_artworks || 0}
+            </div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
             <div className="text-sm text-gray-500 dark:text-gray-300">Total Artists</div>
-            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{artistsCount}</div>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-300">Total Artworks</div>
-            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{totalArtworksCount}</div>
+            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+              {stats?.total_artists || 0}
+            </div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
             <div className="text-sm text-gray-500 dark:text-gray-300">Total Buyers</div>
-            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{buyersCount}</div>
+            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+              {stats?.total_buyers || 0}
+            </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-300">Museums Count</div>
-            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">{museumsCount}</div>
-            <div className="mt-2"><a href="/dashboard/museums" className="text-sm text-emerald-600 dark:text-emerald-400 underline">Manage Museums</a></div>
+            <div className="text-sm text-gray-500 dark:text-gray-300">Pending Approvals</div>
+            <div className="text-2xl font-semibold text-yellow-600 dark:text-yellow-400">
+              {stats?.pending_approvals || 0}
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-            <h3 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">Top Artworks by Price</h3>
+        {/* Recent Artworks */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+            <h3 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">
+              Recent Artworks
+            </h3>
             <div className="space-y-3">
-              {topByPrice.map((a) => {
-                const max = topByPrice[0]?.price || 1;
-                const width = Math.round(((a.price || 0) / max) * 100);
-                return (
-                  <div key={a.id} className="flex items-center gap-4">
-                    <div className="w-40 text-sm font-medium text-gray-900 dark:text-gray-100">{a.title} — <span className="text-xs text-gray-500 dark:text-gray-300">{a.artistName}</span></div>
-                    <div className="flex-1 bg-gray-100 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
-                      <div style={{ width: `${width}%` }} className="h-3 bg-emerald-500" />
+              {stats?.recent_artworks?.map((artwork: any) => (
+                <div key={artwork.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src={artwork.main_image || '/artworks/default.jpg'}
+                      alt={artwork.title}
+                      className="w-12 h-12 rounded object-cover"
+                    />
+                    <div>
+                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {artwork.title}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-300">
+                        {artwork.artist_name}
+                      </div>
                     </div>
-                    <div className="w-32 text-right text-sm text-gray-600 dark:text-gray-300">${(a.price || 0).toFixed(2)}</div>
                   </div>
-                );
-              })}
+                  <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    ${artwork.price}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-            <h3 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">Status Distribution</h3>
-            <div className="flex items-center gap-4">
-              <svg width="120" height="120" viewBox="0 0 42 42" className="shrink-0">
-                <g transform="translate(21,21)">
-                  {(() => {
-                    let cumulative = 0;
-                    return pieDataAdmin.map((d) => {
-                      const portion = d.value / pieTotalAdmin;
-                      const dash = portion * 100;
-                      const strokeDasharray = `${dash} ${100 - dash}`;
-                      const rotate = cumulative * 3.6;
-                      cumulative += dash;
-                      return (
-                        <circle key={d.label} r="15.9" cx="0" cy="0" fill="transparent" stroke={d.color} strokeWidth="8" strokeDasharray={strokeDasharray} transform={`rotate(${rotate})`} strokeLinecap="butt" />
-                      );
-                    });
-                  })()}
-                </g>
-              </svg>
+            <h3 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">
+              Quick Actions
+            </h3>
+            <div className="space-y-3">
+              <a
+                href="/dashboard/artists"
+                className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                <div className="font-medium text-gray-900 dark:text-gray-100">
+                  Manage Artists
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-300">
+                  View and manage all registered artists
+                </div>
+              </a>
 
-              <div className="flex-1">
-                {pieDataAdmin.map((p) => (
-                  <div key={p.label} className="flex items-center justify-between text-sm mb-2">
-                    <div className="flex items-center gap-2">
-                      <span style={{ background: p.color }} className="w-3 h-3 rounded-full inline-block" />
-                      <span className="text-gray-700 dark:text-gray-300">{p.label}</span>
-                    </div>
-                    <div className="text-gray-600 dark:text-gray-300">{((p.value / pieTotalAdmin) * 100).toFixed(0)}%</div>
-                  </div>
-                ))}
-              </div>
+              <a
+                href="/dashboard/buyers"
+                className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                <div className="font-medium text-gray-900 dark:text-gray-100">
+                  Manage Buyers
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-300">
+                  View and manage all registered buyers
+                </div>
+              </a>
+
+              <a
+                href="/dashboard/artworks"
+                className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                <div className="font-medium text-gray-900 dark:text-gray-100">
+                  Review Artworks
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-300">
+                  Approve or reject submitted artworks
+                </div>
+              </a>
+
+              <a
+                href="/dashboard/orders"
+                className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                <div className="font-medium text-gray-900 dark:text-gray-100">
+                  Manage Orders
+                </div>
+                <div className="text-sm text-gray-500 dark:text-gray-300">
+                  View and process customer orders
+                </div>
+              </a>
             </div>
           </div>
         </div>

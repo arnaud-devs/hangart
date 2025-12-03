@@ -42,16 +42,20 @@ export default function CartPage() {
               ) : (
                 <>
                   <div className="space-y-6">
-                    {items.map((item) => (
+                    {items.map((item) => {
+                      const imageSrc = (item as any).image || (item as any).main_image || '';
+                      const artistDisplay = (item as any).artistName || (item as any).artist_name || '';
+                      const currencySymbol = (item as any).currency || '$';
+                      return (
                       <div
                         key={item.id}
                         className="flex gap-4 sm:gap-6 pb-6 border-b border-gray-200 dark:border-gray-700 last:border-b-0"
                       >
                         {/* Artwork Image */}
                         <div className="relative w-24 h-32 sm:w-32 sm:h-40 bg-gray-200 dark:bg-gray-700 rounded-md shrink-0 overflow-hidden">
-                          {item.image && (
+                          {imageSrc && (
                             <Image
-                              src={item.image}
+                              src={imageSrc}
                               alt={item.title}
                               fill
                               className="object-cover"
@@ -67,9 +71,9 @@ export default function CartPage() {
                               <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-base sm:text-lg mb-1">
                                 {item.title}
                               </h3>
-                              {item.artistName && (
+                              {artistDisplay && (
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                                  {item.artistName}
+                                  {artistDisplay}
                                 </p>
                               )}
                               <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
@@ -93,7 +97,7 @@ export default function CartPage() {
                             <div className="flex justify-between text-sm font-semibold">
                               <span className="text-gray-900 dark:text-gray-100">ARTWORK TOTAL</span>
                               <span className="text-gray-900 dark:text-gray-100">
-                                {item.currency || "$"}{item.price?.toFixed(2) || "0.00"}
+                                {currencySymbol}{item.price?.toFixed(2) || "0.00"}
                               </span>
                             </div>
                             <div className="pt-2">
@@ -109,7 +113,8 @@ export default function CartPage() {
                           </button>
                         </div>
                       </div>
-                    ))}
+                    );
+                    })}
                   </div>
 
                   {/* Promo Code Section */}

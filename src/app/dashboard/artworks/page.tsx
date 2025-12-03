@@ -2,107 +2,67 @@
 
 import React, { useEffect, useState } from 'react'
 import ArtworksTable from '@/components/dashboard/ArtworksTable'
-import sampleArtworks, { type Artwork } from '@/lib/sampleArtworks'
-
-const CUSTOM_KEY = 'customArtworks';
+import { artworkService, artistService } from '@/services/apiServices'
+import { useAuth } from '@/lib/authProvider'
+// removed unused duplicate imports
 
 export default function Page() {
-  const [artworks, setArtworks] = useState<Artwork[]>(() => sampleArtworks);
+  const { user } = useAuth();
+  const [artworks, setArtworks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    try {
-      const rawUser = localStorage.getItem('user');
-      const user = rawUser ? JSON.parse(rawUser) : null;
-      const artistId = user?.id || 'artist-01';
-
-      // load custom artworks from localStorage and merge
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const custom: Artwork[] = raw ? JSON.parse(raw) : [];
-      const myCustom = custom.filter(c => c.artistId === artistId);
-
-      const base = sampleArtworks.filter(a => a.artistId === artistId);
-      const combined = [...myCustom, ...base];
-      // If the artist has no specific artworks (e.g., admin or different role), fall back to full sample data
-      if (combined.length === 0) {
-        setArtworks([...myCustom, ...sampleArtworks]);
-      } else {
-        setArtworks(combined);
-      }
-    } catch (e) {
-      setArtworks(sampleArtworks.filter(a => a.artistId === 'artist-01'));
-    }
+    loadArtworks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const saveCustom = (art: Artwork) => {
+  const loadArtworks = async () => {
     try {
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: Artwork[] = raw ? JSON.parse(raw) : [];
-      list.unshift(art);
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
-    } catch (e) {
-      // ignore
-    }
-  };
-
-  const addArtwork = (payload: Partial<Artwork>) => {
-    try {
-      const rawUser = localStorage.getItem('user');
-      const user = rawUser ? JSON.parse(rawUser) : { id: 'artist-01', firstName: 'Amina', lastName: 'Uwimana' };
-      const id = `art-${Date.now()}`;
-      const art: Artwork = {
-        id,
-        title: payload.title || 'Untitled',
-        artistId: user.id,
-        artistName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Unknown',
-        price: Number(payload.price) || 0,
-        currency: payload.currency || 'USD',
-        approved: false,
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-        image: payload.image || '/arts/art1.jpg',
-        views: 0,
-        likes: 0,
-        income: 0,
-        description: payload.description || ''
-      };
-
-      // persist and update state
-      saveCustom(art);
-      setArtworks(prev => [art, ...prev]);
-      setShowModal(false);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const deleteArtwork = (id: string) => {
-    try {
-      setArtworks(prev => prev.filter(a => a.id !== id));
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: Artwork[] = raw ? JSON.parse(raw) : [];
-      const filtered = list.filter(i => i.id !== id);
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(filtered));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-    const updateArtwork = (updated: Artwork) => {
-      try {
-        // update in-memory state
-        setArtworks(prev => prev.map(a => a.id === updated.id ? updated : a));
-
-        // persist to custom list (replace or add)
-        const raw = localStorage.getItem(CUSTOM_KEY);
-        const list: Artwork[] = raw ? JSON.parse(raw) : [];
-        const filtered = list.filter(i => i.id !== updated.id);
-        filtered.unshift(updated);
-        localStorage.setItem(CUSTOM_KEY, JSON.stringify(filtered));
-      } catch (e) {
-        console.error(e);
+      setLoading(true);
+      // If artist, load my artworks; otherwise load public artworks
+      if (user?.role === 'artist') {
+        const res: any = await artistService.getMyArtworks();
+        setArtworks(res.results || res || []);
+      } else {
+        const res: any = await artworkService.listArtworks();
+        setArtworks(res.results || res || []);
       }
-    };
+    } catch (err: any) {
+      setError(err.message || 'Failed to load artworks');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createArtwork = async (formData: FormData) => {
+    try {
+      const created = await artworkService.createArtwork(formData as any);
+      setArtworks(prev => [created as any, ...prev]);
+      setShowModal(false);
+    } catch (err: any) {
+      setError(err.message || 'Failed to create artwork');
+    }
+  };
+
+  const updateArtwork = async (id: number, payload: any) => {
+    try {
+      const updated = await artworkService.updateArtwork(id, payload);
+      setArtworks(prev => prev.map(a => a.id === updated.id ? updated : a));
+    } catch (err: any) {
+      setError(err.message || 'Failed to update artwork');
+    }
+  };
+
+  const deleteArtwork = async (id: number) => {
+    try {
+      await artworkService.deleteArtwork(id);
+      setArtworks(prev => prev.filter(a => a.id !== id));
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete artwork');
+    }
+  };
 
   return (
     <div className="p-6">
@@ -110,34 +70,42 @@ export default function Page() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-semibold">My Artworks</h2>
           <div>
-            <button onClick={() => setShowModal(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded">Add Artwork</button>
+            {user?.role === 'artist' && (
+              <button onClick={() => setShowModal(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded">Add Artwork</button>
+            )}
           </div>
         </div>
 
-        <ArtworksTable artworks={artworks} onUpdate={updateArtwork} onDelete={deleteArtwork} />
+        {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
+
+        <ArtworksTable artworks={artworks} onUpdate={(a: any) => updateArtwork(a.id, a)} onDelete={(id: any) => deleteArtwork(id)} />
       </div>
 
       {showModal && (
-        <ArtworkModal onClose={() => setShowModal(false)} onSave={addArtwork} />
+        <ArtworkModal onClose={() => setShowModal(false)} onSave={createArtwork} />
       )}
     </div>
   );
 }
 
-function ArtworkModal({ onClose, onSave }: { onClose: () => void; onSave: (a: Partial<Artwork>) => void }) {
+function ArtworkModal({ onClose, onSave }: { onClose: () => void; onSave: (fd: FormData) => void }) {
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
-  const [image, setImage] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [description, setDescription] = useState('');
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ title, price: Number(price), image, description, currency: 'USD' });
+    const fd = new FormData();
+    fd.append('title', title);
+    fd.append('price', price);
+    fd.append('description', description);
+    if (imageFile) fd.append('main_image', imageFile);
+    onSave(fd);
   };
 
   return (
     <div>
-      {/* use shared Modal styling */}
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black/40" onClick={onClose} />
         <form onSubmit={submit} className="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 z-10 text-gray-900 dark:text-gray-100">
@@ -146,22 +114,22 @@ function ArtworkModal({ onClose, onSave }: { onClose: () => void; onSave: (a: Pa
           <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Title</label>
-              <input value={title} onChange={e => setTitle(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required />
+              <input value={title} onChange={e => setTitle(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" required />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Price (USD)</label>
-              <input value={price} onChange={e => setPrice(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" type="number" min="0" step="0.01" required />
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Price</label>
+              <input value={price} onChange={e => setPrice(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" type="number" min="0" step="0.01" required />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Image URL (optional)</label>
-              <input value={image} onChange={e => setImage(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" placeholder="/arts/art1.jpg or https://..." />
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Main Image (file)</label>
+              <input type="file" onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)} accept="image/*" />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Description</label>
-              <textarea value={description} onChange={e => setDescription(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" rows={4} />
+              <textarea value={description} onChange={e => setDescription(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" rows={4} />
             </div>
           </div>
 
@@ -174,3 +142,4 @@ function ArtworkModal({ onClose, onSave }: { onClose: () => void; onSave: (a: Pa
     </div>
   );
 }
+

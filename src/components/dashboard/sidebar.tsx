@@ -33,6 +33,7 @@ const sidebarItemsByRole: Record<string, SidebarItem[]> = {
     { icon: Home, label: "Dashboard", href: "/dashboard" },
     { icon: Users, label: "Artists", href: "/dashboard/artists" },
     { icon: Users, label: "Buyers", href: "/dashboard/buyers" },
+    { icon: Users, label: "Users", href: "/dashboard/users" },
     { icon: Image, label: "Artworks", href: "/dashboard/artworks" },
     { icon: CheckCircle, label: "Approvals", href: "/dashboard/approvals" },
     { icon: Folder, label: "Museums", href: "/dashboard/museums" },

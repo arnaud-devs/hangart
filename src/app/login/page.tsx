@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/Label'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
-import { getMe } from '@/lib/authClient'
+import { useAuth, default as AuthProvider } from '@/lib/authProvider'
 
 type FormValues = {
   identifier: string // username or email
@@ -21,53 +21,28 @@ const DEMO_USERS = [
   { id: 'museum-01', role: 'MUSEUM', label: 'Museum', email: 'museum@example.com' },
 ]
 
-export default function LoginPage() {
+function LoginContent(){
   const router = useRouter()
   const { register, handleSubmit, formState } = useForm<FormValues>()
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const auth = useAuth();
 
   const onSubmit = async (data: FormValues) => {
     setError(null)
     setSuccess(null)
     try {
-      // Backend expects username. We pass identifier as username; cookies are set server-side.
-      const payload = { username: data.identifier, password: data.password }
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-
-      const json = await res.json().catch(() => ({}))
-
-      if (!res.ok) {
-        setError(json?.message ?? 'Login failed')
-        return
-      }
-
-      // Optionally persist non-sensitive bits in localStorage; tokens are in httpOnly cookies
-      try { localStorage.setItem('auth_ok', 'true') } catch {}
-      // Fetch user to determine role-based redirect
+      const me = await auth.signIn(data.identifier, data.password);
+      const role = (me?.role || '').toLowerCase();
       let rolePath = '/dashboard';
-      try {
-        const me = await getMe();
-        const role = (me?.role || '').toLowerCase();
-        // Persist a minimal user snapshot for client features
-        try { localStorage.setItem('user', JSON.stringify(me)) } catch {}
-        if (role === 'artist') {
-          rolePath = '/dashboard/artworks';
-        } else if (role === 'buyer') {
-          rolePath = '/dashboard/wishlist';
-        } else if (role === 'museum') {
-          rolePath = '/dashboard/museum';
-        } else if (role === 'admin') {
-          rolePath = '/dashboard/approvals';
-        }
-      } catch {}
-      setSuccess('Logged in')
-      router.push(rolePath)
+      if (role === 'artist') rolePath = '/dashboard/artworks';
+      else if (role === 'buyer') rolePath = '/dashboard/wishlist';
+      else if (role === 'museum') rolePath = '/dashboard/museum';
+      else if (role === 'admin') rolePath = '/dashboard/approvals';
+      setSuccess('Logged in');
+      try { localStorage.setItem('auth_ok', 'true') } catch {}
+      router.push(rolePath);
     } catch (e: any) {
       setError(String(e?.message ?? e))
     }
@@ -83,7 +58,6 @@ export default function LoginPage() {
       profileImage: '',
     }
     try { localStorage.setItem('user', JSON.stringify(demoUser)) } catch {}
-    // redirect to dashboard — dashboard reads localStorage user to show role view
     router.push('/dashboard')
   }
 
@@ -152,5 +126,13 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
+  )
+}
+
+export default function LoginPage(){
+  return (
+    <AuthProvider>
+      <LoginContent />
+    </AuthProvider>
   )
 }

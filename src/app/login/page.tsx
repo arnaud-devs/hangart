@@ -14,13 +14,6 @@ type FormValues = {
   password: string
 }
 
-const DEMO_USERS = [
-  { id: 'admin-01', role: 'ADMIN', label: 'Admin', email: 'admin@example.com' },
-  { id: 'artist-01', role: 'ARTIST', label: 'Artist', email: 'artist@example.com' },
-  // { id: 'buyer-01', role: 'BUYER', label: 'Buyer', email: 'buyer@example.com' },
-  { id: 'museum-01', role: 'MUSEUM', label: 'Museum', email: 'museum@example.com' },
-]
-
 export default function LoginPage() {
   const router = useRouter()
   const { register, handleSubmit, formState } = useForm<FormValues>()
@@ -88,26 +81,11 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#0b1220] px-4">
-      <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        <div className="bg-gradient-to-br from-emerald-600 to-teal-500 text-white rounded-lg p-8 hidden md:block">
-          <h2 className="text-2xl font-bold mb-2">Welcome back to Hangart</h2>
-          <p className="text-sm opacity-90">Manage artworks, view analytics, and connect with collectors. Pick a demo profile below to preview role-specific dashboards.</p>
+    <main className="h-[70vh] flex justify-center bg-gray-50 dark:bg-[#1B1B1F] py-5">
+      <div className="w-full max-w-xl grid grid-cols-1">
+        
 
-          <div className="mt-6 space-y-3">
-            {DEMO_USERS.map(u => (
-              <button key={u.id} onClick={() => demoLogin(u)} className="w-full text-left bg-white/20 hover:bg-white/30 px-4 py-2 rounded flex items-center justify-between">
-                <div>
-                  <div className="font-semibold">{u.label} (Demo)</div>
-                  <div className="text-xs opacity-90">{u.email}</div>
-                </div>
-                <div className="text-xs opacity-90">Go</div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+        <div className="bg-white dark:bg-[#1E1F20] p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-semibold mb-4">Sign in</h1>
 
           {error && <div className="mb-4 text-sm text-red-700 dark:text-red-400">{error}</div>}
@@ -131,21 +109,12 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-6">
-            <div className="text-sm text-gray-600 dark:text-gray-300 mb-2">Quick demo logins</div>
-            <div className="flex flex-wrap gap-2">
-              {DEMO_USERS.map(u => (
-                <button key={u.id} onClick={() => demoLogin(u)} className="px-3 py-2 border rounded text-sm hover:bg-gray-50 dark:hover:bg-gray-700">{u.label}</button>
-              ))}
-            </div>
-          </div>
+          
 
-          <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
-            Demo credentials are available; pick a role to preview the dashboard.
-          </p>
+          
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 text-center">
             Don't have an account?{' '}
-            <Link href="/signup" className="text-emerald-600 hover:underline">
+            <Link href="/signup" className="text-blue-400 hover:underline">
               Sign up
             </Link>
           </p>

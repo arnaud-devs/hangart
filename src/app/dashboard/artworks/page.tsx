@@ -16,6 +16,7 @@ interface Artwork {
   description?: string;
   price: number | string;
   status?: string;
+  is_available?: boolean;
   artist?: { id: number; user?: { first_name: string; last_name: string } };
   created_at?: string;
   main_image?: string;
@@ -419,6 +420,7 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
   const [category, setCategory] = useState('');
   const [medium, setMedium] = useState('');
   const [price, setPrice] = useState(editingArtwork?.price?.toString() || '');
+  const [isAvailable, setIsAvailable] = useState(editingArtwork?.is_available ?? true);
   const [widthCm, setWidthCm] = useState('');
   const [heightCm, setHeightCm] = useState('');
   const [depthCm, setDepthCm] = useState('');
@@ -460,6 +462,7 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
         title,
         description,
         price,
+        is_available: isAvailable,
       };
       if (category) payload.category = category;
       if (medium) payload.medium = medium;
@@ -477,6 +480,7 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
       if (category) fd.append('category', category);
       if (medium) fd.append('medium', medium);
       fd.append('price', price);
+      fd.append('is_available', String(isAvailable));
       if (widthCm) fd.append('width_cm', widthCm);
       if (heightCm) fd.append('height_cm', heightCm);
       if (depthCm) fd.append('depth_cm', depthCm);
@@ -585,6 +589,33 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
                 />
                 {errors.imageFile && <p className="text-red-500 text-xs mt-1">{errors.imageFile}</p>}
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Supported formats: JPG, PNG, GIF, WebP</p>
+              </div>
+
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                  Availability <span className="text-red-500">*</span>
+                </label>
+                <div className="flex items-center gap-6">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={isAvailable === true}
+                      onChange={() => setIsAvailable(true)}
+                      className="w-4 h-4 text-emerald-600 border-gray-300 focus:ring-emerald-500"
+                    />
+                    <span className="text-sm text-gray-700 dark:text-gray-300">Available for Sale</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={isAvailable === false}
+                      onChange={() => setIsAvailable(false)}
+                      className="w-4 h-4 text-emerald-600 border-gray-300 focus:ring-emerald-500"
+                    />
+                    <span className="text-sm text-gray-700 dark:text-gray-300">Not Available</span>
+                  </label>
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Set whether this artwork can be purchased</p>
               </div>
             </div>
 

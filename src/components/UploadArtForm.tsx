@@ -19,6 +19,7 @@ const schema = z.object({
     return undefined;
   }, z.number().min(0).optional()),
   currency: z.string().optional(),
+  is_available: z.boolean(),
   images: z.unknown().optional(), // handled separately as FileList
 });
 
@@ -31,7 +32,10 @@ export default function UploadArtForm() {
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { images: null },
+    defaultValues: { 
+      images: null,
+      is_available: true 
+    },
   });
 
   const onFiles = (files?: FileList | null) => {
@@ -56,6 +60,7 @@ export default function UploadArtForm() {
       if (data.category) fd.append('category', data.category);
       if (data.price !== undefined) fd.append('price', String(data.price));
       if (data.currency) fd.append('currency', data.currency);
+      fd.append('is_available', String(data.is_available));
       Array.from(data.images).forEach((f) => fd.append('images', f));
 
       const res = await fetch('/api/artist/upload', { method: 'POST', body: fd });
@@ -104,6 +109,35 @@ export default function UploadArtForm() {
       <div>
         <label className="block text-sm font-medium">Currency</label>
         <input {...register('currency')} className="mt-1 block w-full rounded-md border px-3 py-2" />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Availability</label>
+        <div className="flex items-center gap-6">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              value="true"
+              {...register('is_available', {
+                setValueAs: (v) => v === 'true'
+              })}
+              className="w-4 h-4 text-emerald-600 border-gray-300 focus:ring-emerald-500"
+            />
+            <span className="text-sm text-gray-700 dark:text-gray-300">Available</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              value="false"
+              {...register('is_available', {
+                setValueAs: (v) => v === 'true'
+              })}
+              className="w-4 h-4 text-emerald-600 border-gray-300 focus:ring-emerald-500"
+            />
+            <span className="text-sm text-gray-700 dark:text-gray-300">Not Available</span>
+          </label>
+        </div>
+        {errors.is_available && <p className="text-sm text-red-600 mt-1">{String(errors.is_available.message)}</p>}
       </div>
 
       <div>

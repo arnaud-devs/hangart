@@ -169,7 +169,7 @@ export default function CartPage() {
 
                     <Link
                       href="/checkout"
-                      className="block w-full py-3 bg-green-600 hover:bg-green-700 text-white text-center font-semibold rounded-md transition-colors"
+                      className="block w-full py-3 bg-yellow-600 hover:bg-green-700 text-white text-center font-semibold rounded-md transition-colors"
                     >
                       CHECKOUT
                     </Link>

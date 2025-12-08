@@ -6,12 +6,12 @@ import { useRouter, usePathname } from "next/navigation";
 const LOCALES = ["rw", "en", "fr", "sw", "es", "zh"];
 const DEFAULT_LOCALE = "rw"; // default language
 const LOCALE_LABELS: Record<string, string> = {
-  rw: "Kinyarwanda",
-  en: "English",
-  fr: "Français",
-  es: "Español",
+  rw: "RW",
+  en: "EN",
+  fr: "FR",
+  es: "ES",
   zh: "中文",
-  sw: "Swahili",
+  sw: "SW",
 };
 
 function setLangCookie(lang: string) {

@@ -1,11 +1,12 @@
 "use client"
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, useTransition, useEffect, Suspense } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Label } from '@/components/ui/Label'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
+import { post, get, saveTokens } from '@/lib/appClient'
 
 type FormValues = {
   username: string
@@ -18,22 +19,11 @@ type FormValues = {
   phone?: string
 }
 
-export default function SignupPage() {
-  return (
-    <Suspense fallback={
-      <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#1B1B1F] px-4">
-        <div className="text-center text-gray-600 dark:text-gray-300">Loading…</div>
-      </main>
-    }>
-      <SignupPageInner />
-    </Suspense>
-  )
-}
-
-function SignupPageInner() {
+function SignupContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect')
+  const [isPending, startTransition] = useTransition()
   const { register, handleSubmit, formState, watch } = useForm<FormValues>()
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)
@@ -58,26 +48,50 @@ function SignupPageInner() {
     }
 
     try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: data.username,
-          email: data.email,
-          password: data.password,
-          password2: data.password2,
-          role: data.role,
-          first_name: data.first_name,
-          last_name: data.last_name,
-          phone: data.phone,
-        }),
-      })
+      const payload = {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        password2: data.password2,
+        role: data.role,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        phone: data.phone,
+      }
 
-      const json = await res.json().catch(() => ({}))
+      const json = await post('/auth/register/', payload);
 
-      if (!res.ok) {
-        setError(json?.message ?? 'Signup failed')
-        return
+      // If backend returns tokens, save them and fetch user
+      if (json?.tokens) {
+        const refresh = json.tokens.refresh;
+        const access = json.tokens.access;
+        saveTokens(access, refresh);
+        try {
+          const me = await get('/auth/me/');
+          try { localStorage.setItem('user', JSON.stringify(me)); } catch {}
+          // redirect based on role
+          const role = (me?.role || '').toLowerCase();
+          let redirectPath = '/dashboard';
+          if (role === 'artist') redirectPath = '/dashboard/artworks';
+          else if (role === 'buyer') redirectPath = '/dashboard/wishlist';
+          else if (role === 'museum') redirectPath = '/dashboard/museum';
+          else if (role === 'admin') redirectPath = '/dashboard/approvals';
+          
+          console.log('Signup successful, redirecting to:', redirectPath, 'for role:', role);
+          
+          startTransition(() => {
+            router.push(redirectPath);
+          });
+          
+          // Fallback: use window.location if router doesn't work
+          setTimeout(() => {
+            window.location.href = redirectPath;
+          }, 500);
+          return;
+        } catch (e) {
+          console.error('Signup redirect error:', e);
+          // ignore; fall through to show success message
+        }
       }
 
       setSuccess('Account created successfully!')
@@ -108,7 +122,34 @@ function SignupPageInner() {
         setSuccess('Account created successfully! You can now log in.')
       }
     } catch (e: any) {
-      setError(String(e?.message ?? e))
+      console.error('Signup error', e);
+      // If the api client attached a parsed response body, show its validation messages
+      const body = e?.body;
+      if (body) {
+        try {
+          if (typeof body === 'string') {
+            setError(body);
+          } else if (Array.isArray(body)) {
+            setError(body.join(' '));
+          } else if (typeof body === 'object') {
+            // Flatten field errors into a single message
+            const parts: string[] = [];
+            if (body.non_field_errors) parts.push(Array.isArray(body.non_field_errors) ? body.non_field_errors.join(' ') : String(body.non_field_errors));
+            Object.entries(body).forEach(([k, v]) => {
+              if (k === 'non_field_errors') return;
+              if (Array.isArray(v)) parts.push(`${k}: ${v.join(' ')}`);
+              else parts.push(`${k}: ${String(v)}`);
+            });
+            setError(parts.join(' | '));
+          } else {
+            setError(String(body));
+          }
+        } catch (parseErr) {
+          setError(String(e?.message ?? e));
+        }
+      } else {
+        setError(String(e?.message ?? e));
+      }
     }
   }
 
@@ -223,5 +264,13 @@ function SignupPageInner() {
         </p>
       </div>
     </main>
+  )
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[70vh] flex items-center justify-center">Loading...</div>}>
+      <SignupContent />
+    </Suspense>
   )
 }

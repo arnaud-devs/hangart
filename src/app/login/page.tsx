@@ -1,13 +1,13 @@
 "use client"
 
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, useTransition, useEffect, Suspense } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Label } from '@/components/ui/Label'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
-import { getMe } from '@/lib/authClient'
+import { useAuth, default as AuthProvider } from '@/lib/authProvider'
 
 type FormValues = {
   identifier: string // username or email
@@ -21,27 +21,17 @@ const DEMO_USERS = [
   { id: 'museum-01', role: 'MUSEUM', label: 'Museum', email: 'museum@example.com' },
 ]
 
-export default function LoginPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#0b1220] px-4">
-        <div className="text-center text-gray-600 dark:text-gray-300">Loading...</div>
-      </div>
-    }>
-      <LoginPageInner />
-    </Suspense>
-  )
-}
-
-function LoginPageInner() {
+function LoginContent(){
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect')
+  const [isPending, startTransition] = useTransition()
   const { register, handleSubmit, formState } = useForm<FormValues>()
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [showRedirectMessage, setShowRedirectMessage] = useState(false)
+  const auth = useAuth();
 
   useEffect(() => {
     if (redirect) {
@@ -53,51 +43,34 @@ function LoginPageInner() {
     setError(null)
     setSuccess(null)
     try {
-      // Backend expects username. We pass identifier as username; cookies are set server-side.
-      const payload = { username: data.identifier, password: data.password }
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-
-      const json = await res.json().catch(() => ({}))
-
-      if (!res.ok) {
-        setError(json?.message ?? 'Login failed')
-        return
-      }
-
-      // Optionally persist non-sensitive bits in localStorage; tokens are in httpOnly cookies
-      try { localStorage.setItem('auth_ok', 'true') } catch {}
-
-      // If there's a redirect parameter, use it; otherwise do role-based redirect
-      if (redirect) {
-        setSuccess('Logged in successfully')
-        router.push(redirect)
-        return
-      }
-
-      // Fetch user to determine role-based redirect
-      let rolePath = '/dashboard';
-      try {
-        const me = await getMe();
+      const me = await auth.signIn(data.identifier, data.password);
+      console.log('Login successful, user object:', me);
+      
+      // Use redirect parameter if available, otherwise determine by role
+      let targetPath = redirect || '/dashboard';
+      if (!redirect) {
         const role = (me?.role || '').toLowerCase();
-        // Persist a minimal user snapshot for client features
-        try { localStorage.setItem('user', JSON.stringify(me)) } catch {}
-        if (role === 'artist') {
-          rolePath = '/dashboard/artworks';
-        } else if (role === 'buyer') {
-          rolePath = '/dashboard/wishlist';
-        } else if (role === 'museum') {
-          rolePath = '/dashboard/museum';
-        } else if (role === 'admin') {
-          rolePath = '/dashboard/approvals';
-        }
-      } catch {}
-      setSuccess('Logged in')
-      router.push(rolePath)
+        if (role === 'artist') targetPath = '/dashboard/artworks';
+        else if (role === 'buyer') targetPath = '/dashboard/wishlist';
+        else if (role === 'museum') targetPath = '/dashboard/museum';
+        else if (role === 'admin') targetPath = '/dashboard/approvals';
+      }
+      
+      console.log('Redirecting to:', targetPath);
+      try { localStorage.setItem('auth_ok', 'true') } catch {}
+      
+      console.log('About to call router.push with path:', targetPath);
+      startTransition(() => {
+        router.push(targetPath);
+      });
+      console.log('router.push called, also using window.location as fallback');
+      
+      // Fallback: use window.location if router doesn't work
+      setTimeout(() => {
+        window.location.href = targetPath;
+      }, 500);
     } catch (e: any) {
+      console.error('Login failed:', e);
       setError(String(e?.message ?? e))
     }
   }
@@ -112,7 +85,6 @@ function LoginPageInner() {
       profileImage: '',
     }
     try { localStorage.setItem('user', JSON.stringify(demoUser)) } catch {}
-    // redirect to dashboard — dashboard reads localStorage user to show role view
     router.push('/dashboard')
   }
 
@@ -189,5 +161,15 @@ function LoginPageInner() {
         </div>
       </div>
     </main>
+  )
+}
+
+export default function LoginPage(){
+  return (
+    <AuthProvider>
+      <Suspense fallback={<div className="min-h-[70vh] flex items-center justify-center">Loading...</div>}>
+        <LoginContent />
+      </Suspense>
+    </AuthProvider>
   )
 }

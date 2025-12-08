@@ -20,7 +20,7 @@ export default function AddToCartButton({ id, title, artistName, image, price, c
   const handle = () => {
     setLoading(true);
     try {
-      addItem({ id, title, artistName, image, price: Number(price) || 0, currency }, quantity);
+      addItem({ id: Number(id), title, artistName, image, price: Number(price) || 0, currency }, quantity);
     } finally {
       setLoading(false);
     }

@@ -1,18 +1,17 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import ThemeToggle from "../components/ThemeToggle";
-import { User, ShoppingCart } from 'lucide-react';
-import LanguageSwitcher from "@/components/LanguageSwitcher";
-import MobileSearch from "@/components/MobileSearch";
 import { CartProvider } from "@/context/CartContext";
+import { AuthProvider } from '@/lib/authProvider';
+import { ToastProvider } from '@/components/ui/Toast';
 import CartDrawer from "@/components/CartDrawer";
-import CartButton from "@/components/CartButton";
-import UserMenu from "@/components/UserMenu";
 import Breadcrumbs from '@/components/Breadcrumbs';
 import HideWhenDashboard from '@/components/HideWhenDashboard';
 import React from "react";
 import { cookies } from "next/headers";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,157 +27,7 @@ export const metadata: Metadata = {
 
 type RootLayoutProps = Readonly<{ children: React.ReactNode }>;
 
-/*
-  Placeholder Navbar and Footer are defined here to avoid missing imports.
-  You can move them to `src/components` later if you want full implementations.
-*/
-const Navbar: React.FC = () => {
-  return (
-    <nav className="w-full">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between py-6">
-          {/* Left - Logo */}
-          <div className="flex items-center gap-4">
-            <a href="/" className="text-3xl font-serif text-[#3C3C43] dark:text-[#DFDFD6] leading-none">Hangart</a>
-          </div>
-
-          {/* Center - Search (kept responsive) */}
-          <div className="hidden md:flex flex-1 justify-center px-4">
-            <div className="w-full max-w-xl">
-              <input
-                type="search"
-                placeholder="Search for arts product"
-                className="w-full rounded-full border border-transparent bg-gray-100/50 dark:bg-gray-700/30 px-4 py-3 text-sm shadow-sm focus:outline-none text-gray-900 dark:text-gray-100"
-              />
-            </div>
-          </div>
-
-          {/* Right - actions */}
-          <div className="flex items-center gap-2 md:gap-4">
-            <div className="md:hidden">
-              <MobileSearch />
-            </div>
-
-            <div className="block">
-              <LanguageSwitcher />
-            </div>
-
-            <ThemeToggle />
-
-            <UserMenu />
-            {/* Cart button (client) - shows count and opens drawer */}
-            <div className="hidden sm:block">
-              <CartButton />
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
-};
-
-const Footer: React.FC = () => (
-  <footer className="w-full bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 mt-auto">
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {/* About Section */}
-        <div>
-          <h3 className="text-2xl font-serif text-gray-900 dark:text-[#DFDFD6] mb-4">Hangart</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            Discover original art from emerging global artists. Curated collections of paintings, photography, sculpture and more.
-          </p>
-          <div className="flex gap-4">
-            <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
-              </svg>
-            </a>
-            <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-              </svg>
-            </a>
-            <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd" />
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        {/* Shop Links */}
-        <div>
-          <h4 className="text-sm font-semibold text-gray-900 dark:text-[#DFDFD6] mb-4 uppercase tracking-wider">Shop</h4>
-          <ul className="space-y-2">
-            <li><a href="/gallery" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">All Artworks</a></li>
-            <li><a href="/gallery?category=painting" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">Paintings</a></li>
-            <li><a href="/gallery?category=photography" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">Photography</a></li>
-            <li><a href="/gallery?category=sculpture" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">Sculpture</a></li>
-            <li><a href="/artists" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">Featured Artists</a></li>
-            <li><a href="/collections" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">Collections</a></li>
-          </ul>
-        </div>
-
-        {/* Customer Service */}
-        <div>
-          <h4 className="text-sm font-semibold text-gray-900 dark:text-[#DFDFD6] mb-4 uppercase tracking-wider">Customer Service</h4>
-          <ul className="space-y-2">
-            <li><a href="/about" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">About Us</a></li>
-            <li><a href="/contact" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">Contact</a></li>
-            <li><a href="/shipping" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">Shipping & Returns</a></li>
-            <li><a href="/faq" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">FAQ</a></li>
-            <li><a href="/support" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">Support</a></li>
-          </ul>
-        </div>
-
-        {/* Newsletter */}
-        <div>
-          <h4 className="text-sm font-semibold text-gray-900 dark:text-[#DFDFD6] mb-4 uppercase tracking-wider">Newsletter</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-            Subscribe to get updates on new artworks and exclusive offers.
-          </p>
-          <form className="flex flex-col gap-2">
-            <input
-              suppressHydrationWarning
-              type="email"
-              placeholder="Your email"
-              className="flex-1 px-4 py-2 text-sm rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              suppressHydrationWarning
-              type="submit"
-              className="px-6 py-2 text-sm font-medium text-[#DFDFD6] bg-gray-900 dark:bg-white dark:text-gray-900 rounded-md hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
-            >
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </div>
-
-      {/* Bottom bar */}
-      <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            © {new Date().getFullYear()} HangartGallery. All rights reserved.
-          </p>
-          <div className="flex gap-6">
-            <a href="/privacy" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">
-              Privacy Policy
-            </a>
-            <a href="/terms" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">
-              Terms of Service
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
-);
-
 export default async function RootLayout({ children }: RootLayoutProps) {
-  // `cookies()` returns an async CookiesStore in Next.js 16+ and must be awaited
-  // before accessing `.get`. Awaiting here ensures we don't access a Promise
-  // synchronously which causes runtime errors in development.
   let cookieTheme: string | undefined = undefined;
   try {
     const cookieStore = await cookies();
@@ -188,13 +37,8 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     cookieTheme = undefined;
   }
 
-
   return (
     <html
-      // Suppress hydration warnings for attributes that may be set very early
-      // by a small inline script reading cookies/localStorage. We also render
-      // server-side attributes when available, but the inline script below
-      // ensures the DOM is coerced to the same theme before React hydrates.
       suppressHydrationWarning
       {...(cookieTheme
         ? {
@@ -204,12 +48,6 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         : undefined)}
     >
       <head>
-        {/* Inline script to set dark class early to avoid FOUC when no server cookie is present.
-            If we have a server cookie we render the class on <html> so no inline script is necessary. */}
-        {/* Inline script runs as early as possible and sets the html `data-theme`
-            and `class` from a `theme` cookie (preferred) or `localStorage.theme`.
-            This runs before hydration and avoids FOUC and most hydration
-            mismatches when client/server theme sources differ. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `try{
@@ -226,44 +64,36 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body
         suppressHydrationWarning
-        // background is controlled by CSS custom properties in `globals.css` (--background)
         className={`${inter.variable} min-h-screen text-gray-900 dark:text-gray-100 overflow-x-hidden antialiased font-sans`}
       >
-        {/*
-          Providers placeholder
-          - i18n provider should wrap the app here
-          - ThemeProvider (dark/light) should wrap the app here (e.g. next-themes)
-        */}
+        {/* Wrap with AuthProvider first, then CartProvider, then ToastProvider */}
+        <AuthProvider>
+          <CartProvider>
+            <ToastProvider>
+              <div className="flex flex-col min-h-screen">
+                <HideWhenDashboard>
+                  <header>
+                    <Navbar />
+                  </header>
 
-        <CartProvider>
-          <div className="flex flex-col min-h-screen">
-          {/* Top navigation, breadcrumbs and footer are hidden on dashboard routes */}
-          <HideWhenDashboard>
-            <header>
-              <Navbar />
-            </header>
+                  <div className="w-full">
+                    <Breadcrumbs />
+                  </div>
+                </HideWhenDashboard>
 
-            {/* Breadcrumbs - helpful navigation contextualizer */}
-            <div className="w-full">
-              <Breadcrumbs />
-            </div>
-          </HideWhenDashboard>
+                <main className="flex-1 w-full container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                  {children}
+                </main>
 
-          {/* Main content area - mobile-first responsive container */}
-          <main className="flex-1 w-full container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            {/* TODO: wrap `children` with Providers (i18n, ThemeProvider) in the future */}
-            {children}
-          </main>
+                <HideWhenDashboard>
+                  <Footer />
+                </HideWhenDashboard>
+              </div>
 
-          <HideWhenDashboard>
-            {/* Footer */}
-            <Footer />
-          </HideWhenDashboard>
-          </div>
-
-          {/* Global cart drawer / UI */}
-          <CartDrawer />
-        </CartProvider>
+              <CartDrawer />
+            </ToastProvider>
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { sampleArtworks } from "@/data/sampleArtworkData";
+import { listArtworks } from '@/lib/appClient';
 import { useRouter } from "next/navigation";
 
 export type Artwork = {
@@ -20,7 +20,7 @@ export type Artwork = {
 };
 
 type Props = {
-  artworks: Artwork[];
+  artworks?: Artwork[];
 };
 
 // Simple styled select that mimics shadcn-ui visuals using native <select>
@@ -79,10 +79,8 @@ export default function GalleryGrid({ artworks }: Props) {
   };
 
   // Prefer the canonical image stored in sampleArtworkData.ts for a given id
-  const imageFromSampleById = (id: string | number): string | undefined => {
-    const hit = sampleArtworks.find((s) => String(s.id) === String(id));
-    return hit?.image;
-  };
+  // (Previously used sample data) — now rely on artwork.image or main_image fields returned from API
+  const imageFromSampleById = (id: string | number): string | undefined => undefined;
 
   // determine current demo user role (client-side only)
   let userRole: string | null = null;
@@ -96,15 +94,47 @@ export default function GalleryGrid({ artworks }: Props) {
     }
   }
 
-  const categories = useMemo(() => {
-    const set = new Set<string>();
-    artworks.forEach((a) => a.category && set.add(a.category));
-    return ["all", ...Array.from(set)];
+  const [internalArtworks, setInternalArtworks] = useState<Artwork[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      try {
+        // If caller provided artworks prop, prefer it; otherwise fetch from API
+        if (artworks && artworks.length) {
+          if (mounted) setInternalArtworks(artworks.slice());
+          return;
+        }
+        const res = await listArtworks();
+        const list = Array.isArray(res) ? res : (res.results || []);
+        // map API fields to local Artwork shape
+        const mapped = list.map((a: any) => ({
+          id: a.id,
+          title: a.title,
+          image: a.main_image || a.image || undefined,
+          artist: a.artist_name || a.artist?.username || undefined,
+          price: a.price,
+          category: a.category,
+          status: a.status,
+        }));
+        if (mounted) setInternalArtworks(mapped);
+      } catch (e) {
+        // ignore; leave empty list
+      }
+    }
+    load();
+    return () => { mounted = false; };
   }, [artworks]);
 
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    internalArtworks.forEach((a) => a.category && set.add(a.category));
+    return ["all", ...Array.from(set)];
+  }, [internalArtworks]);
+
   const filtered = useMemo(() => {
-    // prefer the passed `artworks` prop when available, otherwise fall back to sampleArtworks
-    let list = (artworks && artworks.length ? artworks.slice() : sampleArtworks.slice());
+    // prefer the passed `artworks` prop when available, otherwise use fetched internalArtworks
+    let list = (artworks && artworks.length ? artworks.slice() : internalArtworks.slice());
 
     if (category !== "all") {
       list = list.filter((a) => a.category === category);
@@ -137,7 +167,7 @@ export default function GalleryGrid({ artworks }: Props) {
     } // newest keeps original order
 
     return list;
-  }, [artworks, category, priceFilter, sort]);
+  }, [artworks, internalArtworks, category, priceFilter, sort]);
 
   // If current user is a BUYER, ensure they only see approved artworks.
   const visible = useMemo(() => {
@@ -218,7 +248,7 @@ export default function GalleryGrid({ artworks }: Props) {
             <div className="bg-[#F6F6F7] dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm">
               <div className="relative w-full h-56 bg-gray-100 dark:bg-gray-700">
                 <Image
-                  src={resolveImage(imageFromSampleById(art.id) ?? art.image)}
+                  src={resolveImage((imageFromSampleById(art.id) ?? art.image) || (art as any).main_image)}
                   alt={art.title}
                   fill
                   className="object-cover"

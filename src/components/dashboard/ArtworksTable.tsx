@@ -55,7 +55,7 @@ export default function ArtworksTable({ artworks, onUpdate, onDelete }: Props) {
                     <div className="text-xs text-gray-500 dark:text-gray-300">by {a.artistName}</div>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{a.currency} {a.price.toFixed(2)}</td>
+                <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{a.currency} {Number(a.price).toFixed(2)}</td>
                 <td className="px-4 py-3">
                   {a.status === 'approved' ? (
                     <span className="inline-flex items-center gap-2 text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1 rounded-full text-sm">
@@ -70,7 +70,7 @@ export default function ArtworksTable({ artworks, onUpdate, onDelete }: Props) {
                   )}
                 </td>
                 <td className="px-4 py-3">{a.views}</td>
-                <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{a.currency} {a.income.toFixed(2)}</td>
+                <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{a.currency} {Number(a.income).toFixed(2)}</td>
                 <td className="px-4 py-3 text-right">
                   <div className="inline-flex items-center gap-2">
                     <button aria-label="View" onClick={() => setViewArtwork(a)} className="p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"><Eye className="w-4 h-4 text-gray-600 dark:text-gray-300"/></button>

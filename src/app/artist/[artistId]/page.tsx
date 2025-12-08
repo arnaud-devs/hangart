@@ -2,8 +2,8 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import GalleryGrid from '@/components/GalleryGrid';
-import sampleArtists from '@/data/SampleArtists';
 import sampleArtworks from '@/data/SampleArtworks';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://hangart.pythonanywhere.com/api';
 
 export default async function ArtistPage({ params }: { params: any }) {
   const resolved = await params;
@@ -12,8 +12,17 @@ export default async function ArtistPage({ params }: { params: any }) {
     return <div className="container mx-auto p-8">Artist not found.</div>;
   }
 
-  // Use server-side sample data directly to avoid making relative fetch() calls
-  const artist = sampleArtists.find((a) => a.id === String(artistId));
+  // Fetch artist profile from backend API (server-side)
+  let artist: any = null;
+  try {
+    const res = await fetch(`${API_BASE}/profiles/artists/${artistId}/`);
+    if (res.ok) {
+      artist = await res.json();
+    }
+  } catch (e) {
+    console.error('Failed to fetch artist:', e);
+  }
+
   if (!artist) return <div className="container mx-auto p-8">Artist not found.</div>;
 
   const { name, bio, avatarUrl, socialLinks, artworks } = artist as any;

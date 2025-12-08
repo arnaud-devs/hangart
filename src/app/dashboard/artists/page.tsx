@@ -1,214 +1,334 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from 'react';
-import sampleArtists, { type Artist } from '@/data/SampleArtists';
-import sampleArtworks from '@/lib/sampleArtworks';
-import sampleTransactions from '@/lib/sampleTransactions';
-import ArtistViewModal from '@/components/dashboard/ArtistViewModal';
-import ArtistEditModal from '@/components/dashboard/ArtistEditModal';
-import AddArtistModal from '@/components/dashboard/AddArtistModal';
+import React, { useEffect, useState } from 'react';
+import { Users, CheckCircle, XCircle, TrendingUp, Shield } from 'lucide-react';
+import { adminService, artistService } from '@/services/apiServices';
+import { useAuth } from '@/lib/authProvider';
+import StatsCard from '@/components/dashboard/StatsCard';
+import DataTable from '@/components/dashboard/DataTable';
+import VerifyArtistModal from '@/components/dashboard/VerifyArtistModal';
 
-const CUSTOM_KEY = 'customArtists';
+interface Artist {
+  id: number;
+  user?: {
+    id: number;
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    phone?: string;
+    is_verified: boolean;
+  };
+  user_id?: number;
+  username?: string;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  bio?: string;
+  profile_photo?: string;
+  specialization?: string;
+  experience_years?: number;
+  country?: string;
+  city?: string;
+  verified_by_admin?: boolean;
+  website?: string;
+  instagram?: string;
+  facebook?: string;
+}
 
-export default function Page() {
+export default function ArtistsPage() {
   const [artists, setArtists] = useState<Artist[]>([]);
-  const [viewArtist, setViewArtist] = useState<Artist | null>(null);
-  const [editArtist, setEditArtist] = useState<Artist | null>(null);
-  const [showAddArtist, setShowAddArtist] = useState(false);
-
-  const artistStats = useMemo(() => {
-    try {
-      const raw = localStorage.getItem('customArtworks');
-      const custom: any[] = raw ? JSON.parse(raw) : [];
-
-      const map = new Map<string, { count: number; total: number; sold: number }>();
-      // initialize map with artists
-      [...sampleArtists, ...artists].forEach(a => {
-        map.set(a.id, { count: 0, total: 0, sold: 0 });
-      });
-
-      const allArtworks = [...sampleArtworks, ...custom];
-      allArtworks.forEach((art: any) => {
-        const stats = map.get(art.artistId) || { count: 0, total: 0, sold: 0 };
-        stats.count += 1;
-        stats.total += Number(art.price || 0);
-        map.set(art.artistId, stats);
-      });
-
-      // sold count from transactions
-      sampleTransactions.forEach(tx => {
-        const art = allArtworks.find(a => a.id === tx.artworkId);
-        if (art && tx.status === 'completed') {
-          const stats = map.get(art.artistId) || { count: 0, total: 0, sold: 0 };
-          stats.sold += 1;
-          map.set(art.artistId, stats);
-        }
-      });
-
-      return map;
-    } catch (e) {
-      return new Map();
-    }
-  }, [artists]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [verifyTarget, setVerifyTarget] = useState<Artist | null>(null);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'verified' | 'pending'>('all');
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [pageSize, setPageSize] = useState(20);
+  const [counts, setCounts] = useState({ total: 0, verified: 0, pending: 0 });
+  const { user } = useAuth();
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const custom: any[] = raw ? JSON.parse(raw) : [];
-      const map = new Map<string, Artist>();
-      [...sampleArtists, ...custom].forEach(a => map.set(a.id, a));
-      // filter deleted
-      const merged = Array.from(map.values()).filter(a => !(a as any).deleted);
-      setArtists(merged);
-    } catch (e) {
-      setArtists(sampleArtists);
-    }
+    loadArtists(1, statusFilter);
+  }, [statusFilter]);
+
+  useEffect(() => {
+    loadCounts();
   }, []);
 
-  const toggleVerified = (id: string) => {
-    setArtists(prev => prev.map(a => a.id === id ? { ...a, verifiedByAdmin: !a.verifiedByAdmin } : a));
+  const loadCounts = async () => {
     try {
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: any[] = raw ? JSON.parse(raw) : [];
-      const found = list.find(i => i.id === id);
-      if (found) {
-        found.verifiedByAdmin = !found.verifiedByAdmin;
-        localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
-      } else {
-        const base = sampleArtists.find(s => s.id === id);
-        if (base) {
-          const updated = { ...base, verifiedByAdmin: !base.verifiedByAdmin } as Artist;
-          list.unshift(updated);
-          localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
-        }
-      }
-    } catch (e) {
-      console.error(e);
+      const [verifiedRes, pendingRes] = await Promise.all([
+        artistService.listArtists({ verified_by_admin: true }),
+        artistService.listArtists({ verified_by_admin: false }),
+      ]);
+
+      const verifiedCount =
+        verifiedRes.count ?? verifiedRes.results?.length ?? verifiedRes.length ?? 0;
+      const pendingCount =
+        pendingRes.count ?? pendingRes.results?.length ?? pendingRes.length ?? 0;
+
+      setCounts({
+        total: verifiedCount + pendingCount,
+        verified: verifiedCount,
+        pending: pendingCount,
+      });
+    } catch (err) {
+      console.error('Error loading artist counts:', err);
     }
   };
 
-  const saveArtist = (updated: Artist) => {
-    setArtists(prev => prev.map(a => a.id === updated.id ? updated : a));
+  const loadArtists = async (
+    pageNumber: number = 1,
+    status: 'all' | 'verified' | 'pending' = statusFilter,
+  ) => {
     try {
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: any[] = raw ? JSON.parse(raw) : [];
-      const filtered = list.filter(i => i.id !== updated.id);
-      filtered.unshift(updated);
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(filtered));
-    } catch (e) {
-      console.error(e);
+      setLoading(true);
+      const params: any = { page: pageNumber };
+
+      if (status === 'verified') params.verified_by_admin = true;
+      if (status === 'pending') params.verified_by_admin = false;
+
+      const response = await artistService.listArtists(params);
+      const artistsData = response.results || response || [];
+      const count = response.count ?? artistsData.length ?? 0;
+
+      setArtists(artistsData);
+      setTotalCount(count);
+      setPage(pageNumber);
+      setPageSize(artistsData.length || pageSize || 20);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load artists');
+      console.error('Error loading artists:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const addArtist = (payload: Partial<Artist>) => {
+  const handleVerify = async (artistId: number, verified: boolean) => {
     try {
-      const id = `artist-${Date.now()}`;
-      const newArtist: Artist = {
-        id,
-        userId: payload.name?.toLowerCase().replace(/\s+/g, '-') || id,
-        name: payload.name || 'Unnamed',
-        bio: payload.bio || '',
-        avatarUrl: '/avatars/default.jpg',
-        profilePhotoUrl: '/profiles/default.jpg',
-        website: '',
-        specialization: payload.specialization || '',
-        experienceYears: 0,
-        country: payload.country || '',
-        city: payload.city || '',
-        verifiedByAdmin: false,
-        socialLinks: [],
-        artworks: []
-      };
-      setArtists(prev => [newArtist, ...prev]);
-      // persist
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: any[] = raw ? JSON.parse(raw) : [];
-      list.unshift(newArtist);
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
-    } catch (e) {
-      console.error(e);
+      await adminService.verifyArtist(artistId, verified);
+      await loadArtists(page, statusFilter);
+      await loadCounts();
+      setVerifyTarget(null);
+    } catch (err: any) {
+      console.error('Verification error:', err);
+      setError(err.message || 'Failed to verify artist');
     }
   };
 
-  const deleteArtist = (id: string) => {
-    setArtists(prev => prev.filter(a => a.id !== id));
-    try {
-      const raw = localStorage.getItem(CUSTOM_KEY);
-      const list: any[] = raw ? JSON.parse(raw) : [];
-      // mark deleted
-      list.unshift({ id, deleted: true });
-      localStorage.setItem(CUSTOM_KEY, JSON.stringify(list));
-    } catch (e) {
-      console.error(e);
-    }
+  const currentPageSize = pageSize || artists.length || 1;
+  const totalPages = Math.max(1, Math.ceil((totalCount || artists.length || 1) / currentPageSize));
+
+  // Calculate stats
+  const stats = {
+    total: counts.total || totalCount || artists.length,
+    verified: counts.verified || artists.filter(a => a.verified_by_admin).length,
+    pending: counts.pending || artists.filter(a => !a.verified_by_admin).length,
+    newThisMonth: Math.floor((counts.total || totalCount || artists.length) * 0.15), // Mock trend
   };
 
-  return (
-    <div className="p-6">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Artists</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-300 mb-4">Manage registered artists.</p>
-        <div className="flex justify-end mb-4">
-          <button onClick={() => setShowAddArtist(true)} className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">Add Artist</button>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700" aria-label="Artists table">
-              <caption className="sr-only">Artists table showing registered artists, artworks and stats</caption>
-              <thead className="bg-gray-50 dark:bg-gray-900">
-                <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Artist</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Artworks</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Value</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sold</th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
-                {artists.map(a => (
-                  <tr key={a.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                        <td className="px-4 py-3">
-                          <div className="font-medium text-gray-900 dark:text-gray-100">{a.name}</div>
-                          <div className="text-xs text-gray-500 dark:text-gray-300">{a.specialization || ''}</div>
-                        </td>
-                        <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{a.city}, {a.country}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
-                          {(() => {
-                            const s = artistStats.get(a.id);
-                            return s ? s.count : 0;
-                          })()}
-                        </td>
-                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">{(() => {
-                          const s = artistStats.get(a.id);
-                          return s ? `$${s.total.toFixed(2)}` : '$0.00';
-                        })()}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">{(() => {
-                          const s = artistStats.get(a.id);
-                          return s ? s.sold : 0;
-                        })()}</td>
-                        <td className="px-4 py-3 text-right">
-                          <div className="inline-flex items-center gap-2">
-                            <button onClick={() => setViewArtist(a)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">View</button>
-                            <button onClick={() => setEditArtist(a)} className="px-3 py-1 border rounded text-sm bg-white dark:bg-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">Edit</button>
-                            <button onClick={() => toggleVerified(a.id)} className={`px-3 py-1 rounded text-sm ${a.verifiedByAdmin ? 'bg-emerald-600 text-white' : 'bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 border'}`}>
-                              {a.verifiedByAdmin ? 'Verified' : 'Verify'}
-                            </button>
-                            <button onClick={() => deleteArtist(a.id)} className="px-3 py-1 text-red-600 dark:text-red-400 border rounded text-sm bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">Delete</button>
-                          </div>
-                        </td>
-                      </tr>
-                ))}
-              </tbody>
-            </table>
+  const columns = [
+    {
+      key: 'name',
+      label: 'Artist',
+      sortable: true,
+      render: (_: any, row: Artist) => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center text-white font-semibold">
+            {(row.user?.first_name || row.first_name || row.username || 'A')[0].toUpperCase()}
+          </div>
+          <div>
+            <div className="font-medium text-gray-900 dark:text-gray-100">
+              {row.user?.first_name || row.first_name || ''} {row.user?.last_name || row.last_name || ''}
+            </div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              @{row.user?.username || row.username || 'N/A'}
+            </div>
           </div>
         </div>
+      ),
+    },
+    {
+      key: 'email',
+      label: 'Email',
+      sortable: true,
+      render: (_: any, row: Artist) => (
+        <span className="text-gray-900 dark:text-gray-100">
+          {row.user?.email || row.email || 'N/A'}
+        </span>
+      ),
+    },
+    {
+      key: 'specialization',
+      label: 'Specialization',
+      sortable: true,
+      render: (value: any) => (
+        <span className="text-gray-900 dark:text-gray-100">
+          {value || 'Not specified'}
+        </span>
+      ),
+    },
+    {
+      key: 'experience_years',
+      label: 'Experience',
+      sortable: true,
+      render: (value: any) => (
+        <span className="text-gray-900 dark:text-gray-100">
+          {value || 0} years
+        </span>
+      ),
+    },
+    {
+      key: 'location',
+      label: 'Location',
+      render: (_: any, row: Artist) => (
+        <span className="text-gray-900 dark:text-gray-100">
+          {row.city && row.country ? `${row.city}, ${row.country}` : row.country || row.city || 'N/A'}
+        </span>
+      ),
+    },
+    {
+      key: 'verified_by_admin',
+      label: 'Status',
+      sortable: true,
+      render: (value: boolean) => (
+        value ? (
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
+            <CheckCircle className="w-3 h-3" />
+            Verified
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">
+            <XCircle className="w-3 h-3" />
+            Pending
+          </span>
+        )
+      ),
+    },
+  ];
+
+  return (
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Artists Management</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Manage and verify artist profiles
+          </p>
+        </div>
       </div>
-      {viewArtist && <ArtistViewModal artist={viewArtist} onClose={() => setViewArtist(null)} />}
-      {editArtist && <ArtistEditModal artist={editArtist} onClose={() => setEditArtist(null)} onSave={saveArtist} />}
-      {showAddArtist && <AddArtistModal onClose={() => setShowAddArtist(false)} onSave={addArtist} />}
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatsCard
+          title="Total Artists"
+          value={stats.total}
+          icon={Users}
+          color="blue"
+          description="All registered artists"
+        />
+        <StatsCard
+          title="Verified Artists"
+          value={stats.verified}
+          icon={CheckCircle}
+          color="green"
+          trend={{ value: 12, isPositive: true }}
+        />
+        <StatsCard
+          title="Pending Verification"
+          value={stats.pending}
+          icon={Shield}
+          color="orange"
+          description="Awaiting admin approval"
+        />
+        <StatsCard
+          title="New This Month"
+          value={stats.newThisMonth}
+          icon={TrendingUp}
+          color="purple"
+          trend={{ value: 8, isPositive: true }}
+        />
+      </div>
+
+      {/* Error Display */}
+      {error && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <p className="text-red-800 dark:text-red-200">{error}</p>
+        </div>
+      )}
+
+      {/* Data Table */}
+      <DataTable
+        data={artists}
+        columns={columns}
+        searchPlaceholder="Search artists by name, email, or specialization..."
+        loading={loading}
+        itemsPerPage={artists.length || currentPageSize || 10}
+        actions={(row: Artist) => (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setVerifyTarget(row)}
+              className="p-2 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
+              title={row.verified_by_admin ? 'Unverify' : 'Verify'}
+            >
+              <Shield className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+        filters={
+          <div className="flex gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Status
+              </label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as any)}
+                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              >
+                <option value="all">All Artists</option>
+                <option value="verified">Verified Only</option>
+                <option value="pending">Pending Only</option>
+              </select>
+            </div>
+          </div>
+        }
+      />
+
+      {/* Server pagination controls */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          Page {page} of {totalPages} • {totalCount || artists.length} artists
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            disabled={page <= 1 || loading}
+            onClick={() => loadArtists(Math.max(1, page - 1), statusFilter)}
+            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-600"
+          >
+            Previous
+          </button>
+          <button
+            disabled={page >= totalPages || loading}
+            onClick={() => loadArtists(Math.min(totalPages, page + 1), statusFilter)}
+            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-600"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+
+      {/* Verify Modal */}
+      {verifyTarget && (
+        <VerifyArtistModal
+          artist={verifyTarget}
+          onClose={() => setVerifyTarget(null)}
+          onConfirm={async (verified: boolean) => {
+            await handleVerify(verifyTarget.id, verified);
+          }}
+        />
+      )}
     </div>
   );
 }
-

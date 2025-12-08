@@ -1,7 +1,7 @@
-const loginPath = '/api/auth/login';
-const registerPath = '/api/auth/register';
+const loginPath = '/api/auth/login/';
+const registerPath = '/api/auth/register/';
 
-export async function login(payload: { username?: string; email?: string; password: string }) {
+export async function login(payload: { username?: string;  password: string }) {
   const res = await fetch(loginPath, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -37,7 +37,7 @@ export async function register(payload: {
 }
 
 export async function refreshAccessToken(refreshToken: string) {
-  const res = await fetch('/api/auth/token/refresh', {
+  const res = await fetch('/api/auth/token/refresh/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refresh: refreshToken }),
@@ -50,7 +50,7 @@ export async function refreshAccessToken(refreshToken: string) {
 }
 
 export async function getMe() {
-  const res = await fetch('/api/auth/me', { method: 'GET' });
+  const res = await fetch('/api/auth/me/', { method: 'GET' });
   const data = await res.json();
   if (!res.ok || data?.ok === false) {
     throw new Error(data?.message || 'Fetch user failed');
@@ -59,7 +59,7 @@ export async function getMe() {
 }
 
 export async function getArtistProfile() {
-  const res = await fetch('/api/profiles/artist', { method: 'GET' });
+  const res = await fetch('/api/profiles/artist/', { method: 'GET' });
   const data = await res.json();
   if (!res.ok || data?.ok === false) {
     throw new Error(data?.message || 'Fetch artist profile failed');
@@ -68,7 +68,7 @@ export async function getArtistProfile() {
 }
 
 export async function patchArtistProfile(payload: Record<string, any>) {
-  const res = await fetch('/api/profiles/artist', {
+  const res = await fetch('/api/profiles/artist/', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -81,7 +81,7 @@ export async function patchArtistProfile(payload: Record<string, any>) {
 }
 
 export async function getBuyerProfile() {
-  const res = await fetch('/api/profiles/buyer', { method: 'GET' });
+  const res = await fetch('/api/profiles/buyer/', { method: 'GET' });
   const data = await res.json();
   if (!res.ok || data?.ok === false) {
     throw new Error(data?.message || 'Fetch buyer profile failed');
@@ -90,7 +90,7 @@ export async function getBuyerProfile() {
 }
 
 export async function patchBuyerProfile(payload: Record<string, any>) {
-  const res = await fetch('/api/profiles/buyer', {
+  const res = await fetch('/api/profiles/buyer/', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -103,7 +103,7 @@ export async function patchBuyerProfile(payload: Record<string, any>) {
 }
 
 export async function getPublicArtistProfile(userId: string) {
-  const res = await fetch(`/api/profiles/artist/${encodeURIComponent(userId)}`, { method: 'GET' });
+  const res = await fetch(`/api/profiles/artist/${encodeURIComponent(userId)}/`, { method: 'GET' });
   const data = await res.json();
   if (!res.ok || data?.ok === false) {
     throw new Error(data?.message || 'Fetch public artist profile failed');
@@ -113,7 +113,7 @@ export async function getPublicArtistProfile(userId: string) {
 
 export async function logout() {
   // Clear server-side cookies
-  await fetch('/api/auth/logout', { method: 'DELETE' });
+  await fetch('/api/auth/logout/', { method: 'DELETE' });
   // Clear client-side markers or refresh token storage
   try {
     localStorage.removeItem('refresh');

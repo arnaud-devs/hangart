@@ -23,14 +23,12 @@ export default function DashboardLayout({
 
   // Debug: Log user info
   useEffect(() => {
-    console.log('Dashboard Layout - User:', user);
-    console.log('Dashboard Layout - Loading:', loading);
+    // Debug logs removed to reduce console noise in dev.
   }, [user, loading]);
 
   // TEMPORARY FIX: Allow users with empty roles for testing
   useEffect(() => {
     if (!loading && !user) {
-      console.log('No user found, redirecting to login');
       router.push('/login');
     }
   }, [user, loading, router]);

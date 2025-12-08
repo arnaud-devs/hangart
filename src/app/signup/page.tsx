@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { Label } from '@/components/ui/Label'
 import { Input } from '@/components/ui/Input'
@@ -21,6 +21,7 @@ type FormValues = {
 
 export default function SignupPage() {
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
   const { register, handleSubmit, formState, watch } = useForm<FormValues>()
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)
@@ -61,20 +62,59 @@ export default function SignupPage() {
           try { localStorage.setItem('user', JSON.stringify(me)); } catch {}
           // redirect based on role
           const role = (me?.role || '').toLowerCase();
-          if (role === 'artist') router.push('/dashboard/artworks');
-          else if (role === 'buyer') router.push('/dashboard/wishlist');
-          else if (role === 'museum') router.push('/dashboard/museum');
-          else if (role === 'admin') router.push('/dashboard/approvals');
-          else router.push('/dashboard');
+          let redirectPath = '/dashboard';
+          if (role === 'artist') redirectPath = '/dashboard/artworks';
+          else if (role === 'buyer') redirectPath = '/dashboard/wishlist';
+          else if (role === 'museum') redirectPath = '/dashboard/museum';
+          else if (role === 'admin') redirectPath = '/dashboard/approvals';
+          
+          console.log('Signup successful, redirecting to:', redirectPath, 'for role:', role);
+          
+          startTransition(() => {
+            router.push(redirectPath);
+          });
+          
+          // Fallback: use window.location if router doesn't work
+          setTimeout(() => {
+            window.location.href = redirectPath;
+          }, 500);
           return;
         } catch (e) {
+          console.error('Signup redirect error:', e);
           // ignore; fall through to show success message
         }
       }
 
       setSuccess('Account created successfully! You can now log in.')
     } catch (e: any) {
-      setError(String(e?.message ?? e))
+      console.error('Signup error', e);
+      // If the api client attached a parsed response body, show its validation messages
+      const body = e?.body;
+      if (body) {
+        try {
+          if (typeof body === 'string') {
+            setError(body);
+          } else if (Array.isArray(body)) {
+            setError(body.join(' '));
+          } else if (typeof body === 'object') {
+            // Flatten field errors into a single message
+            const parts: string[] = [];
+            if (body.non_field_errors) parts.push(Array.isArray(body.non_field_errors) ? body.non_field_errors.join(' ') : String(body.non_field_errors));
+            Object.entries(body).forEach(([k, v]) => {
+              if (k === 'non_field_errors') return;
+              if (Array.isArray(v)) parts.push(`${k}: ${v.join(' ')}`);
+              else parts.push(`${k}: ${String(v)}`);
+            });
+            setError(parts.join(' | '));
+          } else {
+            setError(String(body));
+          }
+        } catch (parseErr) {
+          setError(String(e?.message ?? e));
+        }
+      } else {
+        setError(String(e?.message ?? e));
+      }
     }
   }
 

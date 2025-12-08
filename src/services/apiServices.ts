@@ -170,14 +170,23 @@ export const adminService = {
 
   // Verify/unverify artist: accepts { verified_by_admin: boolean }
   verifyArtist: async (userId: number, verified: boolean) => {
+    // Accepts either an artist profile ID or a user ID. Try several endpoints in order
+    // so the frontend can work with deployments that expose different routes.
+    // 1) PATCH /artists/{profile_id}/verify/  (public profile verify)
+    // 2) PATCH /admin/artists/{user_id}/verify/ (admin endpoint, if present)
+    // 3) PATCH /profiles/artist/{user_id}/     (fallback that updates profile by user id)
     try {
-      return await appClient.patch(`/admin/artists/${userId}/verify/`, { verified_by_admin: verified });
-    } catch (e) {
-      // try to patch artist profile as a fallback
+      return await appClient.patch(`/artists/${userId}/verify/`, { verified_by_admin: verified });
+    } catch (e1) {
       try {
-        return await appClient.patch(`/profiles/artist/${userId}/`, { verified_by_admin: verified });
-      } catch (inner) {
-        throw e;
+        return await appClient.patch(`/admin/artists/${userId}/verify/`, { verified_by_admin: verified });
+      } catch (e2) {
+        try {
+          return await appClient.patch(`/profiles/artist/${userId}/`, { verified_by_admin: verified });
+        } catch (e3) {
+          // throw the first error to preserve original failure context
+          throw e1;
+        }
       }
     }
   },

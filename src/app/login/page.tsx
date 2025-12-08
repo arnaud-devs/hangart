@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { Label } from '@/components/ui/Label'
@@ -23,6 +23,7 @@ const DEMO_USERS = [
 
 function LoginContent(){
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
   const { register, handleSubmit, formState } = useForm<FormValues>()
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)
@@ -34,16 +35,29 @@ function LoginContent(){
     setSuccess(null)
     try {
       const me = await auth.signIn(data.identifier, data.password);
+      console.log('Login successful, user object:', me);
       const role = (me?.role || '').toLowerCase();
       let rolePath = '/dashboard';
       if (role === 'artist') rolePath = '/dashboard/artworks';
       else if (role === 'buyer') rolePath = '/dashboard/wishlist';
       else if (role === 'museum') rolePath = '/dashboard/museum';
       else if (role === 'admin') rolePath = '/dashboard/approvals';
-      setSuccess('Logged in');
+      
+      console.log('Redirecting to:', rolePath, 'for role:', role);
       try { localStorage.setItem('auth_ok', 'true') } catch {}
-      router.push(rolePath);
+      
+      console.log('About to call router.push with path:', rolePath);
+      startTransition(() => {
+        router.push(rolePath);
+      });
+      console.log('router.push called, also using window.location as fallback');
+      
+      // Fallback: use window.location if router doesn't work
+      setTimeout(() => {
+        window.location.href = rolePath;
+      }, 500);
     } catch (e: any) {
+      console.error('Login failed:', e);
       setError(String(e?.message ?? e))
     }
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Image, Users, Calendar, BarChart3, Settings, X, LogOut, User, ChevronDown, ChevronRight, CreditCard, CheckCircle, UploadCloud, Folder } from "lucide-react";
+import { Home, Image, Users, Calendar, BarChart3, Settings, X, LogOut, User, ChevronDown, ChevronRight, CreditCard, CheckCircle, UploadCloud, Folder, Package } from "lucide-react";
 import { FiUser, FiHeart, FiTrendingUp } from "react-icons/fi";
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from "react";
@@ -35,6 +35,8 @@ const sidebarItemsByRole: Record<string, SidebarItem[]> = {
     { icon: Users, label: "Buyers", href: "/dashboard/buyers" },
     { icon: Users, label: "Users", href: "/dashboard/users" },
     { icon: Image, label: "Artworks", href: "/dashboard/artworks" },
+    { icon: Package, label: "Orders", href: "/dashboard/orders" },
+    { icon: CreditCard, label: "Payments", href: "/dashboard/payments" },
     { icon: CheckCircle, label: "Approvals", href: "/dashboard/approvals" },
     { icon: Folder, label: "Museums", href: "/dashboard/museums" },
     { icon: Settings, label: "Settings", href: "/dashboard/settings" },

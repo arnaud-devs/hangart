@@ -42,18 +42,61 @@ export default function ArtistsPage() {
   const [error, setError] = useState('');
   const [verifyTarget, setVerifyTarget] = useState<Artist | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'verified' | 'pending'>('all');
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [pageSize, setPageSize] = useState(20);
+  const [counts, setCounts] = useState({ total: 0, verified: 0, pending: 0 });
   const { user } = useAuth();
 
   useEffect(() => {
-    loadArtists();
+    loadArtists(1, statusFilter);
+  }, [statusFilter]);
+
+  useEffect(() => {
+    loadCounts();
   }, []);
 
-  const loadArtists = async () => {
+  const loadCounts = async () => {
+    try {
+      const [verifiedRes, pendingRes] = await Promise.all([
+        artistService.listArtists({ verified_by_admin: true }),
+        artistService.listArtists({ verified_by_admin: false }),
+      ]);
+
+      const verifiedCount =
+        verifiedRes.count ?? verifiedRes.results?.length ?? verifiedRes.length ?? 0;
+      const pendingCount =
+        pendingRes.count ?? pendingRes.results?.length ?? pendingRes.length ?? 0;
+
+      setCounts({
+        total: verifiedCount + pendingCount,
+        verified: verifiedCount,
+        pending: pendingCount,
+      });
+    } catch (err) {
+      console.error('Error loading artist counts:', err);
+    }
+  };
+
+  const loadArtists = async (
+    pageNumber: number = 1,
+    status: 'all' | 'verified' | 'pending' = statusFilter,
+  ) => {
     try {
       setLoading(true);
-      const response = await artistService.listArtists();
+      const params: any = { page: pageNumber };
+
+      if (status === 'verified') params.verified_by_admin = true;
+      if (status === 'pending') params.verified_by_admin = false;
+
+      const response = await artistService.listArtists(params);
       const artistsData = response.results || response || [];
+      const count = response.count ?? artistsData.length ?? 0;
+
       setArtists(artistsData);
+      setTotalCount(count);
+      setPage(pageNumber);
+      setPageSize(artistsData.length || pageSize || 20);
     } catch (err: any) {
       setError(err.message || 'Failed to load artists');
       console.error('Error loading artists:', err);
@@ -65,7 +108,8 @@ export default function ArtistsPage() {
   const handleVerify = async (artistId: number, verified: boolean) => {
     try {
       await adminService.verifyArtist(artistId, verified);
-      await loadArtists();
+      await loadArtists(page, statusFilter);
+      await loadCounts();
       setVerifyTarget(null);
     } catch (err: any) {
       console.error('Verification error:', err);
@@ -73,20 +117,16 @@ export default function ArtistsPage() {
     }
   };
 
+  const currentPageSize = pageSize || artists.length || 1;
+  const totalPages = Math.max(1, Math.ceil((totalCount || artists.length || 1) / currentPageSize));
+
   // Calculate stats
   const stats = {
-    total: artists.length,
-    verified: artists.filter(a => a.verified_by_admin).length,
-    pending: artists.filter(a => !a.verified_by_admin).length,
-    newThisMonth: Math.floor(artists.length * 0.15), // Mock trend
+    total: counts.total || totalCount || artists.length,
+    verified: counts.verified || artists.filter(a => a.verified_by_admin).length,
+    pending: counts.pending || artists.filter(a => !a.verified_by_admin).length,
+    newThisMonth: Math.floor((counts.total || totalCount || artists.length) * 0.15), // Mock trend
   };
-
-  // Filter artists
-  const filteredArtists = artists.filter(a => {
-    if (statusFilter === 'verified') return a.verified_by_admin;
-    if (statusFilter === 'pending') return !a.verified_by_admin;
-    return true;
-  });
 
   const columns = [
     {
@@ -220,11 +260,11 @@ export default function ArtistsPage() {
 
       {/* Data Table */}
       <DataTable
-        data={filteredArtists}
+        data={artists}
         columns={columns}
         searchPlaceholder="Search artists by name, email, or specialization..."
         loading={loading}
-        itemsPerPage={10}
+        itemsPerPage={artists.length || currentPageSize || 10}
         actions={(row: Artist) => (
           <div className="flex items-center gap-2">
             <button
@@ -255,6 +295,29 @@ export default function ArtistsPage() {
           </div>
         }
       />
+
+      {/* Server pagination controls */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="text-sm text-gray-600 dark:text-gray-400">
+          Page {page} of {totalPages} • {totalCount || artists.length} artists
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            disabled={page <= 1 || loading}
+            onClick={() => loadArtists(Math.max(1, page - 1), statusFilter)}
+            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-600"
+          >
+            Previous
+          </button>
+          <button
+            disabled={page >= totalPages || loading}
+            onClick={() => loadArtists(Math.min(totalPages, page + 1), statusFilter)}
+            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-600"
+          >
+            Next
+          </button>
+        </div>
+      </div>
 
       {/* Verify Modal */}
       {verifyTarget && (

@@ -73,8 +73,8 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
   };
 
   return (
-    <header className="sticky top-0 z-50 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-sm border-b border-gray-200 dark:border-gray-700">
-      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 ">
+    <header className="sticky w-full top-0 z-1000 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-700/50">
+      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Left side - Menu and Search */}
           <div className="flex items-center">

@@ -91,7 +91,7 @@ export default function CartDrawer() {
           <button
             onClick={handleCheckout}
             disabled={items.length === 0}
-            className="w-full rounded-md bg-indigo-600 hover:bg-indigo-700 text-[#DFDFD6] px-4 py-2 disabled:opacity-50"
+            className="w-full rounded-md bg-yellow-600 hover:bg-yellow-700 text-[#DFDFD6] px-4 py-2 disabled:opacity-50"
             aria-label="Proceed to checkout"
           >
             Checkout

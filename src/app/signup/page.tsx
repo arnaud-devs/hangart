@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useTransition } from 'react'
+import React, { useState, useTransition, useEffect, Suspense } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Label } from '@/components/ui/Label'
@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import { post, get, saveTokens } from '@/lib/appClient'
-import { useRouter } from 'next/navigation'
 
 type FormValues = {
   username: string
@@ -20,8 +19,10 @@ type FormValues = {
   phone?: string
 }
 
-export default function SignupPage() {
+function SignupContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect')
   const [isPending, startTransition] = useTransition()
   const { register, handleSubmit, formState, watch } = useForm<FormValues>()
   const { errors, isSubmitting } = formState
@@ -263,5 +264,13 @@ export default function SignupPage() {
         </p>
       </div>
     </main>
+  )
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[70vh] flex items-center justify-center">Loading...</div>}>
+      <SignupContent />
+    </Suspense>
   )
 }

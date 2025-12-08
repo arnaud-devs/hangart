@@ -69,9 +69,10 @@ export default function ArtworkGalleryCard({
   const addToCart = () => {
     try {
       const numericPrice = parseFloat(String(price).replace(/[^0-9.]/g, '')) || 0;
+      const numericId = typeof id === 'number' ? id : parseInt(String(id), 10);
       addItem(
         {
-          id,
+          id: numericId,
           title,
           artistName: artist,
           image,

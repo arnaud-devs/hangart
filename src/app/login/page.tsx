@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useTransition } from 'react'
+import React, { useState, useTransition, useEffect, Suspense } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Label } from '@/components/ui/Label'
@@ -23,12 +23,21 @@ const DEMO_USERS = [
 
 function LoginContent(){
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect')
   const [isPending, startTransition] = useTransition()
   const { register, handleSubmit, formState } = useForm<FormValues>()
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [showRedirectMessage, setShowRedirectMessage] = useState(false)
   const auth = useAuth();
+
+  useEffect(() => {
+    if (redirect) {
+      setShowRedirectMessage(true)
+    }
+  }, [redirect])
 
   const onSubmit = async (data: FormValues) => {
     setError(null)
@@ -36,25 +45,29 @@ function LoginContent(){
     try {
       const me = await auth.signIn(data.identifier, data.password);
       console.log('Login successful, user object:', me);
-      const role = (me?.role || '').toLowerCase();
-      let rolePath = '/dashboard';
-      if (role === 'artist') rolePath = '/dashboard/artworks';
-      else if (role === 'buyer') rolePath = '/dashboard/wishlist';
-      else if (role === 'museum') rolePath = '/dashboard/museum';
-      else if (role === 'admin') rolePath = '/dashboard/approvals';
       
-      console.log('Redirecting to:', rolePath, 'for role:', role);
+      // Use redirect parameter if available, otherwise determine by role
+      let targetPath = redirect || '/dashboard';
+      if (!redirect) {
+        const role = (me?.role || '').toLowerCase();
+        if (role === 'artist') targetPath = '/dashboard/artworks';
+        else if (role === 'buyer') targetPath = '/dashboard/wishlist';
+        else if (role === 'museum') targetPath = '/dashboard/museum';
+        else if (role === 'admin') targetPath = '/dashboard/approvals';
+      }
+      
+      console.log('Redirecting to:', targetPath);
       try { localStorage.setItem('auth_ok', 'true') } catch {}
       
-      console.log('About to call router.push with path:', rolePath);
+      console.log('About to call router.push with path:', targetPath);
       startTransition(() => {
-        router.push(rolePath);
+        router.push(targetPath);
       });
       console.log('router.push called, also using window.location as fallback');
       
       // Fallback: use window.location if router doesn't work
       setTimeout(() => {
-        window.location.href = rolePath;
+        window.location.href = targetPath;
       }, 500);
     } catch (e: any) {
       console.error('Login failed:', e);
@@ -154,7 +167,9 @@ function LoginContent(){
 export default function LoginPage(){
   return (
     <AuthProvider>
-      <LoginContent />
+      <Suspense fallback={<div className="min-h-[70vh] flex items-center justify-center">Loading...</div>}>
+        <LoginContent />
+      </Suspense>
     </AuthProvider>
   )
 }

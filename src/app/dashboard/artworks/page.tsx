@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Image, TrendingUp, CheckCircle, Clock, Edit2, Trash2 } from 'lucide-react';
+import { Image, TrendingUp, CheckCircle, Clock, Edit2, Trash2, Send, Eye } from 'lucide-react';
 import { artworkService, artistService } from '@/services/apiServices';
 import { useAuth } from '@/lib/authProvider';
+import { useToast } from '@/components/ui/Toast';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import ArtworkDetailsModal from '@/components/dashboard/ArtworkDetailsModal';
 import StatsCard from '@/components/dashboard/StatsCard';
 import DataTable from '@/components/dashboard/DataTable';
 
@@ -21,12 +24,18 @@ interface Artwork {
 
 export default function Page() {
   const { user } = useAuth();
+  const { showToast } = useToast();
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'pending' | 'rejected'>('all');
+  const [success, setSuccess] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'draft' | 'pending' | 'rejected'>('all');
   const [showModal, setShowModal] = useState(false);
   const [editingArtwork, setEditingArtwork] = useState<Artwork | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [artworkToDelete, setArtworkToDelete] = useState<Artwork | null>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [viewingArtworkId, setViewingArtworkId] = useState<number | null>(null);
 
   useEffect(() => {
     loadArtworks();
@@ -57,8 +66,9 @@ export default function Page() {
       const created = await artworkService.createArtwork(formData as any);
       setArtworks(prev => [created as any, ...prev]);
       setShowModal(false);
+      showToast('success', 'Artwork Created', 'Your artwork has been uploaded successfully!');
     } catch (err: any) {
-      setError(err.message || 'Failed to create artwork');
+      showToast('error', 'Creation Failed', err.message || 'Failed to create artwork');
     }
   };
 
@@ -68,8 +78,9 @@ export default function Page() {
       setArtworks(prev => prev.map(a => a.id === updated.id ? updated : a));
       setEditingArtwork(null);
       setShowModal(false);
+      showToast('success', 'Artwork Updated', 'Your changes have been saved successfully!');
     } catch (err: any) {
-      setError(err.message || 'Failed to update artwork');
+      showToast('error', 'Update Failed', err.message || 'Failed to update artwork');
     }
   };
 
@@ -83,12 +94,38 @@ export default function Page() {
     setEditingArtwork(null);
   };
 
-  const deleteArtwork = async (id: number) => {
+  const handleViewArtwork = (artworkId: number) => {
+    setViewingArtworkId(artworkId);
+    setShowDetailsModal(true);
+  };
+
+  const handleDeleteClick = (artwork: Artwork) => {
+    setArtworkToDelete(artwork);
+    setShowDeleteDialog(true);
+  };
+
+  const deleteArtwork = async () => {
+    if (!artworkToDelete) return;
+    
     try {
-      await artworkService.deleteArtwork(id);
-      setArtworks(prev => prev.filter(a => a.id !== id));
+      await artworkService.deleteArtwork(artworkToDelete.id);
+      setArtworks(prev => prev.filter(a => a.id !== artworkToDelete.id));
+      showToast('success', 'Artwork Deleted', 'The artwork has been permanently removed.');
     } catch (err: any) {
-      setError(err.message || 'Failed to delete artwork');
+      showToast('error', 'Delete Failed', err.message || 'Failed to delete artwork');
+    } finally {
+      setShowDeleteDialog(false);
+      setArtworkToDelete(null);
+    }
+  };
+
+  const submitForReview = async (id: number) => {
+    try {
+      const updated = await artworkService.submitForReview(id);
+      setArtworks(prev => prev.map(a => a.id === updated.id ? updated : a));
+      showToast('success', 'Submitted for Review', 'Your artwork has been submitted to admin for approval!');
+    } catch (err: any) {
+      showToast('error', 'Submission Failed', err.message || 'Failed to submit artwork for review');
     }
   };
 
@@ -145,19 +182,22 @@ export default function Page() {
       key: 'status',
       label: 'Status',
       sortable: true,
-      render: (value: string) => (
-        <span
-          className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-            value === 'approved'
-              ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-              : value === 'pending'
-              ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
-              : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
-          }`}
-        >
-          {value ? value.charAt(0).toUpperCase() + value.slice(1) : 'N/A'}
-        </span>
-      ),
+      render: (value: string) => {
+        const statusConfig = {
+          approved: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
+          pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
+          submitted: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
+          rejected: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400',
+          draft: 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400',
+        };
+        const className = statusConfig[value as keyof typeof statusConfig] || statusConfig.draft;
+        
+        return (
+          <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${className}`}>
+            {value ? value.charAt(0).toUpperCase() + value.slice(1) : 'Draft'}
+          </span>
+        );
+      },
     },
     {
       key: 'views',
@@ -182,6 +222,22 @@ export default function Page() {
       label: 'Actions',
       render: (_: any, row: Artwork) => (
         <div className="flex gap-2">
+          <button
+            onClick={() => handleViewArtwork(row.id)}
+            className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors"
+            title="View details"
+          >
+            <Eye className="w-4 h-4" />
+          </button>
+          {user?.role === 'artist' && (row.status === 'draft' || row.status === 'rejected') && (
+            <button
+              onClick={() => submitForReview(row.id)}
+              className="p-2 rounded-md hover:bg-emerald-100 dark:hover:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 transition-colors"
+              title="Submit for Review"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          )}
           {user?.role === 'artist' && (
             <button
               onClick={() => handleEditArtwork(row)}
@@ -193,11 +249,7 @@ export default function Page() {
           )}
           {user?.role === 'artist' && (
             <button
-              onClick={() => {
-                if (window.confirm('Are you sure you want to delete this artwork?')) {
-                  deleteArtwork(row.id);
-                }
-              }}
+              onClick={() => handleDeleteClick(row)}
               className="p-2 rounded-md hover:bg-red-100 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors"
               title="Delete artwork"
             >
@@ -259,6 +311,13 @@ export default function Page() {
           description="Highest views"
         />
       </div>
+
+      {/* Success Display */}
+      {success && (
+        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+          <p className="text-green-800 dark:text-green-200">{success}</p>
+        </div>
+      )}
 
       {/* Error Display */}
       {error && (
@@ -323,6 +382,31 @@ export default function Page() {
           onClose={handleCloseModal} 
           onSave={editingArtwork ? (payload) => updateArtwork(editingArtwork.id, payload) : createArtwork}
           editingArtwork={editingArtwork}
+        />
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={showDeleteDialog}
+        title="Delete Artwork"
+        message={`Are you sure you want to permanently delete "${artworkToDelete?.title}"? This action cannot be undone.`}
+        onConfirm={deleteArtwork}
+        onCancel={() => {
+          setShowDeleteDialog(false);
+          setArtworkToDelete(null);
+        }}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+      />
+
+      {/* Artwork Details Modal */}
+      {showDetailsModal && viewingArtworkId && (
+        <ArtworkDetailsModal
+          artworkId={viewingArtworkId}
+          onClose={() => {
+            setShowDetailsModal(false);
+            setViewingArtworkId(null);
+          }}
         />
       )}
     </div>
@@ -624,4 +708,3 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
     </div>
   );
 }
-

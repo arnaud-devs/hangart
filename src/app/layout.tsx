@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from '@/lib/authProvider';
+import { ToastProvider } from '@/components/ui/Toast';
 import CartDrawer from "@/components/CartDrawer";
 import Breadcrumbs from '@/components/Breadcrumbs';
 import HideWhenDashboard from '@/components/HideWhenDashboard';
@@ -65,30 +66,32 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         suppressHydrationWarning
         className={`${inter.variable} min-h-screen text-gray-900 dark:text-gray-100 overflow-x-hidden antialiased font-sans`}
       >
-        {/* Wrap with AuthProvider first, then CartProvider */}
+        {/* Wrap with AuthProvider first, then CartProvider, then ToastProvider */}
         <AuthProvider>
           <CartProvider>
-            <div className="flex flex-col min-h-screen">
-              <HideWhenDashboard>
-                <header>
-                  <Navbar />
-                </header>
+            <ToastProvider>
+              <div className="flex flex-col min-h-screen">
+                <HideWhenDashboard>
+                  <header>
+                    <Navbar />
+                  </header>
 
-                <div className="w-full">
-                  <Breadcrumbs />
-                </div>
-              </HideWhenDashboard>
+                  <div className="w-full">
+                    <Breadcrumbs />
+                  </div>
+                </HideWhenDashboard>
 
-              <main className="flex-1 w-full container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                {children}
-              </main>
+                <main className="flex-1 w-full container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                  {children}
+                </main>
 
-              <HideWhenDashboard>
-                <Footer />
-              </HideWhenDashboard>
-            </div>
+                <HideWhenDashboard>
+                  <Footer />
+                </HideWhenDashboard>
+              </div>
 
-            <CartDrawer />
+              <CartDrawer />
+            </ToastProvider>
           </CartProvider>
         </AuthProvider>
       </body>

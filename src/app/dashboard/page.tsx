@@ -6,7 +6,8 @@ import { adminService, artworkService, artistService } from '@/services/apiServi
 import { useAuth } from '@/lib/authProvider';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import StatsCard from '@/components/dashboard/StatsCard';
-import { TrendingUp, Users, Image, ShoppingCart, CreditCard, RotateCcw, DollarSign, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { TrendingUp, Users, Image, ShoppingCart, CreditCard, RotateCcw, DollarSign, AlertCircle, CheckCircle, Clock, Eye } from 'lucide-react';
+import ArtworkDetailsModal from '@/components/dashboard/ArtworkDetailsModal';
 
 interface DashboardStats {
   total_artworks: number;
@@ -64,6 +65,13 @@ function AdminView() {
   const [error, setError] = useState('');
   const { user } = useAuth();
   const [chartData, setChartData] = useState<any[]>([]);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [viewingArtworkId, setViewingArtworkId] = useState<number | null>(null);
+
+  const handleViewArtwork = (artworkId: number) => {
+    setViewingArtworkId(artworkId);
+    setShowDetailsModal(true);
+  };
 
   useEffect(() => {
     loadDashboardData();
@@ -347,7 +355,16 @@ function AdminView() {
                     <div className="text-xs text-gray-500 dark:text-gray-400">{artwork.artist_name || 'Unknown'}</div>
                   </div>
                 </div>
-                <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">${Number(artwork.price).toFixed(2)}</div>
+                <div className="flex items-center gap-3">
+                  <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">${Number(artwork.price).toFixed(2)}</div>
+                  <button
+                    onClick={() => handleViewArtwork(artwork.id)}
+                    className="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                    title="View details"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -378,6 +395,17 @@ function AdminView() {
           </div>
         </div>
       </div>
+
+      {/* Artwork Details Modal */}
+      {showDetailsModal && viewingArtworkId && (
+        <ArtworkDetailsModal
+          artworkId={viewingArtworkId}
+          onClose={() => {
+            setShowDetailsModal(false);
+            setViewingArtworkId(null);
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -386,6 +414,13 @@ function ArtistView({ user }: { user: any }) {
   const [artistStats, setArtistStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState<any[]>([]);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [viewingArtworkId, setViewingArtworkId] = useState<number | null>(null);
+
+  const handleViewArtwork = (artworkId: number) => {
+    setViewingArtworkId(artworkId);
+    setShowDetailsModal(true);
+  };
 
   useEffect(() => {
     loadArtistData();
@@ -582,9 +617,18 @@ function ArtistView({ user }: { user: any }) {
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">${Number(artwork.price).toFixed(2)}</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">{artwork.views || 0} views</div>
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">${Number(artwork.price).toFixed(2)}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">{artwork.views || 0} views</div>
+                  </div>
+                  <button
+                    onClick={() => handleViewArtwork(artwork.id)}
+                    className="p-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                    title="View details"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             ))}
@@ -616,6 +660,17 @@ function ArtistView({ user }: { user: any }) {
           </div>
         </div>
       </div>
+
+      {/* Artwork Details Modal */}
+      {showDetailsModal && viewingArtworkId && (
+        <ArtworkDetailsModal
+          artworkId={viewingArtworkId}
+          onClose={() => {
+            setShowDetailsModal(false);
+            setViewingArtworkId(null);
+          }}
+        />
+      )}
     </div>
   );
 }

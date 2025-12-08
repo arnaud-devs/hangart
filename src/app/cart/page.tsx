@@ -3,11 +3,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingBag, Star, Shield, Lock, DollarSign, X, Bookmark, ChevronDown } from "lucide-react";
+import { ShoppingBag, Star, Shield, Lock, DollarSign, X, Bookmark, ChevronDown, Plus, Minus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 export default function CartPage() {
-  const { items, removeItem, subtotal } = useCart();
+  const { items, removeItem, updateQuantity, subtotal } = useCart();
   const isEmpty = items.length === 0;
   const [promoExpanded, setPromoExpanded] = useState(false);
 
@@ -90,6 +90,41 @@ export default function CartPage() {
                           </div>
 
                           <div className="mt-3 space-y-2">
+                            {/* Quantity Control */}
+                            <div className="flex items-center gap-3 mb-3">
+                              <span className="text-sm text-gray-600 dark:text-gray-400">Quantity:</span>
+                              <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-md">
+                                <button
+                                  onClick={() => {
+                                    if (item.quantity > 1) {
+                                      updateQuantity(item.id, item.quantity - 1);
+                                    }
+                                  }}
+                                  disabled={item.quantity <= 1}
+                                  className="px-3 py-1 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                  aria-label="Decrease quantity"
+                                >
+                                  <Minus className="w-4 h-4" />
+                                </button>
+                                <span className="px-4 py-1 text-gray-900 dark:text-gray-100 font-medium min-w-[40px] text-center">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                  className="px-3 py-1 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                  aria-label="Increase quantity"
+                                >
+                                  <Plus className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600 dark:text-gray-400">Price per item</span>
+                              <span className="text-gray-900 dark:text-gray-100 font-medium">
+                                {currencySymbol}{item.price?.toFixed(2) || "0.00"}
+                              </span>
+                            </div>
                             <div className="flex justify-between text-sm">
                               <span className="text-gray-600 dark:text-gray-400">Shipping</span>
                               <span className="text-gray-900 dark:text-gray-100 font-medium">Included</span>
@@ -97,7 +132,7 @@ export default function CartPage() {
                             <div className="flex justify-between text-sm font-semibold">
                               <span className="text-gray-900 dark:text-gray-100">ARTWORK TOTAL</span>
                               <span className="text-gray-900 dark:text-gray-100">
-                                {currencySymbol}{item.price?.toFixed(2) || "0.00"}
+                                {currencySymbol}{((item.price || 0) * item.quantity).toFixed(2)}
                               </span>
                             </div>
                             <div className="pt-2">

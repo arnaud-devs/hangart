@@ -48,6 +48,22 @@ body {
   background: transparent;
   border: 1px solid rgba(0,0,0,0.08);
   color: var(--foreground);
-  padding: 6px 8px;
+  padding: 6px 10px;
   border-radius: 8px;
+}
+
+/* Toast animation */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
 }

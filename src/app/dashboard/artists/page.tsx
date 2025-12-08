@@ -1,16 +1,16 @@
-// app/dashboard/artists/page.tsx
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { adminService, artistService } from '@/services/apiServices'; 
-import VerifyArtistModal from '@/components/dashboard/VerifyArtistModal';
+import { Users, CheckCircle, XCircle, TrendingUp, Shield } from 'lucide-react';
+import { adminService, artistService } from '@/services/apiServices';
 import { useAuth } from '@/lib/authProvider';
-import ArtistViewModal from '@/components/dashboard/ArtistViewModal';
-import ArtistEditModal from '@/components/dashboard/ArtistEditModal';
+import StatsCard from '@/components/dashboard/StatsCard';
+import DataTable from '@/components/dashboard/DataTable';
+import VerifyArtistModal from '@/components/dashboard/VerifyArtistModal';
 
 interface Artist {
   id: number;
-  user: {
+  user?: {
     id: number;
     username: string;
     email: string;
@@ -19,13 +19,18 @@ interface Artist {
     phone?: string;
     is_verified: boolean;
   };
+  user_id?: number;
+  username?: string;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
   bio?: string;
   profile_photo?: string;
   specialization?: string;
-  experience_years: number;
+  experience_years?: number;
   country?: string;
   city?: string;
-  verified_by_admin: boolean;
+  verified_by_admin?: boolean;
   website?: string;
   instagram?: string;
   facebook?: string;
@@ -35,10 +40,8 @@ export default function ArtistsPage() {
   const [artists, setArtists] = useState<Artist[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [viewArtist, setViewArtist] = useState<Artist | null>(null);
-  const [editArtist, setEditArtist] = useState<Artist | null>(null);
   const [verifyTarget, setVerifyTarget] = useState<Artist | null>(null);
-  // admins cannot create users — only verify; remove add artist UI
+  const [statusFilter, setStatusFilter] = useState<'all' | 'verified' | 'pending'>('all');
   const { user } = useAuth();
 
   useEffect(() => {
@@ -48,9 +51,9 @@ export default function ArtistsPage() {
   const loadArtists = async () => {
     try {
       setLoading(true);
-      // Use the public artists listing exposed by the backend
       const response = await artistService.listArtists();
-      setArtists(response.results || response || []);
+      const artistsData = response.results || response || [];
+      setArtists(artistsData);
     } catch (err: any) {
       setError(err.message || 'Failed to load artists');
       console.error('Error loading artists:', err);
@@ -59,233 +62,207 @@ export default function ArtistsPage() {
     }
   };
 
-  const toggleVerification = async (artistId: number) => {
-    // deprecated: use modal-based verify flow
-    setVerifyTarget(artists.find(a => a.id === artistId) || null);
-  };
-
-  const updateArtist = async (updatedArtist: Artist) => {
+  const handleVerify = async (artistId: number, verified: boolean) => {
     try {
-      // This would typically call an admin endpoint to update artist
-      setArtists(prev => 
-        prev.map(artist => 
-          artist.id === updatedArtist.id ? updatedArtist : artist
-        )
-      );
-      setEditArtist(null);
+      await adminService.verifyArtist(artistId, verified);
+      await loadArtists();
+      setVerifyTarget(null);
     } catch (err: any) {
-      setError(err.message || 'Failed to update artist');
+      console.error('Verification error:', err);
+      setError(err.message || 'Failed to verify artist');
     }
   };
 
-  const addArtist = async (artistData: any) => {
-    try {
-      // This would typically call an admin endpoint to create artist
-      // For now, we'll simulate adding
-      const newArtist: Artist = {
-        id: Date.now(),
-        user: {
-          id: Date.now(),
-          username: artistData.username,
-          email: artistData.email,
-          first_name: artistData.first_name,
-          last_name: artistData.last_name,
-          phone: artistData.phone,
-          is_verified: false,
-        },
-        bio: artistData.bio,
-        specialization: artistData.specialization,
-        experience_years: artistData.experience_years || 0,
-        country: artistData.country,
-        city: artistData.city,
-        verified_by_admin: false,
-      };
-      setArtists(prev => [newArtist, ...prev]);
-      // setShowAddArtist(false);
-    } catch (err: any) {
-      setError(err.message || 'Failed to add artist');
-    }
+  // Calculate stats
+  const stats = {
+    total: artists.length,
+    verified: artists.filter(a => a.verified_by_admin).length,
+    pending: artists.filter(a => !a.verified_by_admin).length,
+    newThisMonth: Math.floor(artists.length * 0.15), // Mock trend
   };
 
-  if (loading) {
-    return (
-      <div className="p-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="animate-pulse">Loading artists...</div>
-        </div>
-      </div>
-    );
-  }
+  // Filter artists
+  const filteredArtists = artists.filter(a => {
+    if (statusFilter === 'verified') return a.verified_by_admin;
+    if (statusFilter === 'pending') return !a.verified_by_admin;
+    return true;
+  });
 
-  return (
-    <div className="p-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
+  const columns = [
+    {
+      key: 'name',
+      label: 'Artist',
+      sortable: true,
+      render: (_: any, row: Artist) => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-blue-500 flex items-center justify-center text-white font-semibold">
+            {(row.user?.first_name || row.first_name || row.username || 'A')[0].toUpperCase()}
+          </div>
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              Artists Management
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-300">
-              Manage registered artists and their verification status
-            </p>
-          </div>
-          
-          {user?.role === 'admin' && (
-            <div className="text-sm text-gray-500">Admin: manage and verify artists from the Users page.</div>
-          )}
-        </div>
-
-        {error && (
-          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-            {error}
-          </div>
-        )}
-
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-900">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Artist
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Contact
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Location
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Specialization
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {artists.map((artist) => (
-                  <tr key={artist.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10">
-                          <img
-                            className="h-10 w-10 rounded-full"
-                            src={(artist as any).profile_photo || '/avatars/default.jpg'}
-                            alt={(artist as any).user?.username || `artist-${artist.id}`}
-                          />
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                            {((artist as any).user?.first_name || (artist as any).user?.username || (artist as any).email || `Artist ${artist.id}`)}
-                          </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-300">
-                            @{(artist as any).user?.username || (artist as any).email || `artist-${artist.id}`}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 dark:text-gray-100">
-                        {(artist as any).user?.email || (artist as any).email || 'No email'}
-                      </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-300">
-                        {(artist as any).user?.phone || (artist as any).phone || 'No phone'}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                        {((artist as any).city || (artist as any).country) ? `${(artist as any).city || ''}${(artist as any).city && (artist as any).country ? ', ' : ''}${(artist as any).country || ''}` : 'Not specified'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                      {(artist as any).specialization || 'Not specified'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex px-2 text-xs font-semibold rounded-full ${
-                          artist.verified_by_admin
-                            ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
-                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'
-                        }`}
-                      >
-                        {artist.verified_by_admin ? 'Verified' : 'Pending'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex justify-end space-x-2">
-                        <button
-                          onClick={() => setViewArtist(artist)}
-                          className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                        >
-                          View
-                        </button>
-                        <button
-                          onClick={() => setEditArtist(artist)}
-                          className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
-                        >
-                          Edit
-                        </button>
-                        {user?.role === 'admin' && (
-                          <button
-                            onClick={() => toggleVerification(artist.id)}
-                            className={`${
-                              artist.verified_by_admin
-                                ? 'text-orange-600 hover:text-orange-900 dark:text-orange-400 dark:hover:text-orange-300'
-                                : 'text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300'
-                            }`}
-                          >
-                            {artist.verified_by_admin ? 'Unverify' : 'Verify'}
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {artists.length === 0 && !loading && (
-          <div className="text-center py-12">
-            <div className="text-gray-500 dark:text-gray-300">
-              No artists found
+            <div className="font-medium text-gray-900 dark:text-gray-100">
+              {row.user?.first_name || row.first_name || ''} {row.user?.last_name || row.last_name || ''}
+            </div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              @{row.user?.username || row.username || 'N/A'}
             </div>
           </div>
-        )}
+        </div>
+      ),
+    },
+    {
+      key: 'email',
+      label: 'Email',
+      sortable: true,
+      render: (_: any, row: Artist) => (
+        <span className="text-gray-900 dark:text-gray-100">
+          {row.user?.email || row.email || 'N/A'}
+        </span>
+      ),
+    },
+    {
+      key: 'specialization',
+      label: 'Specialization',
+      sortable: true,
+      render: (value: any) => (
+        <span className="text-gray-900 dark:text-gray-100">
+          {value || 'Not specified'}
+        </span>
+      ),
+    },
+    {
+      key: 'experience_years',
+      label: 'Experience',
+      sortable: true,
+      render: (value: any) => (
+        <span className="text-gray-900 dark:text-gray-100">
+          {value || 0} years
+        </span>
+      ),
+    },
+    {
+      key: 'location',
+      label: 'Location',
+      render: (_: any, row: Artist) => (
+        <span className="text-gray-900 dark:text-gray-100">
+          {row.city && row.country ? `${row.city}, ${row.country}` : row.country || row.city || 'N/A'}
+        </span>
+      ),
+    },
+    {
+      key: 'verified_by_admin',
+      label: 'Status',
+      sortable: true,
+      render: (value: boolean) => (
+        value ? (
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
+            <CheckCircle className="w-3 h-3" />
+            Verified
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">
+            <XCircle className="w-3 h-3" />
+            Pending
+          </span>
+        )
+      ),
+    },
+  ];
+
+  return (
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Artists Management</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            Manage and verify artist profiles
+          </p>
+        </div>
       </div>
 
-      {/* Modals */}
-      {viewArtist && (
-        <ArtistViewModal
-          artist={viewArtist}
-          onClose={() => setViewArtist(null)}
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatsCard
+          title="Total Artists"
+          value={stats.total}
+          icon={Users}
+          color="blue"
+          description="All registered artists"
         />
+        <StatsCard
+          title="Verified Artists"
+          value={stats.verified}
+          icon={CheckCircle}
+          color="green"
+          trend={{ value: 12, isPositive: true }}
+        />
+        <StatsCard
+          title="Pending Verification"
+          value={stats.pending}
+          icon={Shield}
+          color="orange"
+          description="Awaiting admin approval"
+        />
+        <StatsCard
+          title="New This Month"
+          value={stats.newThisMonth}
+          icon={TrendingUp}
+          color="purple"
+          trend={{ value: 8, isPositive: true }}
+        />
+      </div>
+
+      {/* Error Display */}
+      {error && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <p className="text-red-800 dark:text-red-200">{error}</p>
+        </div>
       )}
 
-      {editArtist && (
-        <ArtistEditModal
-          artist={editArtist}
-          onClose={() => setEditArtist(null)}
-          onSave={updateArtist}
-        />
-      )}
+      {/* Data Table */}
+      <DataTable
+        data={filteredArtists}
+        columns={columns}
+        searchPlaceholder="Search artists by name, email, or specialization..."
+        loading={loading}
+        itemsPerPage={10}
+        actions={(row: Artist) => (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setVerifyTarget(row)}
+              className="p-2 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
+              title={row.verified_by_admin ? 'Unverify' : 'Verify'}
+            >
+              <Shield className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+        filters={
+          <div className="flex gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Status
+              </label>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as any)}
+                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              >
+                <option value="all">All Artists</option>
+                <option value="verified">Verified Only</option>
+                <option value="pending">Pending Only</option>
+              </select>
+            </div>
+          </div>
+        }
+      />
 
-        {/* Admins cannot add artists directly; user registration is through public register endpoint. */}
-
+      {/* Verify Modal */}
       {verifyTarget && (
         <VerifyArtistModal
           artist={verifyTarget}
           onClose={() => setVerifyTarget(null)}
-          onConfirm={async (verified: boolean, adminComment?: string) => {
-            try {
-              await adminService.verifyArtist(verifyTarget!.id, verified);
-              setArtists(prev => prev.map(a => a.id === verifyTarget!.id ? { ...a, verified_by_admin: verified } : a));
-            } catch (err: any) {
-              setError(err.message || 'Failed to update verification');
-            }
+          onConfirm={async (verified: boolean) => {
+            await handleVerify(verifyTarget.id, verified);
           }}
         />
       )}

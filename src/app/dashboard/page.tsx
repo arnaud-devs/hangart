@@ -2,11 +2,11 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { adminService, artworkService } from '@/services/apiServices';
+import { adminService, artworkService, artistService } from '@/services/apiServices';
 import { useAuth } from '@/lib/authProvider';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import StatsCard from '@/components/dashboard/StatsCard';
-import { TrendingUp, Users, Image, ShoppingCart, CreditCard, RotateCcw, DollarSign, AlertCircle } from 'lucide-react';
+import { TrendingUp, Users, Image, ShoppingCart, CreditCard, RotateCcw, DollarSign, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 
 interface DashboardStats {
   total_artworks: number;
@@ -380,19 +380,237 @@ function AdminView() {
 }
 
 function ArtistView({ user }: { user: any }) {
+  const [artistStats, setArtistStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [chartData, setChartData] = useState<any[]>([]);
+
+  useEffect(() => {
+    loadArtistData();
+  }, []);
+
+  const loadArtistData = async () => {
+    try {
+      setLoading(true);
+      const artworks = await artistService.getMyArtworks();
+      const artworksList = (artworks as any).results || artworks || [];
+
+      const stats = {
+        total_artworks: artworksList.length,
+        published: artworksList.filter((a: any) => a.status === 'approved').length,
+        pending: artworksList.filter((a: any) => a.status === 'pending').length,
+        rejected: artworksList.filter((a: any) => a.status === 'rejected').length,
+        total_views: artworksList.reduce((sum: number, a: any) => sum + (a.views || 0), 0),
+        total_earnings: artworksList.reduce((sum: number, a: any) => sum + (Number(a.price) || 0), 0),
+        avg_price: artworksList.length ? (artworksList.reduce((sum: number, a: any) => sum + (Number(a.price) || 0), 0) / artworksList.length).toFixed(2) : 0,
+        recent_artworks: artworksList.slice(0, 5),
+      };
+
+      setArtistStats(stats);
+
+      // Mock chart data for artist's performance
+      setChartData([
+        { month: 'Jan', views: 120, sales: 3, earnings: 450 },
+        { month: 'Feb', views: 150, sales: 4, earnings: 620 },
+        { month: 'Mar', views: 200, sales: 5, earnings: 850 },
+        { month: 'Apr', views: 280, sales: 7, earnings: 1200 },
+        { month: 'May', views: 350, sales: 9, earnings: 1680 },
+        { month: 'Jun', views: 420, sales: 11, earnings: 2150 },
+      ]);
+    } catch (err) {
+      console.error('Error loading artist data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="animate-pulse">Loading your dashboard...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Artist Dashboard</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-300">Welcome back, {user.first_name}. Manage your artworks and profile.</p>
+    <div className="p-6 space-y-6">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Artist Dashboard</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Welcome back, {user.first_name}! Manage your artworks and earnings.</p>
+      </div>
+
+      {/* Stats Cards - Artist Performance */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatsCard
+          title="Total Artworks"
+          value={artistStats?.total_artworks || 0}
+          icon={Image}
+          color="blue"
+          description="Your creations"
+          trend={{ value: 5, isPositive: true }}
+        />
+
+        <StatsCard
+          title="Published"
+          value={artistStats?.published || 0}
+          icon={CheckCircle}
+          color="green"
+          description="Live on marketplace"
+          trend={{ value: 8, isPositive: true }}
+        />
+
+        <StatsCard
+          title="Pending Review"
+          value={artistStats?.pending || 0}
+          icon={Clock}
+          color="orange"
+          description="Awaiting approval"
+        />
+
+        <StatsCard
+          title="Total Views"
+          value={artistStats?.total_views || 0}
+          icon={TrendingUp}
+          color="purple"
+          description="Profile interactions"
+          trend={{ value: 12, isPositive: true }}
+        />
+      </div>
+
+      {/* Earnings Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <StatsCard
+          title="Total Potential Earnings"
+          value={`$${Number(artistStats?.total_earnings || 0).toLocaleString()}`}
+          icon={DollarSign}
+          color="green"
+          description="Sum of artwork prices"
+          trend={{ value: 15, isPositive: true }}
+        />
+
+        <StatsCard
+          title="Average Price"
+          value={`$${artistStats?.avg_price || 0}`}
+          icon={CreditCard}
+          color="blue"
+          description="Per artwork average"
+          trend={{ value: 3, isPositive: true }}
+        />
+
+        <StatsCard
+          title="Approval Rate"
+          value={`${artistStats?.total_artworks ? Math.round((artistStats?.published / artistStats?.total_artworks) * 100) : 0}%`}
+          icon={CheckCircle}
+          color="emerald"
+          description="Quality metric"
+          trend={{ value: 6, isPositive: true }}
+        />
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Line Chart - Performance Trends */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Your Performance Trend</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="month" stroke="#6b7280" />
+              <YAxis stroke="#6b7280" />
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px', color: '#fff' }}
+                cursor={{ stroke: '#10b981', strokeWidth: 2 }}
+              />
+              <Legend />
+              <Line type="monotone" dataKey="views" stroke="#3b82f6" strokeWidth={2} dot={{ fill: '#3b82f6', r: 4 }} />
+              <Line type="monotone" dataKey="sales" stroke="#10b981" strokeWidth={2} dot={{ fill: '#10b981', r: 4 }} />
+              <Line type="monotone" dataKey="earnings" stroke="#8b5cf6" strokeWidth={2} dot={{ fill: '#8b5cf6', r: 4 }} />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <a href="/dashboard/artworks" className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">My Artworks</a>
-          <a href="/dashboard/profile" className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Profile</a>
-          <a href="/dashboard/transactions" className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Transactions</a>
-          <a href="/dashboard/requests" className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">Requests</a>
+        {/* Pie Chart - Artwork Status */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Artwork Status Distribution</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={[
+                  { name: 'Published', value: artistStats?.published || 0, fill: '#10b981' },
+                  { name: 'Pending', value: artistStats?.pending || 0, fill: '#f59e0b' },
+                  { name: 'Rejected', value: artistStats?.rejected || 0, fill: '#ef4444' },
+                ]}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, value }) => `${name}: ${value}`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                <Cell fill="#10b981" />
+                <Cell fill="#f59e0b" />
+                <Cell fill="#ef4444" />
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Recent Artworks & Quick Links */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Recent Uploads</h3>
+          <div className="space-y-3">
+            {artistStats?.recent_artworks?.map((artwork: any) => (
+              <div key={artwork.id} className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                <div className="flex items-center space-x-3 flex-1">
+                  <img src={artwork.main_image || '/artworks/default.jpg'} alt={artwork.title} className="w-12 h-12 rounded object-cover" />
+                  <div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{artwork.title}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                        artwork.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/20' :
+                        artwork.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20' :
+                        'bg-red-100 text-red-800 dark:bg-red-900/20'
+                      }`}>
+                        {artwork.status}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">${Number(artwork.price).toFixed(2)}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{artwork.views || 0} views</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Quick Actions</h3>
+          <div className="space-y-3">
+            <a href="/dashboard/artworks" className="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent dark:hover:from-blue-900/20 hover:border-blue-300 dark:hover:border-blue-700 transition-all">
+              <div className="font-medium text-gray-900 dark:text-gray-100">My Artworks</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Manage and view all your creations</div>
+            </a>
+
+            <a href="/dashboard/artworks?upload=true" className="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gradient-to-r hover:from-green-50 hover:to-transparent dark:hover:from-green-900/20 hover:border-green-300 dark:hover:border-green-700 transition-all">
+              <div className="font-medium text-gray-900 dark:text-gray-100">Upload New Artwork</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Add a new creation to your portfolio</div>
+            </a>
+
+            <a href="/dashboard/profile" className="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gradient-to-r hover:from-purple-50 hover:to-transparent dark:hover:from-purple-900/20 hover:border-purple-300 dark:hover:border-purple-700 transition-all">
+              <div className="font-medium text-gray-900 dark:text-gray-100">Edit Profile</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Update your artist information</div>
+            </a>
+
+            <a href="/dashboard/transactions" className="block p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent dark:hover:from-orange-900/20 hover:border-orange-300 dark:hover:border-orange-700 transition-all">
+              <div className="font-medium text-gray-900 dark:text-gray-100">View Transactions</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Track your sales and earnings</div>
+            </a>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Label } from '@/components/ui/Label'
@@ -22,9 +22,21 @@ const DEMO_USERS = [
 ]
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#0b1220] px-4">
+        <div className="text-center text-gray-600 dark:text-gray-300">Loading...</div>
+      </div>
+    }>
+      <LoginPageInner />
+    </Suspense>
+  )
+}
+
+function LoginPageInner() {
   const router = useRouter()
-    const searchParams = useSearchParams()
-    const redirect = searchParams.get('redirect')
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect')
   const { register, handleSubmit, formState } = useForm<FormValues>()
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)
@@ -59,12 +71,12 @@ export default function LoginPage() {
       // Optionally persist non-sensitive bits in localStorage; tokens are in httpOnly cookies
       try { localStorage.setItem('auth_ok', 'true') } catch {}
 
-            // If there's a redirect parameter, use it; otherwise do role-based redirect
-            if (redirect) {
-              setSuccess('Logged in successfully')
-              router.push(redirect)
-              return
-            }
+      // If there's a redirect parameter, use it; otherwise do role-based redirect
+      if (redirect) {
+        setSuccess('Logged in successfully')
+        router.push(redirect)
+        return
+      }
 
       // Fetch user to determine role-based redirect
       let rolePath = '/dashboard';
@@ -107,7 +119,7 @@ export default function LoginPage() {
   return (
     <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#0b1220] px-4">
       <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        <div className="bg-gradient-to-br from-emerald-600 to-teal-500 text-white rounded-lg p-8 hidden md:block">
+        <div className="bg-linear-to-br from-emerald-600 to-teal-500 text-white rounded-lg p-8 hidden md:block">
           <h2 className="text-2xl font-bold mb-2">Welcome back to Hangart</h2>
           <p className="text-sm opacity-90">Manage artworks, view analytics, and connect with collectors. Pick a demo profile below to preview role-specific dashboards.</p>
 

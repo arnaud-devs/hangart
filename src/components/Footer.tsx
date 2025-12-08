@@ -50,7 +50,7 @@ export default function Footer() {
               <li><a href="/contact" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">Contact</a></li>
               <li><a href="/shipping" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">Shipping & Returns</a></li>
               <li><a href="/faq" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">FAQ</a></li>
-              <li><a href="/support" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">Support</a></li>
+              <li><a href="/contact" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-[#DFDFD6] transition-colors">Support</a></li>
             </ul>
           </div>
 

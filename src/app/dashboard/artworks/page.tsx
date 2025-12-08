@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Image, TrendingUp, CheckCircle, Clock } from 'lucide-react';
+import { Image, TrendingUp, CheckCircle, Clock, Edit2, Trash2 } from 'lucide-react';
 import { artworkService, artistService } from '@/services/apiServices';
 import { useAuth } from '@/lib/authProvider';
 import StatsCard from '@/components/dashboard/StatsCard';
@@ -26,6 +26,7 @@ export default function Page() {
   const [error, setError] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'pending' | 'rejected'>('all');
   const [showModal, setShowModal] = useState(false);
+  const [editingArtwork, setEditingArtwork] = useState<Artwork | null>(null);
 
   useEffect(() => {
     loadArtworks();
@@ -37,10 +38,12 @@ export default function Page() {
       setLoading(true);
       if (user?.role === 'artist') {
         const res: any = await artistService.getMyArtworks();
-        setArtworks(res.results || res || []);
+        const artworksList = Array.isArray(res) ? res : (res?.results || []);
+        setArtworks(artworksList);
       } else {
         const res: any = await artworkService.listArtworks();
-        setArtworks(res.results || res || []);
+        const artworksList = Array.isArray(res) ? res : (res?.results || []);
+        setArtworks(artworksList);
       }
     } catch (err: any) {
       setError(err.message || 'Failed to load artworks');
@@ -63,9 +66,21 @@ export default function Page() {
     try {
       const updated = await artworkService.updateArtwork(id, payload);
       setArtworks(prev => prev.map(a => a.id === updated.id ? updated : a));
+      setEditingArtwork(null);
+      setShowModal(false);
     } catch (err: any) {
       setError(err.message || 'Failed to update artwork');
     }
+  };
+
+  const handleEditArtwork = (artwork: Artwork) => {
+    setEditingArtwork(artwork);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditingArtwork(null);
   };
 
   const deleteArtwork = async (id: number) => {
@@ -160,6 +175,36 @@ export default function Page() {
         <span className="text-gray-900 dark:text-gray-100">
           {new Date(value).toLocaleDateString()}
         </span>
+      ),
+    },
+    {
+      key: 'actions',
+      label: 'Actions',
+      render: (_: any, row: Artwork) => (
+        <div className="flex gap-2">
+          {user?.role === 'artist' && (
+            <button
+              onClick={() => handleEditArtwork(row)}
+              className="p-2 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/20 text-blue-600 dark:text-blue-400 transition-colors"
+              title="Edit artwork"
+            >
+              <Edit2 className="w-4 h-4" />
+            </button>
+          )}
+          {user?.role === 'artist' && (
+            <button
+              onClick={() => {
+                if (window.confirm('Are you sure you want to delete this artwork?')) {
+                  deleteArtwork(row.id);
+                }
+              }}
+              className="p-2 rounded-md hover:bg-red-100 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 transition-colors"
+              title="Delete artwork"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       ),
     },
   ];
@@ -274,60 +319,305 @@ export default function Page() {
       )}
 
       {showModal && (
-        <ArtworkModal onClose={() => setShowModal(false)} onSave={createArtwork} />
+        <ArtworkModal 
+          onClose={handleCloseModal} 
+          onSave={editingArtwork ? (payload) => updateArtwork(editingArtwork.id, payload) : createArtwork}
+          editingArtwork={editingArtwork}
+        />
       )}
     </div>
   );
 }
 
-function ArtworkModal({ onClose, onSave }: { onClose: () => void; onSave: (fd: FormData) => void }) {
-  const [title, setTitle] = useState('');
-  const [price, setPrice] = useState('');
+function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void; onSave: (payload: any) => void; editingArtwork?: Artwork | null }) {
+  const [title, setTitle] = useState(editingArtwork?.title || '');
+  const [description, setDescription] = useState(editingArtwork?.description || '');
+  const [category, setCategory] = useState('');
+  const [medium, setMedium] = useState('');
+  const [price, setPrice] = useState(editingArtwork?.price?.toString() || '');
+  const [widthCm, setWidthCm] = useState('');
+  const [heightCm, setHeightCm] = useState('');
+  const [depthCm, setDepthCm] = useState('');
+  const [creationYear, setCreationYear] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [description, setDescription] = useState('');
+  const [imagePreview, setImagePreview] = useState(editingArtwork?.main_image || '');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const fd = new FormData();
-    fd.append('title', title);
-    fd.append('price', price);
-    fd.append('description', description);
-    if (imageFile) fd.append('main_image', imageFile);
-    onSave(fd);
+    const newErrors: Record<string, string> = {};
+
+    // Validation
+    if (!title.trim()) newErrors.title = 'Title is required';
+    if (!description.trim()) newErrors.description = 'Description is required';
+    if (!price) newErrors.price = 'Price is required';
+    if (!editingArtwork && !imageFile) newErrors.imageFile = 'Main image is required';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    if (editingArtwork) {
+      // Update existing artwork - send JSON payload for PATCH
+      const payload: any = {
+        title,
+        description,
+        price,
+      };
+      if (category) payload.category = category;
+      if (medium) payload.medium = medium;
+      if (widthCm) payload.width_cm = widthCm;
+      if (heightCm) payload.height_cm = heightCm;
+      if (depthCm) payload.depth_cm = depthCm;
+      if (creationYear) payload.creation_year = creationYear;
+      
+      onSave(payload);
+    } else {
+      // Create new artwork - send FormData
+      const fd = new FormData();
+      fd.append('title', title);
+      fd.append('description', description);
+      if (category) fd.append('category', category);
+      if (medium) fd.append('medium', medium);
+      fd.append('price', price);
+      if (widthCm) fd.append('width_cm', widthCm);
+      if (heightCm) fd.append('height_cm', heightCm);
+      if (depthCm) fd.append('depth_cm', depthCm);
+      if (creationYear) fd.append('creation_year', creationYear);
+      if (imageFile) fd.append('main_image', imageFile);
+
+      onSave(fd);
+    }
+
+    setTitle('');
+    setDescription('');
+    setCategory('');
+    setMedium('');
+    setPrice('');
+    setWidthCm('');
+    setHeightCm('');
+    setDepthCm('');
+    setCreationYear('');
+    setImageFile(null);
+    setImagePreview('');
+    setErrors({});
   };
+
 
   return (
     <div>
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
         <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-        <form onSubmit={submit} className="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 z-10 text-gray-900 dark:text-gray-100">
-          <h3 className="text-lg font-semibold mb-4">Add New Artwork</h3>
+        <form onSubmit={submit} className="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-3xl p-6 z-10 text-gray-900 dark:text-gray-100 my-8">
+          <h3 className="text-2xl font-bold mb-6">{editingArtwork ? 'Edit Artwork' : 'Upload New Artwork'}</h3>
 
-          <div className="grid grid-cols-1 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Title</label>
-              <input value={title} onChange={e => setTitle(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" required />
+          {/* Image Preview Section */}
+          {imagePreview && (
+            <div className="mb-6">
+              <div className="rounded-lg overflow-hidden">
+                <img src={imagePreview} alt="Preview" className="w-full max-h-64 object-cover" />
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-6 max-h-96 overflow-y-auto pr-2">
+            {/* Required Fields Section */}
+            <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                <span className="text-red-500">*</span> Required Information
+              </h4>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                    Title <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    value={title}
+                    onChange={e => { setTitle(e.target.value); if (errors.title) setErrors({...errors, title: ''}); }}
+                    className={`w-full border rounded px-3 py-2 dark:bg-gray-700 dark:border-gray-600 ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
+                    placeholder="e.g., Sunset Over Mountains"
+                    required
+                  />
+                  {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                    Price <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    value={price}
+                    onChange={e => { setPrice(e.target.value); if (errors.price) setErrors({...errors, price: ''}); }}
+                    className={`w-full border rounded px-3 py-2 dark:bg-gray-700 dark:border-gray-600 ${errors.price ? 'border-red-500' : 'border-gray-300'}`}
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="1500.00"
+                    required
+                  />
+                  {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                  Description <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={description}
+                  onChange={e => { setDescription(e.target.value); if (errors.description) setErrors({...errors, description: ''}); }}
+                  className={`w-full border rounded px-3 py-2 dark:bg-gray-700 dark:border-gray-600 ${errors.description ? 'border-red-500' : 'border-gray-300'}`}
+                  rows={3}
+                  placeholder="Describe your artwork, its inspiration, and details..."
+                  required
+                />
+                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
+              </div>
+
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                  Main Image <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="file"
+                  onChange={handleImageChange}
+                  accept="image/*"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700"
+                  required
+                />
+                {errors.imageFile && <p className="text-red-500 text-xs mt-1">{errors.imageFile}</p>}
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Supported formats: JPG, PNG, GIF, WebP</p>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Price</label>
-              <input value={price} onChange={e => setPrice(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" type="number" min="0" step="0.01" required />
-            </div>
+            {/* Optional Fields Section */}
+            <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
+              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Optional Information</h4>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Main Image (file)</label>
-              <input type="file" onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)} accept="image/*" />
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Category</label>
+                  <select
+                    value={category}
+                    onChange={e => setCategory(e.target.value)}
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 dark:bg-gray-700"
+                  >
+                    <option value="">Select a category</option>
+                    <option value="Painting">Painting</option>
+                    <option value="Sculpture">Sculpture</option>
+                    <option value="Photography">Photography</option>
+                    <option value="Digital Art">Digital Art</option>
+                    <option value="Printmaking">Printmaking</option>
+                    <option value="Mixed Media">Mixed Media</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Description</label>
-              <textarea value={description} onChange={e => setDescription(e.target.value)} className="mt-1 block w-full border rounded px-3 py-2" rows={4} />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Medium</label>
+                  <select
+                    value={medium}
+                    onChange={e => setMedium(e.target.value)}
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 dark:bg-gray-700"
+                  >
+                    <option value="">Select a medium</option>
+                    <option value="Oil">Oil</option>
+                    <option value="Acrylic">Acrylic</option>
+                    <option value="Watercolor">Watercolor</option>
+                    <option value="Digital">Digital</option>
+                    <option value="Pencil">Pencil</option>
+                    <option value="Charcoal">Charcoal</option>
+                    <option value="Bronze">Bronze</option>
+                    <option value="Stone">Stone</option>
+                    <option value="Mixed Media">Mixed Media</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Width (cm)</label>
+                  <input
+                    value={widthCm}
+                    onChange={e => setWidthCm(e.target.value)}
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 dark:bg-gray-700"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    placeholder="e.g., 50"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Height (cm)</label>
+                  <input
+                    value={heightCm}
+                    onChange={e => setHeightCm(e.target.value)}
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 dark:bg-gray-700"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    placeholder="e.g., 75"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Depth (cm)</label>
+                  <input
+                    value={depthCm}
+                    onChange={e => setDepthCm(e.target.value)}
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 dark:bg-gray-700"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    placeholder="e.g., 10"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Creation Year</label>
+                <input
+                  value={creationYear}
+                  onChange={e => setCreationYear(e.target.value)}
+                  className="w-full border border-gray-300 dark:border-gray-600 rounded px-3 py-2 dark:bg-gray-700"
+                  type="number"
+                  min="1900"
+                  max={new Date().getFullYear()}
+                  placeholder={new Date().getFullYear().toString()}
+                />
+              </div>
             </div>
           </div>
 
-          <div className="mt-4 flex justify-end gap-3">
-            <button type="button" onClick={onClose} className="px-4 py-2 border rounded">Cancel</button>
-            <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded">Save</button>
+          <div className="mt-6 flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors font-medium"
+            >
+              {editingArtwork ? 'Save Changes' : 'Upload Artwork'}
+            </button>
           </div>
         </form>
       </div>

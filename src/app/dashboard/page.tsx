@@ -81,18 +81,21 @@ function AdminView() {
       // Backend does not expose a public buyers listing endpoint; leave buyers empty for now.
       const buyers: any[] = [];
 
+      const artworksList = (artworks as any).results || [];
+      const artistsList = (artists as any).results || [];
+      
       const dashboardStats: DashboardStats = {
-        total_artworks: (artworks as any).count || (artworks as any).length || 0,
-        total_artists: (artists as any).count || (artists as any).length || 0,
+        total_artworks: (artworks as any).count || artworksList.length || 0,
+        total_artists: (artists as any).count || artistsList.length || 0,
         total_buyers: (buyers as any)?.count || (buyers as any)?.length || 0,
         total_orders: 0,
-        total_revenue: 0,
-        pending_approvals: (artworks as any).results?.filter((a: any) => a.status === 'submitted').length || 0,
+        total_revenue: artworksList.reduce((sum: number, a: any) => sum + (Number(a.price) || 0), 0),
+        pending_approvals: artworksList.filter((a: any) => a.status === 'pending').length || 0,
         total_refunds: 0,
         pending_payments: 0,
         completed_payments: 0,
-        recent_artworks: (artworks as any).results?.slice(0, 5) || [],
-        top_artists: (artists as any).results?.slice(0, 5) || [],
+        recent_artworks: artworksList.slice(0, 5),
+        top_artists: artistsList.slice(0, 5),
       };
 
       setStats(dashboardStats);
@@ -341,10 +344,10 @@ function AdminView() {
                   <img src={artwork.main_image || '/artworks/default.jpg'} alt={artwork.title} className="w-12 h-12 rounded object-cover" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{artwork.title}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">{artwork.artist_name}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">{artwork.artist_name || 'Unknown'}</div>
                   </div>
                 </div>
-                <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">${artwork.price}</div>
+                <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">${Number(artwork.price).toFixed(2)}</div>
               </div>
             ))}
           </div>
@@ -392,7 +395,7 @@ function ArtistView({ user }: { user: any }) {
     try {
       setLoading(true);
       const artworks = await artistService.getMyArtworks();
-      const artworksList = (artworks as any).results || artworks || [];
+      const artworksList = Array.isArray(artworks) ? artworks : ((artworks as any).results || []);
 
       const stats = {
         total_artworks: artworksList.length,

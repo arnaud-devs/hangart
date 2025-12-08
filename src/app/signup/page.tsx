@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Label } from '@/components/ui/Label'
@@ -19,9 +19,21 @@ type FormValues = {
 }
 
 export default function SignupPage() {
-    const router = useRouter()
-    const searchParams = useSearchParams()
-    const redirect = searchParams.get('redirect')
+  return (
+    <Suspense fallback={
+      <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#1B1B1F] px-4">
+        <div className="text-center text-gray-600 dark:text-gray-300">Loading…</div>
+      </main>
+    }>
+      <SignupPageInner />
+    </Suspense>
+  )
+}
+
+function SignupPageInner() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect')
   const { register, handleSubmit, formState, watch } = useForm<FormValues>()
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)

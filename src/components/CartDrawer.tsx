@@ -2,21 +2,16 @@
 
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useCart, CartItem } from "@/context/CartContext";
-import { initiatePayment } from "@/lib/payments";
 
 export default function CartDrawer() {
+  const router = useRouter();
   const { items, subtotal, open, setOpen, updateQuantity, removeItem, clearCart } = useCart();
 
-  const handleCheckout = async () => {
-    try {
-      const res = await initiatePayment(items);
-      // For now just log and clear cart on success
-      console.log("payment stub result", res);
-      // In a real integration you'd redirect to Stripe checkout here
-    } catch (e) {
-      console.error(e);
-    }
+  const handleCheckout = () => {
+    setOpen(false);
+    router.push("/checkout");
   };
 
   return (

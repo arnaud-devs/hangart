@@ -27,6 +27,7 @@ export default function GalleryPage() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedMedium, setSelectedMedium] = useState<string[]>([]);
+  const [selectedArtist, setSelectedArtist] = useState("all");
   const [selectedPriceRange, setSelectedPriceRange] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("-created_at");
@@ -35,6 +36,7 @@ export default function GalleryPage() {
   const [totalCount, setTotalCount] = useState(0);
   const [categories, setCategories] = useState<FilterOption[]>([{ id: "all", label: "All" }]);
   const [mediums, setMediums] = useState<FilterOption[]>([]);
+  const [artists, setArtists] = useState<FilterOption[]>([{ id: "all", label: "All Artists" }]);
 
   const priceRanges = [
     { id: "all", label: "All Prices", min: undefined, max: undefined },
@@ -48,6 +50,7 @@ export default function GalleryPage() {
   const [expandedSections, setExpandedSections] = useState({
     category: true,
     medium: true,
+    artist: true,
     sort: true,
     price: true,
   });
@@ -92,12 +95,19 @@ export default function GalleryPage() {
         const uniqueMediums = Array.from(
           new Set(artworksList.map((a: any) => a.medium).filter(Boolean))
         ) as string[];
+        const uniqueArtists = Array.from(
+          new Set(artworksList.map((a: any) => a.artist_name).filter(Boolean))
+        ) as string[];
 
         setCategories([
           { id: "all", label: "All", count: count },
           ...uniqueCategories.map((cat) => ({ id: cat, label: cat })),
         ]);
         setMediums(uniqueMediums.map((med) => ({ id: med, label: med })));
+        setArtists([
+          { id: "all", label: "All Artists" },
+          ...uniqueArtists.map((artist) => ({ id: artist, label: artist })),
+        ]);
       } catch (error) {
         console.error("Failed to fetch artworks:", error);
         setArtworks([]);
@@ -110,8 +120,10 @@ export default function GalleryPage() {
     fetchArtworks();
   }, [page, selectedCategory, selectedMedium, sortBy, searchQuery]);
 
-  // Client-side price filtering
+  // Client-side artist & price filtering
   const filteredArtworks = artworks.filter((artwork) => {
+    if (selectedArtist !== "all" && artwork.artist_name !== selectedArtist) return false;
+
     if (selectedPriceRange === "all") return true;
     
     const range = priceRanges.find(r => r.id === selectedPriceRange);
@@ -127,7 +139,7 @@ export default function GalleryPage() {
     return true;
   });
 
-  const activeFiltersCount = (selectedCategory !== "all" ? 1 : 0) + selectedMedium.length + (selectedPriceRange !== "all" ? 1 : 0) + (searchQuery ? 1 : 0);
+  const activeFiltersCount = (selectedCategory !== "all" ? 1 : 0) + selectedMedium.length + (selectedArtist !== "all" ? 1 : 0) + (selectedPriceRange !== "all" ? 1 : 0) + (searchQuery ? 1 : 0);
   const totalPages = Math.ceil(totalCount / 20);
 
   return (
@@ -294,6 +306,41 @@ export default function GalleryPage() {
                 )}
               </div>
 
+              {/* Artist */}
+              <div className="mb-6">
+                <button
+                  onClick={() => toggleSection("artist")}
+                  className="flex items-center justify-between w-full mb-3 text-sm font-medium text-gray-900 dark:text-gray-100"
+                >
+                  ARTIST
+                  {expandedSections.artist ? (
+                    <ChevronUp className="w-4 h-4" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  )}
+                </button>
+                {expandedSections.artist && (
+                  <div className="space-y-2">
+                    {artists.map((artist) => (
+                      <label key={artist.id} className="flex items-center gap-2 cursor-pointer group">
+                        <input
+                          type="radio"
+                          name="artist"
+                          checked={selectedArtist === artist.id}
+                          onChange={() => {
+                            setSelectedArtist(artist.id);
+                          }}
+                          className="w-4 h-4 text-emerald-600 border-gray-300 dark:border-gray-600"
+                        />
+                        <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-gray-100">
+                          {artist.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               {/* Price Range */}
               <div className="mb-6">
                 <button
@@ -356,6 +403,7 @@ export default function GalleryPage() {
                   onClick={() => {
                     setSelectedCategory("all");
                     setSelectedMedium([]);
+                    setSelectedArtist("all");
                     setSelectedPriceRange("all");
                     setSearchQuery("");
                     setPage(1);

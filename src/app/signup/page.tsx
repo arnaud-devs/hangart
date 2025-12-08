@@ -1,6 +1,7 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { useForm } from 'react-hook-form'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Label } from '@/components/ui/Label'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
@@ -18,10 +19,32 @@ type FormValues = {
 }
 
 export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#1B1B1F] px-4">
+        <div className="text-center text-gray-600 dark:text-gray-300">Loading…</div>
+      </main>
+    }>
+      <SignupPageInner />
+    </Suspense>
+  )
+}
+
+function SignupPageInner() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect')
   const { register, handleSubmit, formState, watch } = useForm<FormValues>()
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [showRedirectMessage, setShowRedirectMessage] = useState(false)
+
+  useEffect(() => {
+    if (redirect) {
+      setShowRedirectMessage(true)
+    }
+  }, [redirect])
 
   const password = watch('password')
 
@@ -57,7 +80,33 @@ export default function SignupPage() {
         return
       }
 
-      setSuccess('Account created successfully! You can now log in.')
+      setSuccess('Account created successfully!')
+      
+      // If there's a redirect, automatically log in and redirect
+      if (redirect) {
+        // Auto-login after signup
+        try {
+          const loginRes = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              username: data.username,
+              password: data.password,
+            }),
+          })
+          
+          if (loginRes.ok) {
+            try { localStorage.setItem('auth_ok', 'true') } catch {}
+            setTimeout(() => router.push(redirect), 1000)
+          } else {
+            setTimeout(() => router.push(`/login?redirect=${redirect}`), 2000)
+          }
+        } catch {
+          setTimeout(() => router.push(`/login?redirect=${redirect}`), 2000)
+        }
+      } else {
+        setSuccess('Account created successfully! You can now log in.')
+      }
     } catch (e: any) {
       setError(String(e?.message ?? e))
     }
@@ -67,6 +116,14 @@ export default function SignupPage() {
     <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#1B1B1F] px-4">
       <div className="w-full max-w-md dark:border p-8 rounded shadow bg-gray-50 dark:bg-[#1B1B1F]">
         <h1 className="text-2xl font-semibold mb-4">Create Account</h1>
+
+        {showRedirectMessage && (
+          <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
+            <p className="text-sm text-blue-700 dark:text-blue-400">
+              Create an account to continue to checkout
+            </p>
+          </div>
+        )}
 
         {error && <div className="mb-4 text-sm text-red-700">{error}</div>}
         {success && <div className="mb-4 text-sm text-green-700">{success}</div>}
@@ -160,7 +217,7 @@ export default function SignupPage() {
 
         <p className="mt-4 text-sm text-gray-600 text-center">
           Already have an account?{' '}
-          <Link href="/login" className="text-blue-600 hover:underline">
+          <Link href={redirect ? `/login?redirect=${redirect}` : "/login"} className="text-blue-600 hover:underline">
             Log in
           </Link>
         </p>

@@ -1,8 +1,8 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { useForm } from 'react-hook-form'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Label } from '@/components/ui/Label'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
@@ -22,11 +22,32 @@ const DEMO_USERS = [
 ]
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#0b1220] px-4">
+        <div className="text-center text-gray-600 dark:text-gray-300">Loading...</div>
+      </div>
+    }>
+      <LoginPageInner />
+    </Suspense>
+  )
+}
+
+function LoginPageInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect')
   const { register, handleSubmit, formState } = useForm<FormValues>()
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [showRedirectMessage, setShowRedirectMessage] = useState(false)
+
+  useEffect(() => {
+    if (redirect) {
+      setShowRedirectMessage(true)
+    }
+  }, [redirect])
 
   const onSubmit = async (data: FormValues) => {
     setError(null)
@@ -49,6 +70,14 @@ export default function LoginPage() {
 
       // Optionally persist non-sensitive bits in localStorage; tokens are in httpOnly cookies
       try { localStorage.setItem('auth_ok', 'true') } catch {}
+
+      // If there's a redirect parameter, use it; otherwise do role-based redirect
+      if (redirect) {
+        setSuccess('Logged in successfully')
+        router.push(redirect)
+        return
+      }
+
       // Fetch user to determine role-based redirect
       let rolePath = '/dashboard';
       try {
@@ -90,7 +119,7 @@ export default function LoginPage() {
   return (
     <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#0b1220] px-4">
       <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        <div className="bg-gradient-to-br from-emerald-600 to-teal-500 text-white rounded-lg p-8 hidden md:block">
+        <div className="bg-linear-to-br from-emerald-600 to-teal-500 text-white rounded-lg p-8 hidden md:block">
           <h2 className="text-2xl font-bold mb-2">Welcome back to Hangart</h2>
           <p className="text-sm opacity-90">Manage artworks, view analytics, and connect with collectors. Pick a demo profile below to preview role-specific dashboards.</p>
 
@@ -109,6 +138,14 @@ export default function LoginPage() {
 
         <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-semibold mb-4">Sign in</h1>
+
+          {showRedirectMessage && (
+            <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
+              <p className="text-sm text-blue-700 dark:text-blue-400">
+                Please log in to continue to checkout
+              </p>
+            </div>
+          )}
 
           {error && <div className="mb-4 text-sm text-red-700 dark:text-red-400">{error}</div>}
           {success && <div className="mb-4 text-sm text-green-700 dark:text-green-400">{success}</div>}
@@ -145,7 +182,7 @@ export default function LoginPage() {
           </p>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 text-center">
             Don't have an account?{' '}
-            <Link href="/signup" className="text-emerald-600 hover:underline">
+            <Link href={redirect ? `/signup?redirect=${redirect}` : "/signup"} className="text-emerald-600 hover:underline">
               Sign up
             </Link>
           </p>

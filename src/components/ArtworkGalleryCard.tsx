@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Heart, Plus, ShoppingBag } from 'lucide-react'
+import { useCart } from '@/context/CartContext'
 
 type ArtworkGalleryCardProps = {
   id: string | number
@@ -25,6 +26,7 @@ export default function ArtworkGalleryCard({
   image,
 }: ArtworkGalleryCardProps) {
   const [added, setAdded] = useState(false);
+  const { addItem, setOpen } = useCart();
 
   useEffect(() => {
     try {
@@ -63,6 +65,26 @@ export default function ArtworkGalleryCard({
       // ignore storage errors
     }
   };
+
+  const addToCart = () => {
+    try {
+      const numericPrice = parseFloat(String(price).replace(/[^0-9.]/g, '')) || 0;
+      addItem(
+        {
+          id,
+          title,
+          artistName: artist,
+          image,
+          price: numericPrice,
+          currency: price?.startsWith('$') ? '$' : undefined,
+        },
+        1
+      );
+      setOpen(true);
+    } catch (e) {
+      // ignore
+    }
+  };
   return (
     <div className="group relative bg-[#F6F6F7] dark:bg-gray-800 rounded-lg overflow-hidden">
       {/* Image container with hover overlay */}
@@ -94,6 +116,7 @@ export default function ArtworkGalleryCard({
           </button>
           <button
             suppressHydrationWarning
+            onClick={addToCart}
             className="w-10 h-10 rounded-full bg-white dark:bg-gray-800 flex items-center justify-center text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             aria-label="Add to cart"
           >
@@ -113,10 +136,13 @@ export default function ArtworkGalleryCard({
               {title}
             </p>
           </div>
-          <div className="flex items-center gap-1 flex-shrink-0">
-            <Heart className="w-5 h-5 text-gray-400 cursor-pointer hover:text-red-500 transition-colors" />
-            <Plus className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-900 dark:hover:text-gray-100 transition-colors" />
-            <ShoppingBag className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-900 dark:hover:text-gray-100 transition-colors" />
+          <div className="flex items-center gap-1 shrink-0">
+            <button onClick={addToWishlist} aria-label="Add to wishlist">
+              <Heart className="w-5 h-5 text-gray-400 cursor-pointer hover:text-red-500 transition-colors" />
+            </button>
+            <button onClick={addToCart} aria-label="Add to cart">
+              <ShoppingBag className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-900 dark:hover:text-gray-100 transition-colors" />
+            </button>
           </div>
         </div>
 

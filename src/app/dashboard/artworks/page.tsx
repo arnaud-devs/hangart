@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Image, TrendingUp, CheckCircle, Clock, Edit2, Trash2, Send, Eye } from 'lucide-react';
 import { artworkService, artistService } from '@/services/apiServices';
 import { useAuth } from '@/lib/authProvider';
 import { useToast } from '@/components/ui/Toast';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
-import ArtworkDetailsModal from '@/components/dashboard/ArtworkDetailsModal';
 import StatsCard from '@/components/dashboard/StatsCard';
 import DataTable from '@/components/dashboard/DataTable';
 
@@ -14,6 +14,12 @@ interface Artwork {
   id: number;
   title: string;
   description?: string;
+  category?: string;
+  medium?: string;
+  width_cm?: number | string;
+  height_cm?: number | string;
+  depth_cm?: number | string;
+  creation_year?: number | string;
   price: number | string;
   status?: string;
   is_available?: boolean;
@@ -26,6 +32,7 @@ interface Artwork {
 export default function Page() {
   const { user } = useAuth();
   const { showToast } = useToast();
+  const router = useRouter();
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -35,8 +42,6 @@ export default function Page() {
   const [editingArtwork, setEditingArtwork] = useState<Artwork | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [artworkToDelete, setArtworkToDelete] = useState<Artwork | null>(null);
-  const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const [viewingArtworkId, setViewingArtworkId] = useState<number | null>(null);
 
   useEffect(() => {
     loadArtworks();
@@ -96,8 +101,7 @@ export default function Page() {
   };
 
   const handleViewArtwork = (artworkId: number) => {
-    setViewingArtworkId(artworkId);
-    setShowDetailsModal(true);
+    router.push(`/dashboard/artworks/${artworkId}`);
   };
 
   const handleDeleteClick = (artwork: Artwork) => {
@@ -399,17 +403,6 @@ export default function Page() {
         confirmLabel="Delete"
         cancelLabel="Cancel"
       />
-
-      {/* Artwork Details Modal */}
-      {showDetailsModal && viewingArtworkId && (
-        <ArtworkDetailsModal
-          artworkId={viewingArtworkId}
-          onClose={() => {
-            setShowDetailsModal(false);
-            setViewingArtworkId(null);
-          }}
-        />
-      )}
     </div>
   );
 }
@@ -417,14 +410,14 @@ export default function Page() {
 function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void; onSave: (payload: any) => void; editingArtwork?: Artwork | null }) {
   const [title, setTitle] = useState(editingArtwork?.title || '');
   const [description, setDescription] = useState(editingArtwork?.description || '');
-  const [category, setCategory] = useState('');
-  const [medium, setMedium] = useState('');
+  const [category, setCategory] = useState(editingArtwork?.category || '');
+  const [medium, setMedium] = useState(editingArtwork?.medium || '');
   const [price, setPrice] = useState(editingArtwork?.price?.toString() || '');
   const [isAvailable, setIsAvailable] = useState(editingArtwork?.is_available ?? true);
-  const [widthCm, setWidthCm] = useState('');
-  const [heightCm, setHeightCm] = useState('');
-  const [depthCm, setDepthCm] = useState('');
-  const [creationYear, setCreationYear] = useState('');
+  const [widthCm, setWidthCm] = useState(editingArtwork?.width_cm?.toString() || '');
+  const [heightCm, setHeightCm] = useState(editingArtwork?.height_cm?.toString() || '');
+  const [depthCm, setDepthCm] = useState(editingArtwork?.depth_cm?.toString() || '');
+  const [creationYear, setCreationYear] = useState(editingArtwork?.creation_year?.toString() || '');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState(editingArtwork?.main_image || '');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -445,11 +438,17 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
     e.preventDefault();
     const newErrors: Record<string, string> = {};
 
-    // Validation
-    if (!title.trim()) newErrors.title = 'Title is required';
-    if (!description.trim()) newErrors.description = 'Description is required';
-    if (!price) newErrors.price = 'Price is required';
-    if (!editingArtwork && !imageFile) newErrors.imageFile = 'Main image is required';
+    // Validation - only required for new artworks
+    if (!editingArtwork) {
+      if (!title.trim()) newErrors.title = 'Title is required';
+      if (!description.trim()) newErrors.description = 'Description is required';
+      if (!price) newErrors.price = 'Price is required';
+      if (!imageFile) newErrors.imageFile = 'Main image is required';
+    } else {
+      // For editing, only validate if fields are provided
+      if (title !== undefined && title !== null && !title.trim()) newErrors.title = 'Title cannot be empty';
+      if (price !== undefined && price !== null && !price) newErrors.price = 'Price cannot be empty';
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -457,15 +456,16 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
     }
 
     if (editingArtwork) {
-      // Update existing artwork - send JSON payload for PATCH
-      const payload: any = {
-        title,
-        description,
-        price,
-        is_available: isAvailable,
-      };
-      if (category) payload.category = category;
-      if (medium) payload.medium = medium;
+      // Update existing artwork - send only changed fields
+      const payload: any = {};
+      
+      // Only include fields that have values or have been changed
+      if (title && title.trim()) payload.title = title;
+      if (description !== undefined && description !== null) payload.description = description;
+      if (price) payload.price = price;
+      if (isAvailable !== undefined) payload.is_available = isAvailable;
+      if (category !== undefined && category !== null) payload.category = category || null;
+      if (medium !== undefined && medium !== null) payload.medium = medium || null;
       if (widthCm) payload.width_cm = widthCm;
       if (heightCm) payload.height_cm = heightCm;
       if (depthCm) payload.depth_cm = depthCm;
@@ -531,21 +531,21 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                    Title <span className="text-red-500">*</span>
+                    Title {!editingArtwork && <span className="text-red-500">*</span>}
                   </label>
                   <input
                     value={title}
                     onChange={e => { setTitle(e.target.value); if (errors.title) setErrors({...errors, title: ''}); }}
                     className={`w-full border rounded px-3 py-2 dark:bg-gray-700 dark:border-gray-600 ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
                     placeholder="e.g., Sunset Over Mountains"
-                    required
+                    required={!editingArtwork}
                   />
                   {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                    Price <span className="text-red-500">*</span>
+                    Price {!editingArtwork && <span className="text-red-500">*</span>}
                   </label>
                   <input
                     value={price}
@@ -555,7 +555,7 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
                     min="0"
                     step="0.01"
                     placeholder="1500.00"
-                    required
+                    required={!editingArtwork}
                   />
                   {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
                 </div>
@@ -563,7 +563,7 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
 
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                  Description <span className="text-red-500">*</span>
+                  Description {!editingArtwork && <span className="text-red-500">*</span>}
                 </label>
                 <textarea
                   value={description}
@@ -571,21 +571,22 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
                   className={`w-full border rounded px-3 py-2 dark:bg-gray-700 dark:border-gray-600 ${errors.description ? 'border-red-500' : 'border-gray-300'}`}
                   rows={3}
                   placeholder="Describe your artwork, its inspiration, and details..."
-                  required
+                  required={!editingArtwork}
                 />
                 {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
               </div>
 
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                  Main Image <span className="text-red-500">*</span>
+                  Main Image {!editingArtwork && <span className="text-red-500">*</span>}
+                  {editingArtwork && <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">(Leave empty to keep current image)</span>}
                 </label>
                 <input
                   type="file"
                   onChange={handleImageChange}
                   accept="image/*"
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700"
-                  required
+                  required={!editingArtwork}
                 />
                 {errors.imageFile && <p className="text-red-500 text-xs mt-1">{errors.imageFile}</p>}
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Supported formats: JPG, PNG, GIF, WebP</p>

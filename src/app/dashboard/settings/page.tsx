@@ -30,7 +30,6 @@ export default function Page() {
   function logout() {
     try {
       localStorage.removeItem("user");
-      // optional: clear other demo data if desired
     } catch (e) {
       // ignore
     }
@@ -41,7 +40,7 @@ export default function Page() {
     <div className="p-6">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Settings</h2>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">Application preferences for your demo account and UI.</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">Application preferences and UI settings.</p>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
           <div className="flex items-center justify-between">
@@ -55,7 +54,7 @@ export default function Page() {
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium text-gray-900 dark:text-gray-100">Email notifications</div>
-              <div className="text-sm text-gray-600 dark:text-gray-300">Receive email updates (demo only).</div>
+              <div className="text-sm text-gray-600 dark:text-gray-300">Receive email updates.</div>
             </div>
             <label className="inline-flex items-center">
               <input type="checkbox" checked={notifications} onChange={toggleNotifications} className="form-checkbox h-5 w-5 text-emerald-600" />

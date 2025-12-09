@@ -4,24 +4,19 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User, LogOut, Home } from "lucide-react";
+import { useAuth } from '@/lib/authProvider';
 
 export default function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const { user: authUser, signOut } = useAuth();
+  const [user, setUser] = useState<any>(authUser);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Load user from localStorage
+  // Subscribe to auth context user so menu updates reactively
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        console.error("Failed to parse user data");
-      }
-    }
-  }, []);
+    setUser(authUser);
+  }, [authUser]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -41,12 +36,19 @@ export default function UserMenu() {
   }, [isOpen]);
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("user");
-    setUser(null);
-    setIsOpen(false);
-    router.push("/");
+    try {
+      // Prefer auth provider signOut so context updates across app
+      signOut();
+    } catch (e) {
+      // Fallback to clearing localStorage if provider is not available
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+      setUser(null);
+      router.push("/");
+    } finally {
+      setIsOpen(false);
+    }
   };
 
   // Get user initials
@@ -81,13 +83,13 @@ export default function UserMenu() {
             <>
               <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
                 <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  {user.first_name || user.firstName} {user.last_name || user.lastName}
+                  {user?.first_name || user?.firstName} {user?.last_name || user?.lastName}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
                   {user.email}
                 </p>
               </div>
-              {user.role === "BUYER" && (
+              {(user?.role || user?.role === '') && (user.role?.toString().toLowerCase() === 'buyer') && (
                 <Link
                   href="/"
                   className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -97,7 +99,7 @@ export default function UserMenu() {
                   Home
                 </Link>
               )}
-              {(user.role === "ADMIN" || user.role === "ARTIST") && (
+              {((user?.role || '') && (user.role?.toString().toLowerCase() === 'admin' || user.role?.toString().toLowerCase() === 'artist')) && (
                 <Link
                   href="/dashboard"
                   className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"

@@ -99,7 +99,7 @@ export const Sidebar = ({
 
     readUser();
 
-    // respond to storage changes (other tabs) and window focus so sidebar updates when demo login changes user
+    // respond to storage changes (other tabs) and window focus so sidebar updates when user data changes
     const onStorage = (ev: StorageEvent) => {
       if (ev.key === 'user') readUser();
     };

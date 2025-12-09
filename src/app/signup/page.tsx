@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useTransition, useEffect, Suspense } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Label } from '@/components/ui/Label'
@@ -28,6 +29,8 @@ function SignupContent() {
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword2, setShowPassword2] = useState(false)
   const [showRedirectMessage, setShowRedirectMessage] = useState(false)
 
   useEffect(() => {
@@ -73,7 +76,7 @@ function SignupContent() {
           const role = (me?.role || '').toLowerCase();
           let redirectPath = '/dashboard';
           if (role === 'artist') redirectPath = '/dashboard/artworks';
-          else if (role === 'buyer') redirectPath = '/dashboard/wishlist';
+          else if (role === 'buyer') redirectPath = '/';
           else if (role === 'museum') redirectPath = '/dashboard/museum';
           else if (role === 'admin') redirectPath = '/dashboard/approvals';
           
@@ -154,9 +157,16 @@ function SignupContent() {
   }
 
   return (
-    <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#1B1B1F] px-4">
-      <div className="w-full max-w-md dark:border p-8 rounded shadow bg-gray-50 dark:bg-[#1B1B1F]">
-        <h1 className="text-2xl font-semibold mb-4">Create Account</h1>
+    <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#0b1220] px-4">
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold">H</div>
+            <div>
+              <h1 className="text-2xl font-semibold">Create account</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Join Hangart to buy, sell and showcase artworks.</p>
+            </div>
+          </div>
 
         {showRedirectMessage && (
           <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
@@ -198,30 +208,40 @@ function SignupContent() {
 
           <div>
             <Label htmlFor="password">Password</Label>
-            <Input 
-              id="password" 
-              type="password" 
-              {...register('password', { 
-                required: 'Password is required',
-                minLength: {
-                  value: 8,
-                  message: 'Password must be at least 8 characters'
-                }
-              })} 
-            />
+            <div className="relative">
+              <Input 
+                id="password" 
+                type={showPassword ? 'text' : 'password'} 
+                {...register('password', { 
+                  required: 'Password is required',
+                  minLength: {
+                    value: 8,
+                    message: 'Password must be at least 8 characters'
+                  }
+                })} 
+              />
+              <button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword(v => !v)} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
             {errors.password && <p className="text-sm text-red-600">{String(errors.password.message)}</p>}
           </div>
 
           <div>
             <Label htmlFor="password2">Confirm Password</Label>
-            <Input 
-              id="password2" 
-              type="password" 
-              {...register('password2', { 
-                required: 'Please confirm your password',
-                validate: (value) => value === password || 'Passwords do not match'
-              })} 
-            />
+            <div className="relative">
+              <Input 
+                id="password2" 
+                type={showPassword2 ? 'text' : 'password'} 
+                {...register('password2', { 
+                  required: 'Please confirm your password',
+                  validate: (value) => value === password || 'Passwords do not match'
+                })} 
+              />
+              <button type="button" aria-label={showPassword2 ? 'Hide password' : 'Show password'} onClick={() => setShowPassword2(v => !v)} className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                {showPassword2 ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+            </div>
             {errors.password2 && <p className="text-sm text-red-600">{String(errors.password2.message)}</p>}
           </div>
 
@@ -263,6 +283,7 @@ function SignupContent() {
           </Link>
         </p>
       </div>
+    </div>
     </main>
   )
 }

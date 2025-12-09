@@ -60,7 +60,7 @@ export default function Home() {
 
             {/* Right carousel (interactive) */}
             <div className="w-full md:w-1/2 flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-2xl bg-[#F6F6F7] dark:bg-gray-800">
-              <div className="relative w-full max-w-xl h-[40vh] md:h-[70vh] rounded-2xl overflow-hidden">
+              <div className="relative w-full h-fit md:h-[70vh] rounded-2xl overflow-hidden">
                 <Carousel useRealArtworks={true} limit={8} interval={2000} aspect="" />
               </div>
             </div>

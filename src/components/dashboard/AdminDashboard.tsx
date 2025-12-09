@@ -60,6 +60,52 @@ export default function AdminDashboard() {
     }
   };
 
+  const statsCards = [
+    {
+      label: 'Total Artworks',
+      value: stats?.total_artworks || 0,
+      color: 'text-gray-900 dark:text-gray-100'
+    },
+    {
+      label: 'Total Artists',
+      value: stats?.total_artists || 0,
+      color: 'text-gray-900 dark:text-gray-100'
+    },
+    {
+      label: 'Total Buyers',
+      value: stats?.total_buyers || 0,
+      color: 'text-gray-900 dark:text-gray-100'
+    },
+    {
+      label: 'Pending Approvals',
+      value: stats?.pending_approvals || 0,
+      color: 'text-yellow-600 dark:text-yellow-400'
+    }
+  ];
+
+  const quickActions = [
+    {
+      href: '/dashboard/artists',
+      title: 'Manage Artists',
+      description: 'View and manage all registered artists'
+    },
+    {
+      href: '/dashboard/buyers',
+      title: 'Manage Buyers',
+      description: 'View and manage all registered buyers'
+    },
+    {
+      href: '/dashboard/artworks',
+      title: 'Review Artworks',
+      description: 'Approve or reject submitted artworks'
+    },
+    {
+      href: '/dashboard/orders',
+      title: 'Manage Orders',
+      description: 'View and process customer orders'
+    }
+  ];
+
   // Show loading state while auth is initializing
   if (authLoading) {
     return (
@@ -119,34 +165,15 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-300">Total Artworks</div>
-            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              {stats?.total_artworks || 0}
+        <div className="grid grid-cols-6 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
+          {statsCards.map((card, index) => (
+            <div key={index} className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+              <div className="text-sm text-gray-500 dark:text-gray-300">{card.label}</div>
+              <div className={`text-2xl font-semibold ${card.color}`}>
+                {card.value}
+              </div>
             </div>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-300">Total Artists</div>
-            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              {stats?.total_artists || 0}
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-300">Total Buyers</div>
-            <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              {stats?.total_buyers || 0}
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-            <div className="text-sm text-gray-500 dark:text-gray-300">Pending Approvals</div>
-            <div className="text-2xl font-semibold text-yellow-600 dark:text-yellow-400">
-              {stats?.pending_approvals || 0}
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Recent Artworks */}
@@ -186,53 +213,20 @@ export default function AdminDashboard() {
               Quick Actions
             </h3>
             <div className="space-y-3">
-              <a
-                href="/dashboard/artists"
-                className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                <div className="font-medium text-gray-900 dark:text-gray-100">
-                  Manage Artists
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-300">
-                  View and manage all registered artists
-                </div>
-              </a>
-
-              <a
-                href="/dashboard/buyers"
-                className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                <div className="font-medium text-gray-900 dark:text-gray-100">
-                  Manage Buyers
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-300">
-                  View and manage all registered buyers
-                </div>
-              </a>
-
-              <a
-                href="/dashboard/artworks"
-                className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                <div className="font-medium text-gray-900 dark:text-gray-100">
-                  Review Artworks
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-300">
-                  Approve or reject submitted artworks
-                </div>
-              </a>
-
-              <a
-                href="/dashboard/orders"
-                className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                <div className="font-medium text-gray-900 dark:text-gray-100">
-                  Manage Orders
-                </div>
-                <div className="text-sm text-gray-500 dark:text-gray-300">
-                  View and process customer orders
-                </div>
-              </a>
+              {quickActions.map((action, index) => (
+                <a
+                  key={index}
+                  href={action.href}
+                  className="block p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <div className="font-medium text-gray-900 dark:text-gray-100">
+                    {action.title}
+                  </div>
+                  <div className="text-sm text-gray-500 dark:text-gray-300">
+                    {action.description}
+                  </div>
+                </a>
+              ))}
             </div>
           </div>
         </div>

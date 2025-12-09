@@ -64,23 +64,23 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body
         suppressHydrationWarning
-        className={`${inter.variable} min-h-screen text-gray-900 dark:text-gray-100 overflow-x-hidden antialiased font-sans`}
+        className={`${inter.variable} text-gray-900 dark:text-gray-100 overflow-x-hidden antialiased font-sans`}
       >
         {/* Wrap with AuthProvider first, then CartProvider, then ToastProvider */}
         <AuthProvider>
           <CartProvider>
             <ToastProvider>
-              <div className="flex flex-col min-h-screen">
-                <HideWhenDashboard>
-                  <header>
-                    <Navbar />
-                  </header>
+              <HideWhenDashboard>
+                <header className="sticky top-0 z-50">
+                  <Navbar />
+                </header>
 
-                  <div className="w-full">
-                    <Breadcrumbs />
-                  </div>
-                </HideWhenDashboard>
+                <div className="w-full sticky top-[73px] z-40">
+                  <Breadcrumbs />
+                </div>
+              </HideWhenDashboard>
 
+              <div className="flex flex-col min-h-[calc(100vh-73px)]">
                 <main className="flex-1 w-full container mx-auto px-4 sm:px-6 lg:px-8 py-6">
                   {children}
                 </main>

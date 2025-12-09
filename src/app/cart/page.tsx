@@ -7,13 +7,19 @@ import { ShoppingBag, Star, Shield, Lock, DollarSign, X, Bookmark, ChevronDown, 
 import { useCart } from "@/context/CartContext";
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, subtotal } = useCart();
+  const { items, removeItem, updateQuantity, subtotal, error } = useCart();
   const isEmpty = items.length === 0;
   const [promoExpanded, setPromoExpanded] = useState(false);
+  const [updating, setUpdating] = useState<number | null>(null);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <p className="text-red-800 dark:text-red-200">{error}</p>
+          </div>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Cart Section */}
           <div className="lg:col-span-2">
@@ -81,8 +87,12 @@ export default function CartPage() {
                               </p>
                             </div>
                             <button
-                              onClick={() => removeItem(item.id)}
-                              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 h-6 w-6 shrink-0"
+                              onClick={() => {
+                                setUpdating(item.id);
+                                removeItem(item.id).finally(() => setUpdating(null));
+                              }}
+                              disabled={updating === item.id}
+                              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 h-6 w-6 shrink-0 disabled:opacity-50"
                               aria-label="Remove item"
                             >
                               <X className="w-5 h-5" />
@@ -96,11 +106,10 @@ export default function CartPage() {
                               <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-md">
                                 <button
                                   onClick={() => {
-                                    if (item.quantity > 1) {
-                                      updateQuantity(item.id, item.quantity - 1);
-                                    }
+                                    setUpdating(item.id);
+                                    updateQuantity(item.id, item.quantity - 1).finally(() => setUpdating(null));
                                   }}
-                                  disabled={item.quantity <= 1}
+                                  disabled={item.quantity <= 1 || updating === item.id}
                                   className="px-3 py-1 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                   aria-label="Decrease quantity"
                                 >
@@ -110,8 +119,12 @@ export default function CartPage() {
                                   {item.quantity}
                                 </span>
                                 <button
-                                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                  className="px-3 py-1 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                  onClick={() => {
+                                    setUpdating(item.id);
+                                    updateQuantity(item.id, item.quantity + 1).finally(() => setUpdating(null));
+                                  }}
+                                  disabled={updating === item.id}
+                                  className="px-3 py-1 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                   aria-label="Increase quantity"
                                 >
                                   <Plus className="w-4 h-4" />

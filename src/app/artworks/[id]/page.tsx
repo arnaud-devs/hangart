@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Loader } from "lucide-react";
-import Carousel from "@/components/Carousel";
+import { Loader, ShoppingCart } from "lucide-react";
 import AddToCartButton from '@/components/AddToCartButton';
 import { getArtwork, listArtworks } from "@/lib/appClient";
 
@@ -124,11 +123,6 @@ export default function ArtworkPage({ params }: { params: any }) {
     .filter(Boolean)
     .map(d => `${d} cm`)
     .join(' × ') || '-';
-
-  // Build carousel images from related artworks
-  const carouselImages = relatedArtworks
-    .map((art) => art.main_image)
-    .filter(Boolean) as string[];
 
   return (
     <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -250,12 +244,44 @@ export default function ArtworkPage({ params }: { params: any }) {
         </div>
       </div>
 
-      {/* Related carousel */}
-      {carouselImages.length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">More from {artistName}</h2>
-          <div className="mt-4">
-            <Carousel images={carouselImages} />
+      {/* Related artworks grid */}
+      {relatedArtworks.length > 0 && (
+        <section className="mt-16 border-t border-gray-200 dark:border-gray-700 pt-12">
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-8">
+            More from {artistName}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {relatedArtworks.map((art) => {
+              const artPrice = typeof art.price === 'string' ? parseFloat(art.price) : art.price;
+              return (
+                <Link
+                  key={art.id}
+                  href={`/artworks/${art.id}`}
+                  className="group"
+                >
+                  <div className="relative w-full aspect-4/3 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 mb-4 transition-transform duration-300 group-hover:scale-105">
+                    <Image
+                      src={art.main_image || "/placeholder-art.png"}
+                      alt={art.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover"
+                    />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                    {art.title}
+                  </h3>
+                  {art.artist_name && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      by {art.artist_name}
+                    </p>
+                  )}
+                  <p className="text-lg font-semibold text-emerald-600 dark:text-emerald-400 mt-2">
+                    ${artPrice?.toFixed(2) || '0.00'}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
         </section>
       )}

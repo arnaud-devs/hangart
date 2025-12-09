@@ -65,7 +65,7 @@ export default function UserMenu() {
         onClick={() => setIsOpen(!isOpen)}
         className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold transition-colors"
         style={{
-          backgroundColor: user ? "#10b981" : "transparent",
+          backgroundColor: user ? "#CA8A04" : "transparent",
         }}
         aria-label="User menu"
         aria-expanded={isOpen}

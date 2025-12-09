@@ -2,6 +2,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getCart, addToCart, updateCartItem, removeFromCart, clearCart as apiClearCart } from '@/lib/appClient';
 
 export interface CartItem {
   id: number;
@@ -23,13 +24,16 @@ interface CartContextType {
   subtotal: number;
   open: boolean;
   setOpen: (open: boolean) => void;
-  addItem: (item: Omit<CartItem, 'quantity'>, quantity?: number) => void;
-  updateQuantity: (id: number, quantity: number) => void;
-  removeItem: (id: number) => void;
-  clearCart: () => void;
+  addItem: (item: Omit<CartItem, 'quantity'>, quantity?: number) => Promise<void>;
+  updateQuantity: (id: number, quantity: number) => Promise<void>;
+  removeItem: (id: number) => Promise<void>;
+  clearCart: () => Promise<void>;
   itemCount: number;
-  getItemQuantity: (id: number) => number; // Helper to get quantity for specific item
-  isInCart: (id: number) => boolean; // Helper to check if item is in cart
+  getItemQuantity: (id: number) => number;
+  isInCart: (id: number) => boolean;
+  loading: boolean;
+  error: string | null;
+  syncCart: () => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -37,87 +41,163 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Load cart from localStorage on mount
+  // Load cart from API on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem('hangart-cart');
-    if (savedCart) {
+    const loadCart = async () => {
+      setLoading(true);
       try {
-        const parsedItems = JSON.parse(savedCart);
-        // Normalize parsed items to ensure compatibility with components
-        if (Array.isArray(parsedItems)) {
-          const normalized = parsedItems.map((it: any) => ({
-            ...it,
-            // prefer existing image, otherwise map from main_image
-            image: it.image || it.main_image || '',
-            artistName: it.artistName || it.artist_name || '',
-            currency: it.currency || '$',
+        const response = await getCart();
+        if (response && response.items) {
+          const normalizedItems = response.items.map((item: any) => ({
+            id: item.artwork?.id || item.id,
+            title: item.artwork?.title || item.title,
+            price: parseFloat(item.artwork?.price || item.price || 0),
+            main_image: item.artwork?.main_image || item.main_image,
+            image: item.artwork?.main_image || item.main_image || '',
+            artist_name: item.artwork?.artist?.username || item.artist_name || '',
+            artistName: item.artwork?.artist?.username || item.artist_name || '',
+            quantity: item.quantity,
+            is_available: item.artwork?.is_available ?? true,
           }));
-          setItems(normalized);
+          setItems(normalizedItems);
         }
-      } catch (error) {
-        console.error('Failed to parse cart from localStorage:', error);
-        // Clear invalid cart data
-        localStorage.removeItem('hangart-cart');
+      } catch (err: any) {
+        console.error('Failed to load cart:', err);
+        // Fall back to localStorage if API fails
+        const savedCart = localStorage.getItem('hangart-cart');
+        if (savedCart) {
+          try {
+            const parsedItems = JSON.parse(savedCart);
+            if (Array.isArray(parsedItems)) {
+              const normalized = parsedItems.map((it: any) => ({
+                ...it,
+                image: it.image || it.main_image || '',
+                artistName: it.artistName || it.artist_name || '',
+                currency: it.currency || '$',
+              }));
+              setItems(normalized);
+            }
+          } catch (e) {
+            console.error('Failed to parse cart from localStorage:', e);
+            localStorage.removeItem('hangart-cart');
+          }
+        }
+      } finally {
+        setLoading(false);
+        setIsInitialized(true);
       }
-    }
-    setIsInitialized(true);
-  }, []);
+    };
 
-  // Save cart to localStorage whenever items change
-  useEffect(() => {
-    if (isInitialized) {
-      localStorage.setItem('hangart-cart', JSON.stringify(items));
-    }
-  }, [items, isInitialized]);
+    loadCart();
+  }, []);
 
   const subtotal = items.reduce((total, item) => total + (item.price * item.quantity), 0);
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
 
-  const addItem = (newItem: Omit<CartItem, 'quantity'>, quantity: number = 1) => {
-    setItems(prevItems => {
-      const existingItem = prevItems.find(item => item.id === newItem.id);
-      
-      if (existingItem) {
-        return prevItems.map(item =>
-          item.id === newItem.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      } else {
-        // Ensure backwards-compatible fields are present when adding
-        const normalizedNew = {
-          ...newItem,
-          quantity,
-          image: (newItem as any).image || (newItem as any).main_image || '',
-          artistName: (newItem as any).artistName || (newItem as any).artist_name || '',
-          currency: (newItem as any).currency || '$',
-        } as CartItem;
-        return [...prevItems, normalizedNew];
+  const syncCart = async () => {
+    try {
+      const response = await getCart();
+      if (response && response.items) {
+        const normalizedItems = response.items.map((item: any) => ({
+          id: item.artwork?.id || item.id,
+          title: item.artwork?.title || item.title,
+          price: parseFloat(item.artwork?.price || item.price || 0),
+          main_image: item.artwork?.main_image || item.main_image,
+          image: item.artwork?.main_image || item.main_image || '',
+          artist_name: item.artwork?.artist?.username || item.artist_name || '',
+          artistName: item.artwork?.artist?.username || item.artist_name || '',
+          quantity: item.quantity,
+          is_available: item.artwork?.is_available ?? true,
+        }));
+        setItems(normalizedItems);
       }
-    });
+    } catch (err: any) {
+      console.error('Failed to sync cart:', err);
+      setError('Failed to sync cart');
+    }
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const addItem = async (newItem: Omit<CartItem, 'quantity'>, quantity: number = 1) => {
+    setError(null);
+    try {
+      await addToCart(newItem.id, quantity);
+      await syncCart();
+    } catch (err: any) {
+      console.error('Failed to add item to cart:', err);
+      setError(err.message || 'Failed to add item to cart');
+      // Fallback: add to local state
+      setItems(prevItems => {
+        const existingItem = prevItems.find(item => item.id === newItem.id);
+        if (existingItem) {
+          return prevItems.map(item =>
+            item.id === newItem.id
+              ? { ...item, quantity: item.quantity + quantity }
+              : item
+          );
+        } else {
+          const normalizedNew = {
+            ...newItem,
+            quantity,
+            image: (newItem as any).image || (newItem as any).main_image || '',
+            artistName: (newItem as any).artistName || (newItem as any).artist_name || '',
+            currency: (newItem as any).currency || '$',
+          } as CartItem;
+          return [...prevItems, normalizedNew];
+        }
+      });
+    }
+  };
+
+  const updateQuantity = async (id: number, quantity: number) => {
+    setError(null);
     if (quantity <= 0) {
-      removeItem(id);
+      await removeItem(id);
       return;
     }
 
-    setItems(prevItems =>
-      prevItems.map(item =>
-        item.id === id ? { ...item, quantity } : item
-      )
-    );
+    try {
+      await updateCartItem(id, quantity);
+      await syncCart();
+    } catch (err: any) {
+      console.error('Failed to update quantity:', err);
+      setError(err.message || 'Failed to update quantity');
+      // Fallback: update local state
+      setItems(prevItems =>
+        prevItems.map(item =>
+          item.id === id ? { ...item, quantity } : item
+        )
+      );
+    }
   };
 
-  const removeItem = (id: number) => {
-    setItems(prevItems => prevItems.filter(item => item.id !== id));
+  const removeItem = async (id: number) => {
+    setError(null);
+    try {
+      await removeFromCart(id);
+      await syncCart();
+    } catch (err: any) {
+      console.error('Failed to remove item:', err);
+      setError(err.message || 'Failed to remove item');
+      // Fallback: remove from local state
+      setItems(prevItems => prevItems.filter(item => item.id !== id));
+    }
   };
 
-  const clearCart = () => {
-    setItems([]);
+  const clearCart = async () => {
+    setError(null);
+    try {
+      await apiClearCart();
+      setItems([]);
+    } catch (err: any) {
+      console.error('Failed to clear cart:', err);
+      setError(err.message || 'Failed to clear cart');
+      // Fallback: clear local state
+      setItems([]);
+    }
   };
 
   const getItemQuantity = (id: number): number => {
@@ -143,6 +223,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         itemCount,
         getItemQuantity,
         isInCart,
+        loading,
+        error,
+        syncCart,
       }}
     >
       {children}

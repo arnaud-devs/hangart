@@ -14,6 +14,7 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { signOut, user, loading } = useAuth();
 
@@ -28,6 +29,11 @@ export default function DashboardLayout({
 
   // Protect dashboard: only admin and artist can access
   useEffect(() => {
+    if (!mounted) {
+      setMounted(true);
+      return;
+    }
+
     if (!loading) {
       if (!user) {
         // Not authenticated, redirect to login
@@ -40,7 +46,7 @@ export default function DashboardLayout({
         }
       }
     }
-  }, [user, loading, router]);
+  }, [mounted, user, loading, router]);
 
   // Keep theme in sync
   useEffect(() => {

@@ -434,3 +434,24 @@ export async function listMyPayments(): Promise<PaymentDTO[] | Paginated<Payment
 export async function getPayment(id: number): Promise<PaymentDTO> {
   return get(`/payments/${id}/`) as Promise<PaymentDTO>;
 }
+
+// Cart
+export async function getCart(): Promise<any> {
+  return get('/cart/') as Promise<any>;
+}
+
+export async function addToCart(artworkId: number, quantity: number = 1): Promise<any> {
+  return post('/cart/add/', { artwork_id: artworkId, quantity }) as Promise<any>;
+}
+
+export async function updateCartItem(artworkId: number, quantity: number): Promise<any> {
+  return patch(`/cart/items/${artworkId}/`, { quantity }) as Promise<any>;
+}
+
+export async function removeFromCart(artworkId: number): Promise<any> {
+  return del(`/cart/items/${artworkId}/`) as Promise<any>;
+}
+
+export async function clearCart(): Promise<any> {
+  return post('/cart/clear/', {}) as Promise<any>;
+}

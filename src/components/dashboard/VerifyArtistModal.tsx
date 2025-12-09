@@ -26,7 +26,7 @@ export default function VerifyArtistModal({ artist, onClose, onConfirm }: Props)
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-700/70">
       <div className="bg-white dark:bg-gray-800 rounded-lg max-w-lg w-full p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Verify Artist</h3>

@@ -1,50 +1,79 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { CheckCircle } from "lucide-react";
 
-export default function CheckoutSuccessPage() {
+function SuccessContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [orderNumber, setOrderNumber] = useState("");
+  const [orderId, setOrderId] = useState("");
+
+  useEffect(() => {
+    const orderNum = searchParams.get("orderNumber");
+    const id = searchParams.get("orderId");
+    if (orderNum) setOrderNumber(orderNum);
+    if (id) setOrderId(id);
+  }, [searchParams]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4">
       <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center">
-        <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg
-            className="w-8 h-8 text-green-600 dark:text-green-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
+        <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+          <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400" />
         </div>
         
-        <h1 className="text-2xl font-bold mb-2">Order Placed Successfully!</h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
-          Thank you for your purchase. You will receive a confirmation email shortly.
+        <h1 className="text-3xl font-bold mb-3 text-gray-900 dark:text-gray-100">Order Placed Successfully!</h1>
+        
+        {orderNumber && (
+          <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <p className="text-sm text-blue-800 dark:text-blue-200 mb-1">Order Number</p>
+            <p className="text-lg font-mono font-semibold text-blue-900 dark:text-blue-100">{orderNumber}</p>
+          </div>
+        )}
+        
+        <p className="text-gray-600 dark:text-gray-400 mb-8">
+          Thank you for your order! Your order has been created and is pending payment. 
+          You will receive a confirmation email shortly.
         </p>
 
         <div className="space-y-3">
           <button
-            onClick={() => router.push("/dashboard/orders")}
-            className="w-full px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 font-medium"
-          >
-            View My Orders
-          </button>
-          <button
-            onClick={() => router.push("/")}
-            className="w-full px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 font-medium"
+            onClick={() => router.push("/gallery")}
+            className="w-full px-6 py-3 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 font-medium transition-colors"
           >
             Continue Shopping
           </button>
+          <button
+            onClick={() => router.push("/")}
+            className="w-full px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 font-medium transition-colors"
+          >
+            Back to Home
+          </button>
+        </div>
+
+        <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Need help? Contact us at <a href="mailto:support@hangart.com" className="text-yellow-600 hover:text-yellow-700 underline">support@hangart.com</a>
+          </p>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 }

@@ -4,8 +4,10 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import { initiatePayment } from "@/lib/payments";
-import { getMe } from "@/lib/authClient";
+import { createOrder } from "@/lib/appClient";
+import { CheckCircle, XCircle } from "lucide-react";
+
+type ToastType = 'success' | 'error';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -13,75 +15,42 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastType, setToastType] = useState<ToastType>('success');
+  const [toastMessage, setToastMessage] = useState('');
   
   const [formData, setFormData] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
     address: "",
     city: "",
     postalCode: "",
     country: "",
-    phone: "",
+    shippingFee: "10.00",
   });
 
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
-        // First check localStorage for token
         const token = localStorage.getItem("accessToken");
         if (!token) {
-          // No token, redirect to login
           router.push(`/login?redirect=/checkout`);
           return;
         }
-
-        // Check if user data exists in localStorage
+        
+        // Check user role
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
           try {
             const userData = JSON.parse(storedUser);
-            setUser(userData);
-            // Pre-fill form with user data
-            setFormData({
-              email: userData.email || "",
-              firstName: userData.first_name || userData.firstName || "",
-              lastName: userData.last_name || userData.lastName || "",
-              address: "",
-              city: "",
-              postalCode: "",
-              country: "",
-              phone: userData.phone || "",
-            });
-            setCheckingAuth(false);
-            return;
+            const userRole = (userData.role || '').toString().toLowerCase();
+            if (userRole !== 'buyer') {
+              router.push('/');
+              return;
+            }
           } catch (e) {
             console.error("Failed to parse stored user data");
           }
         }
-
-        // Fallback: try to fetch from API
-        try {
-          const userData = await getMe();
-          setUser(userData);
-          // Pre-fill form with user data
-          setFormData({
-            email: userData.email || "",
-            firstName: userData.first_name || "",
-            lastName: userData.last_name || "",
-            address: "",
-            city: "",
-            postalCode: "",
-            country: "",
-            phone: userData.phone || "",
-          });
-        } catch (err) {
-          // API call failed, but we have a token, so just use empty form
-          console.log("Could not fetch user data from API, continuing with empty form");
-        }
       } catch (err) {
-        // General error, redirect to login
         console.error("Authentication check failed:", err);
         router.push(`/login?redirect=/checkout`);
       } finally {
@@ -92,12 +61,18 @@ export default function CheckoutPage() {
     checkAuthentication();
   }, [router]);
 
-  const shippingCost = 10.00;
-  const tax = subtotal * 0.1; // 10% tax
-  const total = subtotal + shippingCost + tax;
+  const shippingCost = parseFloat(formData.shippingFee) || 10.00;
+  const total = subtotal + shippingCost;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const showToastMessage = (type: ToastType, message: string) => {
+    setToastType(type);
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 4000);
   };
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
@@ -107,38 +82,67 @@ export default function CheckoutPage() {
 
     try {
       // Validate form
-      if (!formData.email || !formData.firstName || !formData.lastName || !formData.address) {
-        setError("Please fill in all required fields");
+      if (!formData.address || !formData.city || !formData.country) {
+        setError("Please fill in all required shipping fields");
         setLoading(false);
         return;
       }
 
-      // Initiate payment
-      const result = await initiatePayment(items);
-      console.log("Payment initiated:", result);
-
-      // Clear cart and redirect to success page
-      clearCart();
-      router.push("/checkout/success");
-    } catch (err) {
-      console.error("Checkout error:", err);
-      setError("Failed to process payment. Please try again.");
-
-      // Show loading state while checking authentication
-      if (checkingAuth) {
-        return (
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-400">Verifying authentication...</p>
-            </div>
-          </div>
-        );
+      // Validate cart items
+      if (items.length === 0) {
+        setError("Your cart is empty");
+        setLoading(false);
+        return;
       }
+
+      // Build shipping address string
+      const shippingAddress = `${formData.address}, ${formData.city}${formData.postalCode ? ', ' + formData.postalCode : ''}, ${formData.country}`;
+
+      // Prepare order payload
+      const orderPayload = {
+        items: items.map(item => ({
+          artwork_id: Number(item.id),
+          quantity: item.quantity
+        })),
+        shipping_address: shippingAddress,
+        shipping_fee: formData.shippingFee
+      };
+
+      // Create order via API
+      const order = await createOrder(orderPayload);
+      
+      // Clear cart on success
+      await clearCart();
+      
+      // Show success toast
+      showToastMessage('success', `Order ${order.order_number} created successfully!`);
+      
+      // Redirect to success page with order details after a brief delay
+      setTimeout(() => {
+        router.push(`/checkout/success?orderNumber=${order.order_number}&orderId=${order.id}`);
+      }, 1500);
+
+    } catch (err: any) {
+      console.error("Order creation error:", err);
+      const errorMessage = err.message || "Failed to create order. Please try again.";
+      setError(errorMessage);
+      showToastMessage('error', errorMessage);
     } finally {
       setLoading(false);
     }
   };
+
+  // Show loading state while checking authentication
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Verifying authentication...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -159,63 +163,36 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+        <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-gray-100">Checkout</h1>
+
+        {/* Toast Notifications */}
+        {showToast && toastType === 'success' && (
+          <div className="fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-slide-in">
+            <CheckCircle className="w-5 h-5" />
+            <div>
+              <p className="font-semibold">{toastMessage}</p>
+            </div>
+          </div>
+        )}
+
+        {showToast && toastType === 'error' && (
+          <div className="fixed top-4 right-4 z-50 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-slide-in">
+            <XCircle className="w-5 h-5" />
+            <div>
+              <p className="font-semibold">{toastMessage}</p>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Checkout Form */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-6">Shipping Information</h2>
+            <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">Shipping Information</h2>
             
             <form onSubmit={handlePlaceOrder} className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-1">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium mb-1">
-                    First Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    required
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium mb-1">
-                    Last Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    required
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="address" className="block text-sm font-medium mb-1">
-                  Address *
+                <label htmlFor="address" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                  Street Address *
                 </label>
                 <input
                   type="text"
@@ -224,13 +201,14 @@ export default function CheckoutPage() {
                   required
                   value={formData.address}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700"
+                  placeholder="123 Main Street"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="city" className="block text-sm font-medium mb-1">
+                  <label htmlFor="city" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
                     City *
                   </label>
                   <input
@@ -240,27 +218,28 @@ export default function CheckoutPage() {
                     required
                     value={formData.city}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700"
+                    placeholder="Kigali"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
                   />
                 </div>
                 <div>
-                  <label htmlFor="postalCode" className="block text-sm font-medium mb-1">
-                    Postal Code *
+                  <label htmlFor="postalCode" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                    Postal Code
                   </label>
                   <input
                     type="text"
                     id="postalCode"
                     name="postalCode"
-                    required
                     value={formData.postalCode}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700"
+                    placeholder="10101"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="country" className="block text-sm font-medium mb-1">
+                <label htmlFor="country" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
                   Country *
                 </label>
                 <input
@@ -270,22 +249,26 @@ export default function CheckoutPage() {
                   required
                   value={formData.country}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700"
+                  placeholder="Rwanda"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
                 />
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium mb-1">
-                  Phone
+                <label htmlFor="shippingFee" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
+                  Shipping Fee
                 </label>
                 <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
+                  type="number"
+                  id="shippingFee"
+                  name="shippingFee"
+                  step="0.01"
+                  min="0"
+                  value={formData.shippingFee}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
                 />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Default: $10.00</p>
               </div>
 
               {error && (
@@ -296,59 +279,66 @@ export default function CheckoutPage() {
 
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full mt-6 px-6 py-3 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                disabled={loading || items.length === 0}
+                className="w-full mt-6 px-6 py-3 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
               >
-                {loading ? "Processing..." : "Place Order"}
+                {loading ? "Creating Order..." : "Place Order"}
               </button>
             </form>
           </div>
-
           {/* Order Summary */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 h-fit">
-            <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
+            <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">Order Summary</h2>
 
             <div className="space-y-4 mb-6">
-              {items.map((item) => (
-                <div key={item.id} className="flex gap-4">
-                  <div className="w-20 h-20 relative rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
-                    <Image
-                      src={item.image ? (item.image.startsWith("/") ? item.image : `/artwork/${item.image}`) : "/placeholder-art.png"}
-                      alt={item.title}
-                      fill
-                      sizes="80px"
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-medium text-sm">{item.title}</h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">{item.artistName}</p>
-                    <div className="flex justify-between items-center mt-2">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">Qty: {item.quantity}</span>
-                      <span className="font-medium">{item.currency ?? "$"}{item.price}</span>
+              {items.map((item) => {
+                const imageSrc = item.image || item.main_image || '/placeholder-art.png';
+                const artistDisplay = item.artistName || item.artist_name || 'Unknown Artist';
+                const currencySymbol = item.currency || '$';
+                
+                return (
+                  <div key={item.id} className="flex gap-4">
+                    <div className="w-20 h-20 relative rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+                      <Image
+                        src={imageSrc}
+                        alt={item.title}
+                        fill
+                        sizes="80px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">{item.title}</h3>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">{artistDisplay}</p>
+                      <div className="flex justify-between items-center mt-2">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Qty: {item.quantity}</span>
+                        <span className="font-medium text-gray-900 dark:text-gray-100">{currencySymbol}{(item.price * item.quantity).toFixed(2)}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
-                <span className="font-medium">${subtotal.toFixed(2)}</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Shipping</span>
-                <span className="font-medium">${shippingCost.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400">Tax</span>
-                <span className="font-medium">${tax.toFixed(2)}</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">${shippingCost.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-lg font-bold border-t border-gray-200 dark:border-gray-700 pt-2 mt-2">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span className="text-gray-900 dark:text-gray-100">Total</span>
+                <span className="text-gray-900 dark:text-gray-100">${total.toFixed(2)}</span>
               </div>
+            </div>
+
+            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <p className="text-xs text-blue-800 dark:text-blue-200">
+                <strong>Note:</strong> After placing your order, you&apos;ll be redirected to complete payment. Your order will be confirmed once payment is successful.
+              </p>
             </div>
           </div>
         </div>

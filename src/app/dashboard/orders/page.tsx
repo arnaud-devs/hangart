@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Eye, Filter, Download, Search, ChevronLeft, ChevronRight, DollarSign, Package, Calendar, User, Edit, Loader } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
-import api from "@/lib/api";
+import { listOrders, updateOrderStatus } from "@/lib/appClient";
+import { useAuth } from "@/lib/authProvider";
 
 interface Order {
   id: number;
@@ -41,7 +43,9 @@ const statusEmojis: Record<string, string> = {
 };
 
 export default function OrdersPage() {
+  const router = useRouter();
   const { showToast } = useToast();
+  const { user, loading: authLoading } = useAuth();
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,6 +61,7 @@ export default function OrdersPage() {
 
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [mounted, setMounted] = useState(false);
   
   // Update status modal
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -67,7 +72,19 @@ export default function OrdersPage() {
     admin_notes: "",
   });
 
-  // Load orders
+  // Auth guard - redirect non-authenticated users
+  useEffect(() => {
+    if (!mounted) {
+      setMounted(true);
+      return;
+    }
+
+    if (!authLoading && !user) {
+      router.push("/login");
+    }
+  }, [mounted, authLoading, user, router]);
+
+  // Load orders using the documented API
   const loadOrders = async (pageNum = 1, status = "", payment = "", sort = "-created_at") => {
     setLoading(true);
     try {
@@ -78,10 +95,39 @@ export default function OrdersPage() {
       if (status) params.status = status;
       if (payment) params.payment_method = payment;
 
-      const response = await api.get("/orders/", { params });
-      const data: OrdersResponse = response.data;
-      setOrders(data.results);
-      setTotalCount(data.count);
+      const response = await listOrders(params);
+      
+      // Handle both array and paginated responses
+      let ordersData: Order[] = [];
+      let count = 0;
+      
+      if (Array.isArray(response)) {
+        ordersData = response.map(order => ({
+          id: order.id,
+          buyer_name: order.buyer?.username || 'Unknown',
+          order_number: order.order_number,
+          status: order.status as any,
+          total_amount: order.total_amount?.toString() || '0',
+          created_at: order.created_at || '',
+          items_count: order.items?.length || 0,
+        }));
+        count = ordersData.length;
+      } else {
+        // Paginated response
+        ordersData = (response.results || []).map((order: any) => ({
+          id: order.id,
+          buyer_name: order.buyer_name || order.buyer?.username || 'Unknown',
+          order_number: order.order_number,
+          status: order.status as any,
+          total_amount: order.total_amount?.toString() || '0',
+          created_at: order.created_at || '',
+          items_count: order.items_count || order.items?.length || 0,
+        }));
+        count = response.count || 0;
+      }
+      
+      setOrders(ordersData);
+      setTotalCount(count);
     } catch (error: any) {
       showToast("error", "Error", error.response?.data?.message || error.message || "Failed to load orders");
     } finally {
@@ -90,8 +136,9 @@ export default function OrdersPage() {
   };
 
   useEffect(() => {
+    if (!mounted || authLoading || !user) return;
     loadOrders(page, statusFilter, paymentFilter, sortBy);
-  }, [page, statusFilter, paymentFilter, sortBy]);
+  }, [page, statusFilter, paymentFilter, sortBy, mounted, authLoading, user]);
 
   const handleStatusFilterChange = (status: string) => {
     setStatusFilter(status);
@@ -166,7 +213,7 @@ export default function OrdersPage() {
         payload.admin_notes = updateFormData.admin_notes;
       }
 
-      await api.patch(`/orders/${selectedOrder.id}/update-status/`, payload);
+      await updateOrderStatus(selectedOrder.id, payload);
       showToast("success", "Success", "Order status updated successfully");
       setShowUpdateModal(false);
       await loadOrders(page, statusFilter, paymentFilter, sortBy);
@@ -363,7 +410,7 @@ export default function OrdersPage() {
                     </tr>
                   ) : (
                     filteredBySearch.map((order) => {
-                      const colors = statusColors[order.status];
+                      const colors = statusColors[order.status] || statusColors.pending;
                       return (
                         <tr
                           key={order.id}
@@ -490,8 +537,8 @@ export default function OrdersPage() {
 
                 <div>
                   <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Status</p>
-                  <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${statusColors[selectedOrder.status].badge}`}>
-                    <span>{statusEmojis[selectedOrder.status]}</span>
+                  <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${(statusColors[selectedOrder.status] || statusColors.pending).badge}`}>
+                    <span>{statusEmojis[selectedOrder.status] || '❓'}</span>
                     {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}
                   </span>
                 </div>

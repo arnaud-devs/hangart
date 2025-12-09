@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { adminService, artworkService } from '@/services/apiServices';
 import { useAuth } from '@/lib/authProvider';
+import { listAdminBuyers, listOrders } from '@/lib/appClient';
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import StatsCard from '@/components/dashboard/StatsCard';
 import { TrendingUp, Users, Image, ShoppingCart, CreditCard, RotateCcw, DollarSign, AlertCircle } from 'lucide-react';
@@ -54,21 +55,23 @@ export default function AdminDashboardView() {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const [artworks, artists] = await Promise.all([
+      const [artworks, artists, buyers, orders] = await Promise.all([
         artworkService.listArtworks(),
         adminService.getUsers({ role: 'artist' }),
+        listAdminBuyers(),
+        listOrders(),
       ]);
-
-      const buyers: any[] = [];
 
       const artworksList = (artworks as any).results || [];
       const artistsList = (artists as any).results || [];
+      const buyersList = Array.isArray(buyers) ? buyers : (buyers as any).results || [];
+      const ordersList = Array.isArray(orders) ? orders : (orders as any).results || [];
       
       const dashboardStats: DashboardStats = {
         total_artworks: (artworks as any).count || artworksList.length || 0,
         total_artists: (artists as any).count || artistsList.length || 0,
-        total_buyers: (buyers as any)?.count || (buyers as any)?.length || 0,
-        total_orders: 0,
+        total_buyers: (buyers as any).count || buyersList.length || 0,
+        total_orders: (orders as any).count || ordersList.length || 0,
         total_revenue: artworksList.reduce((sum: number, a: any) => sum + (Number(a.price) || 0), 0),
         pending_approvals: artworksList.filter((a: any) => a.status === 'pending').length || 0,
         total_refunds: 0,

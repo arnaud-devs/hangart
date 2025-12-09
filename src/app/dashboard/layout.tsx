@@ -34,18 +34,20 @@ export default function DashboardLayout({
       return;
     }
 
+    // Auth check disabled for development
+    // Uncomment to re-enable authentication
+    /*
     if (!loading) {
       if (!user) {
-        // Not authenticated, redirect to login
         router.push('/login');
       } else {
         const userRole = (user.role || '').toString().toLowerCase();
         if (userRole === 'buyer') {
-          // Buyers should not access dashboard, redirect to home
           router.push('/');
         }
       }
     }
+    */
   }, [mounted, user, loading, router]);
 
   // Keep theme in sync

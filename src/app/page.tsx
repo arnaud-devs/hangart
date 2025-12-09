@@ -1,38 +1,34 @@
-"use server";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
-import ArtworkCard from "../components/ArtworkCard";
-import GalleryGrid from "../components/GalleryGrid";
 import Carousel from "../components/Carousel";
 import ArtworkGalleryCard from "../components/ArtworkGalleryCard";
 import TestimonialCard from "../components/TestimonialCard";
+import HomeArtworksGallery from "../components/HomeArtworksGallery";
+import HolidayCollection from "../components/HolidayCollection";
 import { Globe, Truck, Star, ChevronLeft, ChevronRight } from "lucide-react";
-import sampleArtworks from "@/data/SampleArtworks";
-import { getTranslations } from "@/lib/i18n";
 
-type Artwork = {
-  id: string | number;
-  title: string;
-  artist?: string;
-  image?: string;
-  price?: string;
+// Fallback translations for client-side rendering
+const defaultTranslations = {
+  hero_connect: "Connect",
+  hero_with_artist: "with Artists",
+  hero_tagline: "Discover unique artworks from talented artists around the world",
+  shop_with_us: "Shop with us",
+  holiday_2025: "Holiday 2025 Collection",
+  prev_artworks: "Previous",
+  next_artworks: "Next",
+  why_choose: "Why Choose Us",
+  global_selection: "Global Selection",
+  global_selection_desc: "Artworks from talented artists worldwide",
+  free_returns: "Free Returns",
+  free_returns_desc: "Hassle-free returns within 30 days",
+  top_rated: "Top Rated",
+  top_rated_desc: "Trusted by thousands of collectors",
 };
 
-async function fetchFeaturedArtworks(limit = 8): Promise<Artwork[]> {
-  try {
-    const res = await fetch(`/api/artworks?featured=true&limit=${limit}`, { cache: "no-store" });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return Array.isArray(data) ? data.slice(0, limit) : [];
-  } catch (e) {
-    return [];
-  }
-}
-
-export default async function Home() {
-  const artworks = await fetchFeaturedArtworks(8);
-  const t = await getTranslations();
+export default function Home() {
+  const t = defaultTranslations;
 
   return (
     // Let the root CSS variable (--background) control the page background.
@@ -64,8 +60,8 @@ export default async function Home() {
 
             {/* Right carousel (interactive) */}
             <div className="w-full md:w-1/2 flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-2xl bg-[#F6F6F7] dark:bg-gray-800">
-              <div className="relative w-full max-w-xl h-[40vh] md:h-[70vh] rounded-2xl overflow-hidden">
-                <Carousel images={["/arts/art1.jpeg", "/arts/art2.jpeg", "/arts/art3.jpeg", "/arts/art4.jpeg"]} aspect="" />
+              <div className="relative w-full h-fit md:h-[70vh] rounded-2xl overflow-hidden">
+                <Carousel useRealArtworks={true} limit={8} interval={2000} aspect="" />
               </div>
             </div>
           </div>
@@ -73,116 +69,13 @@ export default async function Home() {
       </section>
 
       {/* Gallery explorer - client component */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-2xl font-semibold font-serif text-gray-900 dark:text-gray-100">{t.browse_gallery}</h2>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t.browse_gallery_desc}</p>
-
-        <div className="mt-6">
-          {/* Map server-side artworks to the client component's expected shape */}
-          <GalleryGrid
-            artworks={sampleArtworks.map((a) => ({
-              id: a.id,
-              title: a.title,
-              image: a.image,
-              artistName: (a as any).artist || (a as any).artistName,
-              price: (a as any).price,
-              currency: (a as any).currency,
-              category: (a as any).category,
-            }))}
-          />
-        </div>
-      </section>
-
-      {/* Featured artworks grid */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-2xl font-semibold text-gray-900 font-serif dark:text-gray-100">{t.featured_artworks}</h2>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t.featured_artworks_desc}</p>
-
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {sampleArtworks.length > 0 ? (
-            sampleArtworks.map((art) => (
-              <ArtworkCard
-                key={art.id}
-                artwork={{
-                  ...art,
-                  price: typeof (art as any).price === "number" ? String((art as any).price) : (art as any).price,
-                }}
-              />
-            ))
-          ) : (
-            <div className="col-span-full text-center text-gray-500">{t.no_artworks}</div>
-          )}
-        </div>
-      </section>
+      <HomeArtworksGallery />
 
       {/* Holiday 2025 Collection */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl md:text-3xl font-serif text-gray-900 dark:text-gray-100">{t.holiday_2025}</h2>
-          <div className="flex items-center gap-2">
-            <button
-              suppressHydrationWarning
-              className="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label={t.prev_artworks}
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              suppressHydrationWarning
-              className="w-10 h-10 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              aria-label={t.next_artworks}
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <ArtworkGalleryCard
-            id="1"
-            title="Briancon White Painting"
-            artist="Christopher Elliot"
-            location="France"
-            medium="Acrylic On Canvas"
-            dimensions="27.6 × 21.3 in"
-            price="RWF 2,765"
-            image="/arts/art5.jpeg"
-          />
-          <ArtworkGalleryCard
-            id="2"
-            title='"Radiate - Higher Density" Painting'
-            artist="Dorota Jedrusik"
-            location="Poland"
-            medium="Oil On Canvas"
-            dimensions="51 × 35 in"
-            price="RWF 5,045"
-            image="/arts/art6.jpeg"
-          />
-          <ArtworkGalleryCard
-            id="3"
-            title="Metamorphosis Painting"
-            artist="Young Park"
-            location="South Korea"
-            medium="Acrylic On Canvas"
-            dimensions="57.3 × 44.1 in"
-            price="RWF 3,875"
-            image="/arts/art7.jpeg"
-          />
-          <ArtworkGalleryCard
-            id="4"
-            title="Life Of The Pond Painting"
-            artist="Trine Churchill"
-            location="United States"
-            medium="Acrylic On Canvas"
-            dimensions="30 × 24 in"
-            price="RWF 2,895"
-            image="/arts/art8.jpeg"
-          />
-        </div>
-      </section>
+      <HolidayCollection />
 
       {/* Why choose section */}
-      <section className="px-4 sm:px-6 lg:px-8 py-12 ">
+      <section className="px-4 sm:px-6 lg:px-8 py-12">
         <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 bg-[#F6F6F7] border-gray-100 dark:border-gray-800 dark:bg-gray-800 border-t rounded-lg">
           <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 font-serif">{t.why_choose}</h3>
 

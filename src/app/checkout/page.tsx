@@ -29,21 +29,60 @@ export default function CheckoutPage() {
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
-        const userData = await getMe();
-        setUser(userData);
-        // Pre-fill form with user data
-        setFormData({
-          email: userData.email || "",
-          firstName: userData.first_name || "",
-          lastName: userData.last_name || "",
-          address: "",
-          city: "",
-          postalCode: "",
-          country: "",
-          phone: userData.phone || "",
-        });
+        // First check localStorage for token
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          // No token, redirect to login
+          router.push(`/login?redirect=/checkout`);
+          return;
+        }
+
+        // Check if user data exists in localStorage
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+          try {
+            const userData = JSON.parse(storedUser);
+            setUser(userData);
+            // Pre-fill form with user data
+            setFormData({
+              email: userData.email || "",
+              firstName: userData.first_name || userData.firstName || "",
+              lastName: userData.last_name || userData.lastName || "",
+              address: "",
+              city: "",
+              postalCode: "",
+              country: "",
+              phone: userData.phone || "",
+            });
+            setCheckingAuth(false);
+            return;
+          } catch (e) {
+            console.error("Failed to parse stored user data");
+          }
+        }
+
+        // Fallback: try to fetch from API
+        try {
+          const userData = await getMe();
+          setUser(userData);
+          // Pre-fill form with user data
+          setFormData({
+            email: userData.email || "",
+            firstName: userData.first_name || "",
+            lastName: userData.last_name || "",
+            address: "",
+            city: "",
+            postalCode: "",
+            country: "",
+            phone: userData.phone || "",
+          });
+        } catch (err) {
+          // API call failed, but we have a token, so just use empty form
+          console.log("Could not fetch user data from API, continuing with empty form");
+        }
       } catch (err) {
-        // User not authenticated, redirect to login with return URL
+        // General error, redirect to login
+        console.error("Authentication check failed:", err);
         router.push(`/login?redirect=/checkout`);
       } finally {
         setCheckingAuth(false);

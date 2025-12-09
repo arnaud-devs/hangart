@@ -2,11 +2,26 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { User } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { User, LogOut, Home } from "lucide-react";
 
 export default function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  // Load user from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error("Failed to parse user data");
+      }
+    }
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -25,33 +40,106 @@ export default function UserMenu() {
     };
   }, [isOpen]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+    setUser(null);
+    setIsOpen(false);
+    router.push("/");
+  };
+
+  // Get user initials
+  const getInitials = () => {
+    if (!user) return "U";
+    const firstName = user.first_name || user.firstName || "";
+    const lastName = user.last_name || user.lastName || "";
+    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "U";
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 rounded-full bg-transparent flex items-center justify-center text-gray-800 dark:text-[#DFDFD6] hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+        className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold transition-colors"
+        style={{
+          backgroundColor: user ? "#10b981" : "transparent",
+        }}
         aria-label="User menu"
         aria-expanded={isOpen}
       >
-        <User />
+        {user ? (
+          <span className="text-sm">{getInitials()}</span>
+        ) : (
+          <User className="text-gray-800 dark:text-[#DFDFD6]" />
+        )}
       </button>
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
-          <Link
-            href="/login"
-            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            onClick={() => setIsOpen(false)}
-          >
-            Login
-          </Link>
-          <Link
-            href="/signup"
-            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            onClick={() => setIsOpen(false)}
-          >
-            Register
-          </Link>
+          {user ? (
+            <>
+              <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  {user.first_name || user.firstName} {user.last_name || user.lastName}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {user.email}
+                </p>
+              </div>
+              {user.role === "BUYER" && (
+                <Link
+                  href="/"
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Home className="w-4 h-4" />
+                  Home
+                </Link>
+              )}
+              {(user.role === "ADMIN" || user.role === "ARTIST") && (
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Home className="w-4 h-4" />
+                  Dashboard
+                </Link>
+              )}
+              <Link
+                href="/dashboard/profile"
+                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Profile
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                href="/signup"
+                className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
       )}
     </div>

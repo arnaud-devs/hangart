@@ -89,9 +89,9 @@ export default function DashboardLayout({
         setIsOpen={setSidebarOpen}
         onLogout={handleLogout}
       />
-      <div className="flex-1 flex flex-col overflow-hidden lg:ml-72">
+      <div className="flex-1 flex flex-col lg:ml-72">
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} onLogout={handleLogout} />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900 w-full h-full max-w-screen py-8">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 dark:bg-gray-900 w-full">
           {children}
         </main>
       </div>

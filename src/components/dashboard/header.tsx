@@ -9,12 +9,19 @@ import ThemeToggle from '@/components/ThemeToggle';
 import { FiUser } from 'react-icons/fi';
 
 interface UserData {
-  id: string;
+  id: number;
   email: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
+  username?: string;
   role: string;
-  profileImage: string | null;
+  phone?: string;
+  is_verified?: boolean;
+  join_date?: string;
+  profileImage?: string | null;
+  admin_profile?: any;
+  artist_profile?: any;
+  buyer_profile?: any;
 }
 
 interface HeaderProps {
@@ -37,10 +44,17 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
         setUser({
           id: parsedUser.id,
           email: parsedUser.email,
-          firstName: parsedUser.firstName,
-          lastName: parsedUser.lastName,
+          first_name: parsedUser.first_name,
+          last_name: parsedUser.last_name,
+          username: parsedUser.username,
           role: parsedUser.role,
-          profileImage: parsedUser.profileImage || null
+          phone: parsedUser.phone,
+          is_verified: parsedUser.is_verified,
+          join_date: parsedUser.join_date,
+          profileImage: parsedUser.profileImage || null,
+          admin_profile: parsedUser.admin_profile,
+          artist_profile: parsedUser.artist_profile,
+          buyer_profile: parsedUser.buyer_profile
         });
       } catch (error) {
         console.error("Failed to parse user data:", error);
@@ -73,7 +87,7 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
   };
 
   return (
-    <header className="sticky w-full top-0 z-1000 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-700/50">
+    <header className="sticky w-full top-0 z-50 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-700/50">
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Left side - Menu and Search */}
@@ -129,21 +143,23 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
                   {user.profileImage ? (
                     <img
                       src={user.profileImage}
-                      alt={`${user.firstName} ${user.lastName}`}
-                      className="w-8 h-8 rounded-full object-cover ring-2 ring-white shadow-md"
+                      alt={`${user.first_name || ''} ${user.last_name || ''}`}
+                      className="w-8 h-8 rounded-full object-cover ring-2 ring-white dark:ring-gray-700 shadow-md"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = '/default-avatar.png';
                       }}
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center ring-2 ring-white shadow-md">
-                      <FiUser className="w-5 h-5 text-gray-600" />
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center ring-2 ring-white dark:ring-gray-700 shadow-md">
+                      <span className="text-white font-semibold text-sm">
+                        {user.first_name?.charAt(0).toUpperCase()}{user.last_name?.charAt(0).toUpperCase()}
+                      </span>
                     </div>
                   )}
 
                   <span className="ml-2 hidden md:inline-block text-gray-700 font-medium">
-                    {user.firstName}
+                    {user.first_name}
                   </span>
                   <ChevronDown className={`ml-1 w-4 h-4 text-gray-400 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
@@ -156,7 +172,7 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
                     <div className="py-1" role="menu">
                       <div className="px-4 py-3 border-b">
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          {user.firstName} {user.lastName}
+                          {user.first_name} {user.last_name}
                         </p>
                         <p className="text-xs text-gray-500 truncate">
                           {user.email}

@@ -335,11 +335,7 @@ export async function verifyArtistByAdmin(id: number, verified: boolean): Promis
 }
 
 export async function listAdminBuyers(params?: Record<string, any>): Promise<BuyerProfileDTO[] | Paginated<BuyerProfileDTO>> {
-  const user = getStoredUser && getStoredUser();
-  if (user?.role === 'admin') {
-    return get('/admin/buyers/', params) as Promise<BuyerProfileDTO[] | Paginated<BuyerProfileDTO>>;
-  }
-  throw new Error('Forbidden: admin only');
+  return get('/buyers/', params) as Promise<BuyerProfileDTO[] | Paginated<BuyerProfileDTO>>;
 }
 
 export async function listAdminAdmins(params?: Record<string, any>): Promise<AdminProfileDTO[] | Paginated<AdminProfileDTO>> {

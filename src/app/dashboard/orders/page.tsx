@@ -79,9 +79,13 @@ export default function OrdersPage() {
       return;
     }
 
+    // Auth check disabled for development
+    // Uncomment to re-enable authentication
+    /*
     if (!authLoading && !user) {
       router.push("/login");
     }
+    */
   }, [mounted, authLoading, user, router]);
 
   // Load orders using the documented API
@@ -136,9 +140,11 @@ export default function OrdersPage() {
   };
 
   useEffect(() => {
-    if (!mounted || authLoading || !user) return;
-    loadOrders(page, statusFilter, paymentFilter, sortBy);
-  }, [page, statusFilter, paymentFilter, sortBy, mounted, authLoading, user]);
+    // Load orders if mounted (auth check disabled for development)
+    if (mounted) {
+      loadOrders(page, statusFilter, paymentFilter, sortBy);
+    }
+  }, [page, statusFilter, paymentFilter, sortBy, mounted]);
 
   const handleStatusFilterChange = (status: string) => {
     setStatusFilter(status);

@@ -114,9 +114,11 @@ export type ArtworkStatusUpdate = {
 
 export type BuyerProfileDTO = {
   id: number;
+  user_id: number;
+  username: string;
+  email?: string | null;
   profile_photo?: string | null;
   phone?: string | null;
-  email?: string | null;
   address?: string | null;
   city?: string | null;
   country?: string | null;

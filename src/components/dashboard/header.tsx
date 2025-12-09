@@ -138,8 +138,7 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                   aria-label="User menu"
-                  aria-expanded={dropdownOpen}
-                >
+                  aria-expanded={dropdownOpen} >
                   {user.profileImage ? (
                     <img
                       src={user.profileImage}

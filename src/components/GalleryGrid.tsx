@@ -82,7 +82,7 @@ export default function GalleryGrid({ artworks }: Props) {
   // (Previously used sample data) — now rely on artwork.image or main_image fields returned from API
   const imageFromSampleById = (id: string | number): string | undefined => undefined;
 
-  // determine current demo user role (client-side only)
+  // determine current user role (client-side only)
   let userRole: string | null = null;
   if (typeof window !== 'undefined') {
     try {

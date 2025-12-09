@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from '@/lib/authProvider';
 import ThemeToggle from "./ThemeToggle";
 import LanguageSwitcher from "./LanguageSwitcher";
 import MobileSearch from "./MobileSearch";
@@ -13,12 +14,21 @@ import CartButton from "./CartButton";
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [helpMenuOpen, setHelpMenuOpen] = useState(false);
+  const { user } = useAuth();
+  const isBuyer = (user?.role || '').toString().toLowerCase() === 'buyer';
 
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/gallery", label: "Gallery" },
     { href: "/artist", label: "Artists" },
     { href: "/contact", label: "Contact" },
+  ];
+
+  const buyerLinks = [
+    { href: '/cart', label: 'Cart' },
+    { href: '/orders', label: 'Orders' },
+    { href: '/payments', label: 'Payments' },
+    { href: '/refunds', label: 'Refunds' },
   ];
 
   const helpLinks = [
@@ -30,6 +40,10 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Grab auth user to conditionally show buyer-only links */}
+      {/* Note: useAuth is client-only, Navbar is client component */}
+      {/* eslint-disable-next-line react-hooks/rules-of-hooks */}
+      {null}
       <nav className="sticky top-0 z-50 w-full border-b border-gray-200/50 dark:border-gray-800/50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-4">
@@ -50,7 +64,13 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                
+
+                {/* Buyer-only links (visible only when a buyer is logged in) */}
+                {isBuyer && buyerLinks.map(link => (
+                  <Link key={link.href} href={link.href} className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                    {link.label}
+                  </Link>
+                ))}
                 {/* Help Dropdown */}
                 <div className="relative">
                   <button
@@ -109,10 +129,12 @@ export default function Navbar() {
               {/* User Menu */}
               <UserMenu />
 
-              {/* Cart Button */}
-              <div className="hidden sm:block">
-                <CartButton />
-              </div>
+              {/* Cart Button - show only for authenticated buyers */}
+              {isBuyer && (
+                <div className="hidden sm:block">
+                  <CartButton />
+                </div>
+              )}
 
               {/* Mobile Menu Toggle */}
               <button
@@ -178,6 +200,16 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
+                {isBuyer && (
+                  <div className="mt-3">
+                    <div className="px-2 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Buyer</div>
+                    {buyerLinks.map(link => (
+                      <Link key={link.href} href={link.href} onClick={() => setMobileMenuOpen(false)} className="block text-base font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-4 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
               
               {/* Help Section */}
@@ -197,17 +229,19 @@ export default function Navbar() {
                 ))}
               </div>
               
-              {/* Cart (Mobile Only) */}
-              <div className="sm:hidden mb-4 border-t border-gray-200 dark:border-gray-800 pt-4">
-                <Link
-                  href="/cart"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center gap-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-4 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
-                >
-                  <CartButton />
-                  <span>Shopping Cart</span>
-                </Link>
-              </div>
+              {/* Cart (Mobile Only) - visible only to buyers */}
+              {isBuyer && (
+                <div className="sm:hidden mb-4 border-t border-gray-200 dark:border-gray-800 pt-4">
+                  <Link
+                    href="/cart"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-4 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+                  >
+                    <CartButton />
+                    <span>Shopping Cart</span>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { Sidebar } from "@/components/dashboard/sidebar"; 
 import { Header } from "@/components/dashboard/header";
-import EnsureDemoUser from '@/components/EnsureDemoUser';
+// EnsureDemoUser removed - demo helpers cleaned up
 import { useAuth } from '@/lib/authProvider';
 
 export default function DashboardLayout({
@@ -26,10 +26,19 @@ export default function DashboardLayout({
     // Debug logs removed to reduce console noise in dev.
   }, [user, loading]);
 
-  // TEMPORARY FIX: Allow users with empty roles for testing
+  // Protect dashboard: only admin and artist can access
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
+    if (!loading) {
+      if (!user) {
+        // Not authenticated, redirect to login
+        router.push('/login');
+      } else {
+        const userRole = (user.role || '').toString().toLowerCase();
+        if (userRole === 'buyer') {
+          // Buyers should not access dashboard, redirect to home
+          router.push('/');
+        }
+      }
     }
   }, [user, loading, router]);
 
@@ -60,9 +69,7 @@ export default function DashboardLayout({
     );
   }
 
-  // Allow non-admin roles (artist, buyer, museum) to access dashboard area.
-
-  // Show login prompt if no user
+  // Redirect if not authenticated or if buyer role
   if (!user) {
     return (
       <div className="flex min-h-screen w-full bg-gray-50 dark:bg-gray-900 items-center justify-center">
@@ -81,9 +88,30 @@ export default function DashboardLayout({
     );
   }
 
+  const userRole = (user.role || '').toString().toLowerCase();
+  if (userRole === 'buyer') {
+    return (
+      <div className="flex min-h-screen w-full bg-gray-50 dark:bg-gray-900 items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            Access Denied
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Buyers do not have access to the dashboard.
+          </p>
+          <button
+            onClick={() => router.push('/')}
+            className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
+          >
+            Go Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen w-full bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <EnsureDemoUser />
       <Sidebar 
         isOpen={sidebarOpen} 
         setIsOpen={setSidebarOpen}

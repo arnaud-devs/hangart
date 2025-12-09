@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useTransition, useEffect, Suspense } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Label } from '@/components/ui/Label'
@@ -14,12 +15,7 @@ type FormValues = {
   password: string
 }
 
-const DEMO_USERS = [
-  { id: 'admin-01', role: 'ADMIN', label: 'Admin', email: 'admin@example.com' },
-  { id: 'artist-01', role: 'ARTIST', label: 'Artist', email: 'artist@example.com' },
-  // { id: 'buyer-01', role: 'BUYER', label: 'Buyer', email: 'buyer@example.com' },
-  { id: 'museum-01', role: 'MUSEUM', label: 'Museum', email: 'museum@example.com' },
-]
+// Demo users removed — production-ready login only
 
 function LoginContent(){
   const router = useRouter()
@@ -30,6 +26,7 @@ function LoginContent(){
   const { errors, isSubmitting } = formState
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
   const [showRedirectMessage, setShowRedirectMessage] = useState(false)
   const auth = useAuth();
 
@@ -51,7 +48,7 @@ function LoginContent(){
       if (!redirect) {
         const role = (me?.role || '').toLowerCase();
         if (role === 'artist') targetPath = '/dashboard/artworks';
-        else if (role === 'buyer') targetPath = '/dashboard/wishlist';
+        else if (role === 'buyer') targetPath = '/';
         else if (role === 'museum') targetPath = '/dashboard/museum';
         else if (role === 'admin') targetPath = '/dashboard/approvals';
       }
@@ -75,40 +72,21 @@ function LoginContent(){
     }
   }
 
-  const demoLogin = (u: { id: string; role: string; label: string; email?: string }) => {
-    const demoUser = {
-      id: u.id,
-      firstName: u.label,
-      lastName: 'Demo',
-      email: u.email || `${u.label.toLowerCase()}@example.com`,
-      role: u.role,
-      profileImage: '',
-    }
-    try { localStorage.setItem('user', JSON.stringify(demoUser)) } catch {}
-    router.push('/dashboard')
-  }
+  // No demo login helper — use real credentials to sign in
 
   return (
     <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#0b1220] px-4">
-      <div className="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        <div className="bg-linear-to-br from-emerald-600 to-teal-500 text-white rounded-lg p-8 hidden md:block">
-          <h2 className="text-2xl font-bold mb-2">Welcome back to Hangart</h2>
-          <p className="text-sm opacity-90">Manage artworks, view analytics, and connect with collectors. Pick a demo profile below to preview role-specific dashboards.</p>
-
-          <div className="mt-6 space-y-3">
-            {DEMO_USERS.map(u => (
-              <button key={u.id} onClick={() => demoLogin(u)} className="w-full text-left bg-white/20 hover:bg-white/30 px-4 py-2 rounded flex items-center justify-between">
-                <div>
-                  <div className="font-semibold">{u.label} (Demo)</div>
-                  <div className="text-xs opacity-90">{u.email}</div>
-                </div>
-                <div className="text-xs opacity-90">Go</div>
-              </button>
-            ))}
+      <div className="w-full max-w-xl mx-auto">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold">H</div>
+            <div>
+              <h1 className="text-2xl font-semibold">Welcome back to Hangart</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to manage your artworks, purchases and dashboard.</p>
+            </div>
           </div>
-        </div>
 
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+          <div className="space-y-4">
           <h1 className="text-2xl font-semibold mb-4">Sign in</h1>
 
           {showRedirectMessage && (
@@ -131,7 +109,17 @@ function LoginContent(){
 
             <div>
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" {...register('password', { required: 'Password is required' })} />
+              <div className="relative">
+                <Input id="password" type={showPassword ? 'text' : 'password'} {...register('password', { required: 'Password is required' })} />
+                <button
+                  type="button"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowPassword(v => !v)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
               {errors.password && <p className="text-sm text-red-600">{String(errors.password.message)}</p>}
             </div>
 
@@ -140,26 +128,12 @@ function LoginContent(){
             </Button>
           </form>
 
-          <div className="mt-6">
-            <div className="text-sm text-gray-600 dark:text-gray-300 mb-2">Quick demo logins</div>
-            <div className="flex flex-wrap gap-2">
-              {DEMO_USERS.map(u => (
-                <button key={u.id} onClick={() => demoLogin(u)} className="px-3 py-2 border rounded text-sm hover:bg-gray-50 dark:hover:bg-gray-700">{u.label}</button>
-              ))}
-            </div>
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-500 dark:text-gray-400">Need an account? <Link href={redirect ? `/signup?redirect=${redirect}` : "/signup"} className="text-emerald-600 hover:underline">Sign up</Link></p>
           </div>
-
-          <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
-            Demo credentials are available; pick a role to preview the dashboard.
-          </p>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 text-center">
-            Don't have an account?{' '}
-            <Link href={redirect ? `/signup?redirect=${redirect}` : "/signup"} className="text-emerald-600 hover:underline">
-              Sign up
-            </Link>
-          </p>
         </div>
       </div>
+    </div>
     </main>
   )
 }

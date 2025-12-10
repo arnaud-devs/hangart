@@ -44,7 +44,7 @@ export default function Navbar() {
       {/* Note: useAuth is client-only, Navbar is client component */}
       {/* eslint-disable-next-line react-hooks/rules-of-hooks */}
       {null}
-      <nav className="sticky top-0 z-50 w-full border-b border-gray-200/50 dark:border-gray-800/50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm">
+      <nav className="sticky top-0 z-50 w-full border-b border-gray-200/50 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-4">
             {/* Left - Logo */}
@@ -159,13 +159,13 @@ export default function Navbar() {
 
       {/* Mobile Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white dark:bg-gray-900 shadow-2xl z-50 lg:hidden transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white dark:bg-black shadow-2xl border-r border-gray-200 dark:border-white/10 z-50 lg:hidden transform transition-transform duration-300 ease-in-out ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-white/10">
             <Link 
               href="/" 
               onClick={() => setMobileMenuOpen(false)}
@@ -246,7 +246,7 @@ export default function Navbar() {
           </div>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-800">
+          <div className="p-4 border-t border-gray-200 dark:border-white/10">
             <div className="sm:hidden mb-3">
               <LanguageSwitcher />
             </div>

@@ -3,128 +3,145 @@
 import Image from "next/image";
 import Link from "next/link";
 import Carousel from "../components/Carousel";
+import RotatingArtwork from "../components/RotatingArtwork";
 import ArtworkGalleryCard from "../components/ArtworkGalleryCard";
 import TestimonialCard from "../components/TestimonialCard";
 import HomeArtworksGallery from "../components/HomeArtworksGallery";
 import HolidayCollection from "../components/HolidayCollection";
-import { Globe, Truck, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Globe, Truck, Star, ShieldCheck, Award, Smile } from "lucide-react";
 
 // Fallback translations for client-side rendering
 const defaultTranslations = {
   hero_connect: "Connect",
   hero_with_artist: "with Artists",
   hero_tagline: "Discover unique artworks from talented artists around the world",
-  shop_with_us: "Shop with us",
+  shop_with_us: "Explore The Gallery",
   holiday_2025: "Holiday 2025 Collection",
   prev_artworks: "Previous",
   next_artworks: "Next",
-  why_choose: "Why Choose Us",
-  global_selection: "Global Selection",
-  global_selection_desc: "Artworks from talented artists worldwide",
-  free_returns: "Free Returns",
-  free_returns_desc: "Hassle-free returns within 30 days",
-  top_rated: "Top Rated",
-  top_rated_desc: "Trusted by thousands of collectors",
+  why_choose: "Why Choose Hangart?",
+  global_selection: "Global Curation",
+  global_selection_desc: "Discover exceptional art from diverse, talented artists worldwide.",
+  free_returns: "Secure & Simple",
+  free_returns_desc: "Enjoy peace of mind with our secure checkout and hassle-free returns.",
+  top_rated: "Collector-Approved",
+  top_rated_desc: "Join a community of thousands of satisfied art collectors.",
 };
 
 export default function Home() {
   const t = defaultTranslations;
 
   return (
-    // Let the root CSS variable (--background) control the page background.
-    <div>
-      {/* Hero banner (styled like attachment) */}
+    <div className="bg-white dark:bg-black transition-colors duration-300">
+      {/* Hero Section */}
       <section
-        className="relative w-full bg-center bg-no-repeat"
-        style={{ backgroundImage: "" }}
-      >
+        className="relative w-full bg-cover bg-center"
+       >
+        {/* Dark mode grid overlay like Vercel */}
+        <div
+          className="absolute inset-0 -z-10 hidden dark:block"
+          style={{
+            backgroundColor: '#000000',
+            backgroundImage:
+              'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)',
+            backgroundSize: '40px 40px, 40px 40px',
+            backgroundPosition: '0 0, 0 0',
+          }}
+        />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Top navigation */}
-
-          {/* Main hero content */}
-          <div className="relative flex flex-col-reverse justify-center md:flex-row items-center gap-8 pb-24 md:pb-32 min-h-screen">
-            {/* Left column */}
-            <div className="w-full md:w-1/2 text-gray-900 dark:text-gray-100 flex flex-col justify-center">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-inter font-bold leading-tight text-[#3C3C43] dark:text-gray-100">
-                <p className="text-yellow-600">{t.hero_connect} </p>
-                {t.hero_with_artist}
-              </h2>
-              <p className="mt-4 max-w-md text-gray-700 dark:text-gray-300 font-inter text-[18px] md:text-[24px]">{t.hero_tagline}</p>
-
-              <div className="mt-8">
-                <Link href="/gallery" className="inline-block rounded-full bg-yellow-600 text-white px-6 py-3 font-semibold dark:bg-yellow-600 ">
+          <div className="relative flex flex-col-reverse md:flex-row items-center gap-10 md:gap-12 pb-20 md:pb-28 min-h-[82vh] pt-24 md:pt-28">
+            {/* Left Column: Text Content */}
+            <div className="w-full md:w-1/2 text-gray-900 dark:text-gray-100 flex flex-col justify-center items-center md:items-start text-center md:text-left">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight text-gray-800 dark:text-white">
+                <span className="text-yellow-600 dark:text-transparent dark:bg-clip-text dark:bg-linear-to-r dark:from-yellow-300 dark:to-yellow-500 dark:drop-shadow-[0_0_18px_rgba(234,179,8,0.35)]">{t.hero_connect}</span> {t.hero_with_artist}
+              </h1>
+              <p className="mt-6 max-w-xl text-lg md:text-xl text-gray-600 dark:text-gray-300">
+                {t.hero_tagline}
+              </p>
+              <div className="mt-10">
+                <Link
+                  href="/gallery"
+                  className="inline-block rounded-full bg-yellow-600 text-white px-8 py-4 font-semibold text-lg shadow-lg hover:bg-yellow-700 transition-transform transform hover:scale-105"
+                >
                   {t.shop_with_us}
                 </Link>
               </div>
             </div>
 
-            {/* Right carousel (interactive) */}
-            <div className="w-full md:w-1/2 flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-2xl bg-[#F6F6F7] dark:bg-gray-800">
-              <div className="relative w-full h-fit md:h-[70vh] rounded-2xl overflow-hidden">
-                <Carousel useRealArtworks={true} limit={8} interval={2000} aspect="" />
+            {/* Right Column: 3D Rotating Artwork */}
+            <div className="w-full md:w-1/2 flex items-center justify-center">
+              <div className="relative w-full h-[60vh] md:h-[75vh] rounded-3xl overflow-hidden shadow-2xl border border-white/40 dark:border-white/10 bg-white/70 dark:bg-transparent">
+                <RotatingArtwork src="/arts/art3.jpeg" alt="Rotating Artwork" />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Gallery explorer - client component */}
+      {/* Gallery Explorer */}
       <HomeArtworksGallery />
 
       {/* Holiday 2025 Collection */}
       <HolidayCollection />
 
-      {/* Why choose section */}
-      <section className="px-4 sm:px-6 lg:px-8 py-12">
-        <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 bg-[#F6F6F7] border-gray-100 dark:border-gray-800 dark:bg-gray-800 border-t rounded-lg">
-          <h3 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 font-serif">{t.why_choose}</h3>
+      {/* Why Choose Us Section */}
+      <section className="bg-gray-50 dark:bg-black py-20 relative">
+        {/* Dark mode grid overlay for section */}
+        <div
+          className="absolute inset-0 -z-10 hidden dark:block"
+          style={{
+            backgroundColor: '#000000',
+            backgroundImage:
+              'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)',
+            backgroundSize: '40px 40px, 40px 40px',
+            backgroundPosition: '0 0, 0 0',
+          }}
+        />
 
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="flex items-start gap-4">
-              <div className="p-3 rounded-md bg-gray-200 dark:bg-gray-700">
-                <Globe className="w-6 h-6 text-gray-700 dark:text-gray-200" />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">{t.why_choose}</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
+              An unparalleled experience in the world of art.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div className="text-center p-8 bg-white dark:bg-white/5 dark:backdrop-blur-lg dark:border dark:border-white/10 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto bg-yellow-100 dark:bg-yellow-900/30 rounded-full mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Globe className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />
               </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100">{t.global_selection}</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">{t.global_selection_desc}</p>
-              </div>
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white">{t.global_selection}</h3>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">{t.global_selection_desc}</p>
             </div>
-
-            <div className="flex items-start gap-4">
-              <div className="p-3 rounded-md bg-gray-200 dark:bg-gray-700">
-                <Truck className="w-6 h-6 text-gray-700 dark:text-gray-200" />
+            <div className="text-center p-8 bg-white dark:bg-white/5 dark:backdrop-blur-lg dark:border dark:border-white/10 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto bg-green-100 dark:bg-green-900/30 rounded-full mb-6 group-hover:scale-110 transition-transform duration-300">
+                <ShieldCheck className="w-8 h-8 text-green-600 dark:text-green-400" />
               </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100">{t.free_returns}</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">{t.free_returns_desc}</p>
-              </div>
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white">{t.free_returns}</h3>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">{t.free_returns_desc}</p>
             </div>
-
-            <div className="flex items-start gap-4">
-              <div className="p-3 rounded-md bg-gray-200 dark:bg-gray-700">
-                <Star className="w-6 h-6 text-gray-700 dark:text-gray-200" />
+            <div className="text-center p-8 bg-white dark:bg-white/5 dark:backdrop-blur-lg dark:border dark:border-white/10 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto bg-blue-100 dark:bg-blue-900/30 rounded-full mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Award className="w-8 h-8 text-blue-600 dark:text-blue-400" />
               </div>
-              <div>
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100">{t.top_rated}</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300">{t.top_rated_desc}</p>
-              </div>
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white">{t.top_rated}</h3>
+              <p className="mt-2 text-gray-600 dark:text-gray-400">{t.top_rated_desc}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials section */}
-      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-serif text-gray-900 dark:text-gray-100 mb-2">
-            What Our Collectors Say
+      {/* Testimonials Section */}
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">
+            Voices of Our Collectors
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Trusted by thousands of art lovers worldwide
+          <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
+            Discover why art lovers choose Hangart for their collections.
           </p>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <TestimonialCard
             name="Sarah Johnson"
             role="Interior Designer"

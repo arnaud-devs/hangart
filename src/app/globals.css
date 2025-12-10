@@ -15,7 +15,7 @@
 
 /* allow explicit theme override via data-theme on <html> */
 html[data-theme="dark"] {
-  --background: #1B1B1F; /* slightly lighter than pure black */
+  --background:#000000; /* pure black to match requested dark style */
   --foreground: #ededed;
   --muted: #9a9a9a;
   --color-background: var(--background);
@@ -34,6 +34,21 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Vercel-like subtle grid overlay in dark mode */
+html[data-theme="dark"] body {
+  background-color: var(--background);
+  background-image:
+    linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px;
+  background-position: 0 0, 0 0;
+}
+
+/* Utility class to opt-out of the grid on specific sections if needed */
+.no-dark-grid {
+  background-image: none !important;
 }
 
 /* small utilities for the header controls */

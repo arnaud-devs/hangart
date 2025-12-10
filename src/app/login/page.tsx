@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/Label'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
-import { useAuth, default as AuthProvider } from '@/lib/authProvider'
+import { useAuth } from '@/lib/authProvider'
 
 type FormValues = {
   identifier: string // username or email
@@ -58,14 +58,9 @@ function LoginContent(){
       
       console.log('About to call router.push with path:', targetPath);
       startTransition(() => {
-        router.push(targetPath);
+        // Use replace to avoid back button returning to login repeatedly
+        router.replace(targetPath);
       });
-      console.log('router.push called, also using window.location as fallback');
-      
-      // Fallback: use window.location if router doesn't work
-      setTimeout(() => {
-        window.location.href = targetPath;
-      }, 500);
     } catch (e: any) {
       console.error('Login failed:', e);
       setError(String(e?.message ?? e))
@@ -79,7 +74,7 @@ function LoginContent(){
       <div className="w-full max-w-xl mx-auto">
         <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold">H</div>
+            <div className="w-12 h-12 rounded-lg bg-linear-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold">H</div>
             <div>
               <h1 className="text-2xl font-semibold">Welcome back to Hangart</h1>
               <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to manage your artworks, purchases and dashboard.</p>
@@ -140,10 +135,8 @@ function LoginContent(){
 
 export default function LoginPage(){
   return (
-    <AuthProvider>
-      <Suspense fallback={<div className="min-h-[70vh] flex items-center justify-center">Loading...</div>}>
-        <LoginContent />
-      </Suspense>
-    </AuthProvider>
+    <Suspense fallback={<div className="min-h-[70vh] flex items-center justify-center">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   )
 }

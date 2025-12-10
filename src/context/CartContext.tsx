@@ -50,20 +50,43 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const loadCart = async () => {
       setLoading(true);
       try {
-        const response = await getCart();
-        if (response && response.items) {
-          const normalizedItems = response.items.map((item: any) => ({
-            id: item.artwork?.id || item.id,
-            title: item.artwork?.title || item.title,
-            price: parseFloat(item.artwork?.price || item.price || 0),
-            main_image: item.artwork?.main_image || item.main_image,
-            image: item.artwork?.main_image || item.main_image || '',
-            artist_name: item.artwork?.artist?.username || item.artist_name || '',
-            artistName: item.artwork?.artist?.username || item.artist_name || '',
-            quantity: item.quantity,
-            is_available: item.artwork?.is_available ?? true,
-          }));
-          setItems(normalizedItems);
+        const hasToken = typeof window !== 'undefined' && !!localStorage.getItem('accessToken');
+        if (hasToken) {
+          const response = await getCart();
+          if (response && response.items) {
+            const normalizedItems = response.items.map((item: any) => ({
+              id: item.artwork?.id || item.id,
+              title: item.artwork?.title || item.title,
+              price: parseFloat(item.artwork?.price || item.price || 0),
+              main_image: item.artwork?.main_image || item.main_image,
+              image: item.artwork?.main_image || item.main_image || '',
+              artist_name: item.artwork?.artist?.username || item.artist_name || '',
+              artistName: item.artwork?.artist?.username || item.artist_name || '',
+              quantity: item.quantity,
+              is_available: item.artwork?.is_available ?? true,
+            }));
+            setItems(normalizedItems);
+          }
+        } else {
+          // Not authenticated: use localStorage cart without hitting API
+          const savedCart = localStorage.getItem('hangart-cart');
+          if (savedCart) {
+            try {
+              const parsedItems = JSON.parse(savedCart);
+              if (Array.isArray(parsedItems)) {
+                const normalized = parsedItems.map((it: any) => ({
+                  ...it,
+                  image: it.image || it.main_image || '',
+                  artistName: it.artistName || it.artist_name || '',
+                  currency: it.currency || '$',
+                }));
+                setItems(normalized);
+              }
+            } catch (e) {
+              console.error('Failed to parse cart from localStorage:', e);
+              localStorage.removeItem('hangart-cart');
+            }
+          }
         }
       } catch (err: any) {
         console.error('Failed to load cart:', err);
@@ -100,6 +123,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const syncCart = async () => {
     try {
+      const hasToken = typeof window !== 'undefined' && !!localStorage.getItem('accessToken');
+      if (!hasToken) return; // skip API sync when not authenticated
       const response = await getCart();
       if (response && response.items) {
         const normalizedItems = response.items.map((item: any) => ({
@@ -124,8 +149,32 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const addItem = async (newItem: Omit<CartItem, 'quantity'>, quantity: number = 1) => {
     setError(null);
     try {
-      await addToCart(newItem.id, quantity);
-      await syncCart();
+      const hasToken = typeof window !== 'undefined' && !!localStorage.getItem('accessToken');
+      if (hasToken) {
+        await addToCart(newItem.id, quantity);
+        await syncCart();
+      } else {
+        // Not authenticated: update local state only
+        setItems(prevItems => {
+          const existingItem = prevItems.find(item => item.id === newItem.id);
+          if (existingItem) {
+            return prevItems.map(item =>
+              item.id === newItem.id
+                ? { ...item, quantity: item.quantity + quantity }
+                : item
+            );
+          } else {
+            const normalizedNew = {
+              ...newItem,
+              quantity,
+              image: (newItem as any).image || (newItem as any).main_image || '',
+              artistName: (newItem as any).artistName || (newItem as any).artist_name || '',
+              currency: (newItem as any).currency || '$',
+            } as CartItem;
+            return [...prevItems, normalizedNew];
+          }
+        });
+      }
     } catch (err: any) {
       console.error('Failed to add item to cart:', err);
       setError(err.message || 'Failed to add item to cart');
@@ -160,8 +209,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      await updateCartItem(id, quantity);
-      await syncCart();
+      const hasToken = typeof window !== 'undefined' && !!localStorage.getItem('accessToken');
+      if (hasToken) {
+        await updateCartItem(id, quantity);
+        await syncCart();
+      } else {
+        // Not authenticated: update local state only
+        setItems(prevItems =>
+          prevItems.map(item =>
+            item.id === id ? { ...item, quantity } : item
+          )
+        );
+      }
     } catch (err: any) {
       console.error('Failed to update quantity:', err);
       setError(err.message || 'Failed to update quantity');
@@ -177,8 +236,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const removeItem = async (id: number) => {
     setError(null);
     try {
-      await removeFromCart(id);
-      await syncCart();
+      const hasToken = typeof window !== 'undefined' && !!localStorage.getItem('accessToken');
+      if (hasToken) {
+        await removeFromCart(id);
+        await syncCart();
+      } else {
+        // Not authenticated: remove locally
+        setItems(prevItems => prevItems.filter(item => item.id !== id));
+      }
     } catch (err: any) {
       console.error('Failed to remove item:', err);
       setError(err.message || 'Failed to remove item');
@@ -190,7 +255,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clearCart = async () => {
     setError(null);
     try {
-      await apiClearCart();
+      const hasToken = typeof window !== 'undefined' && !!localStorage.getItem('accessToken');
+      if (hasToken) {
+        await apiClearCart();
+      }
       setItems([]);
     } catch (err: any) {
       console.error('Failed to clear cart:', err);

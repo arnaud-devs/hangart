@@ -82,7 +82,7 @@ export default function PaymentSelectionPage() {
         <h1 className="text-3xl font-bold mb-8">Choose Payment Method</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow p-6 border border-black/5 dark:border-white/10">
             <div className="space-y-4">
               <label className="flex items-center gap-3 p-3 border rounded-md cursor-pointer">
                 <input
@@ -147,7 +147,7 @@ export default function PaymentSelectionPage() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-fit">
+          <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow p-6 h-fit border border-black/5 dark:border-white/10">
             <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
             <div className="space-y-4 mb-6">
               {items.map((item) => (

@@ -79,7 +79,7 @@ export default function WishlistPage() {
 
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {groupedByArtwork.map((it) => (
-            <li key={String(it.artworkId)} className="bg-white dark:bg-gray-800 rounded-lg shadow">
+            <li key={String(it.artworkId)} className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow border border-black/5 dark:border-white/10">
               <div className="relative aspect-4/3 bg-gray-100 dark:bg-gray-700 rounded-t-lg overflow-hidden">
                 <Image
                   src={it.image ? (String(it.image).startsWith('/') ? String(it.image) : `/artwork/${it.image}`) : '/placeholder-art.png'}

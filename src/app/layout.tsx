@@ -76,7 +76,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
                 </header>
 
                 <div className="w-full sticky top-[73px] z-40">
-                  <Breadcrumbs />
+                  <div className="p-4">
+                    <Breadcrumbs/>
+                  </div>
                 </div>
               </HideWhenDashboard>
 

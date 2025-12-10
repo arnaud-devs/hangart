@@ -136,21 +136,21 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
               <div className="relative">
                 <button 
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                  className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-600"
                   aria-label="User menu"
                   aria-expanded={dropdownOpen} >
                   {user.profileImage ? (
                     <img
                       src={user.profileImage}
                       alt={`${user.first_name || ''} ${user.last_name || ''}`}
-                      className="w-8 h-8 rounded-full object-cover ring-2 ring-white dark:ring-gray-700 shadow-md"
+                      className="w-8 h-8 rounded-full object-cover bg-yellow-600 ring-2 ring-white dark:ring-gray-700 shadow-md"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = '/default-avatar.png';
                       }}
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center ring-2 ring-white dark:ring-gray-700 shadow-md">
+                    <div className="w-8 h-8 rounded-full bg-yellow-600 flex items-center justify-center ring-2 ring-white dark:ring-gray-700 shadow-md">
                       <span className="text-white font-semibold text-sm">
                         {user.first_name?.charAt(0).toUpperCase()}{user.last_name?.charAt(0).toUpperCase()}
                       </span>

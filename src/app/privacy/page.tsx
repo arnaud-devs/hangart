@@ -8,17 +8,19 @@ import {
   Users, 
   Cookie,
   Database,
-  Bell,
-  Mail,
   CheckCircle,
-  AlertCircle,
   Calendar,
   FileText,
   ChevronDown,
   ChevronUp,
   ShieldCheck,
   Fingerprint,
-  Globe
+  Globe,
+  Mail,
+  Bell,
+  Key,
+  EyeOff,
+  Building
 } from "lucide-react";
 
 export default function PrivacyPage() {
@@ -35,14 +37,14 @@ export default function PrivacyPage() {
       icon: <Database className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
-          <p>
+          <p className="text-gray-700 dark:text-gray-300">
             We collect information to provide a better experience on HangArt. Here's a straightforward breakdown of what we gather and why:
           </p>
           
           <div className="space-y-4">
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-100 dark:border-yellow-800">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <Users className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                 Account Information
               </h3>
               <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
@@ -58,9 +60,9 @@ export default function PrivacyPage() {
               </p>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-100 dark:border-yellow-800">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <FileText className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                 Purchase Information
               </h3>
               <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
@@ -76,9 +78,9 @@ export default function PrivacyPage() {
               </p>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-100 dark:border-yellow-800">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                <Eye className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                <Eye className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                 Usage Data
               </h3>
               <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">
@@ -104,11 +106,11 @@ export default function PrivacyPage() {
       icon: <Cookie className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
-          <p>
+          <p className="text-gray-700 dark:text-gray-300">
             Like most websites, we use cookies and similar technologies. Here's what you should know:
           </p>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Essential Cookies</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -132,74 +134,10 @@ export default function PrivacyPage() {
             </div>
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-            <p className="text-sm text-blue-900 dark:text-blue-100">
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+            <p className="text-sm text-yellow-900 dark:text-yellow-100">
               Most browsers let you control cookies through settings. Blocking all cookies may affect site functionality.
             </p>
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: "sharing",
-      title: "Who We Share Data With",
-      icon: <Users className="w-5 h-5" />,
-      content: (
-        <div className="space-y-4">
-          <p>
-            We don't sell your personal information. Period. But we do share data with certain partners to run the business:
-          </p>
-          
-          <div className="space-y-3">
-            <div className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-medium text-gray-900 dark:text-white">Artists</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  When you buy artwork, the artist receives your shipping info to fulfill the order
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-medium text-gray-900 dark:text-white">Payment Processors</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  We use trusted payment partners (like Stripe) to handle transactions securely
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-medium text-gray-900 dark:text-white">Shipping Companies</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Couriers need your address to deliver artwork
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-medium text-gray-900 dark:text-white">Service Providers</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Companies that help us with email, analytics, and hosting (all bound by strict agreements)
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-medium text-gray-900 dark:text-white">Legal Requirements</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  We may disclose data if required by law or to protect our rights
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       ),
@@ -210,37 +148,37 @@ export default function PrivacyPage() {
       icon: <ShieldCheck className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
-          <p>
+          <p className="text-gray-700 dark:text-gray-300">
             Security is important to us. Here's how we keep your information safe:
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-              <Lock className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mb-2" />
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-100 dark:border-yellow-800">
+              <Lock className="w-6 h-6 text-yellow-600 dark:text-yellow-400 mb-2" />
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Encryption</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 All data is encrypted in transit and at rest
               </p>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-              <Fingerprint className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mb-2" />
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-100 dark:border-yellow-800">
+              <Key className="w-6 h-6 text-yellow-600 dark:text-yellow-400 mb-2" />
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Secure Access</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Limited employee access with authentication
               </p>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-              <Database className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mb-2" />
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-100 dark:border-yellow-800">
+              <Database className="w-6 h-6 text-yellow-600 dark:text-yellow-400 mb-2" />
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Regular Backups</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Data backed up regularly to prevent loss
               </p>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-              <Shield className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mb-2" />
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-100 dark:border-yellow-800">
+              <Shield className="w-6 h-6 text-yellow-600 dark:text-yellow-400 mb-2" />
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Monitoring</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 24/7 monitoring for suspicious activity
@@ -248,8 +186,8 @@ export default function PrivacyPage() {
             </div>
           </div>
 
-          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-            <p className="text-sm text-amber-900 dark:text-amber-100">
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+            <p className="text-sm text-yellow-900 dark:text-yellow-100">
               <strong>Note:</strong> No system is 100% secure. While we take every precaution, we can't guarantee absolute security.
             </p>
           </div>
@@ -262,40 +200,40 @@ export default function PrivacyPage() {
       icon: <Fingerprint className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
-          <p>
+          <p className="text-gray-700 dark:text-gray-300">
             You have control over your personal information. Here's what you can do:
           </p>
           
           <div className="space-y-4">
-            <div className="border-l-4 border-blue-500 pl-4">
+            <div className="border-l-4 border-yellow-500 pl-4">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Access Your Data</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Request a copy of all the personal data we have about you
               </p>
             </div>
 
-            <div className="border-l-4 border-emerald-500 pl-4">
+            <div className="border-l-4 border-yellow-500 pl-4">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Correct Information</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Update or fix any incorrect information in your account
               </p>
             </div>
 
-            <div className="border-l-4 border-purple-500 pl-4">
+            <div className="border-l-4 border-yellow-500 pl-4">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Delete Your Account</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Request deletion of your account and associated data (some transaction records may be retained for legal reasons)
               </p>
             </div>
 
-            <div className="border-l-4 border-amber-500 pl-4">
+            <div className="border-l-4 border-yellow-500 pl-4">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Opt Out of Marketing</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Unsubscribe from promotional emails at any time (we'll still send order confirmations)
               </p>
             </div>
 
-            <div className="border-l-4 border-pink-500 pl-4">
+            <div className="border-l-4 border-yellow-500 pl-4">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Data Portability</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Export your data in a machine-readable format
@@ -303,72 +241,12 @@ export default function PrivacyPage() {
             </div>
           </div>
 
-          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-100 dark:border-yellow-800">
             <p className="text-sm text-gray-700 dark:text-gray-300">
-              To exercise any of these rights, email us at <a href="mailto:privacy@hangart.com" className="text-emerald-600 dark:text-emerald-400 hover:underline">privacy@hangart.com</a>. 
+              To exercise any of these rights, email us at <a href="mailto:privacy@hangart.com" className="text-yellow-600 dark:text-yellow-400 hover:underline">privacy@hangart.com</a>. 
               We'll respond within 30 days.
             </p>
           </div>
-        </div>
-      ),
-    },
-    {
-      id: "children",
-      title: "Children's Privacy",
-      icon: <Users className="w-5 h-5" />,
-      content: (
-        <div className="space-y-4">
-          <p>
-            HangArt is not intended for children under 13. We don't knowingly collect information from kids.
-          </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            If you're a parent and believe your child has provided us with personal information, please contact us 
-            and we'll delete it promptly.
-          </p>
-        </div>
-      ),
-    },
-    {
-      id: "international",
-      title: "International Users",
-      icon: <Globe className="w-5 h-5" />,
-      content: (
-        <div className="space-y-4">
-          <p>
-            HangArt operates globally, and your data may be transferred to and stored in the United States or other countries 
-            where our service providers operate.
-          </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            By using our platform, you consent to this transfer. We ensure all transfers comply with applicable data 
-            protection laws and use appropriate safeguards.
-          </p>
-          
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-            <p className="text-sm text-blue-900 dark:text-blue-100">
-              <strong>EU Users:</strong> We comply with GDPR requirements. You have additional rights under European law, 
-              including the right to lodge a complaint with your local data protection authority.
-            </p>
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: "changes",
-      title: "Changes to This Policy",
-      icon: <Calendar className="w-5 h-5" />,
-      content: (
-        <div className="space-y-4">
-          <p>
-            We may update this privacy policy from time to time. When we do, we'll:
-          </p>
-          <ul className="list-disc pl-5 space-y-2 text-sm text-gray-600 dark:text-gray-400">
-            <li>Update the "Last Updated" date at the top</li>
-            <li>Notify you via email for significant changes</li>
-            <li>Post a notice on the site</li>
-          </ul>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Continued use of HangArt after changes means you accept the updated policy.
-          </p>
         </div>
       ),
     },
@@ -378,19 +256,19 @@ export default function PrivacyPage() {
       icon: <Mail className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
-          <p>
+          <p className="text-gray-700 dark:text-gray-300">
             Questions about this privacy policy or how we handle your data? We're here to help.
           </p>
-          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-6 space-y-3">
+          <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-6 space-y-3 border border-yellow-100 dark:border-yellow-800">
             <p className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-              <Mail className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+              <Mail className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
               <span className="font-medium">Email:</span>
-              <a href="mailto:privacy@hangart.com" className="text-emerald-600 dark:text-emerald-400 hover:underline">
+              <a href="mailto:privacy@hangart.com" className="text-yellow-600 dark:text-yellow-400 hover:underline">
                 privacy@hangart.com
               </a>
             </p>
             <p className="flex items-start gap-2 text-gray-700 dark:text-gray-300">
-              <Mail className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+              <Building className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5" />
               <span>
                 <span className="font-medium">Address:</span><br />
                 HangArt Inc.<br />
@@ -404,28 +282,50 @@ export default function PrivacyPage() {
     },
   ];
 
+  const privacyPrinciples = [
+    {
+      icon: <EyeOff className="w-6 h-6" />,
+      title: "No Selling",
+      description: "We never sell your personal data to third parties"
+    },
+    {
+      icon: <Shield className="w-6 h-6" />,
+      title: "Secure Storage",
+      description: "All data encrypted with industry standards"
+    },
+    {
+      icon: <Lock className="w-6 h-6" />,
+      title: "Transparency",
+      description: "Clear policies on what we collect and why"
+    },
+    {
+      icon: <Fingerprint className="w-6 h-6" />,
+      title: "Your Control",
+      description: "Access, update, or delete your data anytime"
+    },
+  ];
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-800 dark:to-purple-800 text-white py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
-        <div className="absolute top-10 right-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 left-10 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-6">
-              <Shield className="w-4 h-4" />
-              <span className="text-sm font-medium">Your Privacy Matters</span>
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      {/* Simple Header */}
+      <div className="border-b border-gray-200 dark:border-gray-800">
+        <div className="max-w-5xl mx-auto px-4 py-12">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 rounded-full mb-4">
+                <Shield className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+                <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
+                  Privacy Policy
+                </span>
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                Your Privacy Matters
+              </h1>
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl">
+                We're committed to protecting your personal information and being transparent about how we handle your data.
+              </p>
             </div>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-              Privacy Policy
-            </h1>
-            <p className="text-xl text-indigo-50 leading-relaxed">
-              We're committed to protecting your personal information. This policy explains what data we collect, 
-              how we use it, and what rights you have.
-            </p>
-            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-indigo-100">
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
               <Calendar className="w-4 h-4" />
               <span>Last Updated: December 9, 2025</span>
             </div>
@@ -433,53 +333,38 @@ export default function PrivacyPage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Quick Summary */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 mb-12 border border-gray-100 dark:border-gray-700">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-            Privacy at a Glance
+      <div className="max-w-5xl mx-auto px-4 py-8">
+        {/* Privacy Principles */}
+        <div className="mb-12">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6 text-center">
+            Our Privacy Principles
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">We Don't Sell Data</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {privacyPrinciples.map((principle, index) => (
+              <div 
+                key={index}
+                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-center"
+              >
+                <div className="w-12 h-12 mx-auto mb-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 flex items-center justify-center">
+                  <div className="text-yellow-600 dark:text-yellow-400">
+                    {principle.icon}
+                  </div>
+                </div>
+                <h3 className="font-medium text-gray-900 dark:text-white mb-1">
+                  {principle.title}
+                </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Your information stays private and is never sold to third parties
+                  {principle.description}
                 </p>
               </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Lock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Secure Storage</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  All data is encrypted and protected with industry standards
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Fingerprint className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">You're in Control</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Access, update, or delete your data anytime
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
         {/* Quick Navigation */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 mb-8 border border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Jump to Section</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 mb-8 border border-gray-200 dark:border-gray-700">
+          <h2 className="font-semibold text-gray-900 dark:text-white mb-3">Quick Navigation</h2>
+          <div className="flex flex-wrap gap-2">
             {sections.map((section) => (
               <button
                 key={section.id}
@@ -487,43 +372,43 @@ export default function PrivacyPage() {
                   setExpandedSection(section.id);
                   document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
-                className="flex items-center gap-2 px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 rounded-lg transition-colors"
               >
-                <span className="text-indigo-600 dark:text-indigo-400">{section.icon}</span>
-                <span className="truncate">{section.title}</span>
+                <span className="text-yellow-600 dark:text-yellow-400">{section.icon}</span>
+                <span>{section.title}</span>
               </button>
             ))}
           </div>
         </div>
 
         {/* Accordion Sections */}
-        <div className="space-y-4">
+        <div className="space-y-4 mb-12">
           {sections.map((section, index) => (
             <div
               key={section.id}
               id={section.id}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden"
+              className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-yellow-300 dark:hover:border-yellow-600 transition-colors"
             >
               <button
                 onClick={() => toggleSection(section.id)}
-                className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg">
+                  <div className="flex items-center justify-center w-8 h-8 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 rounded-lg">
                     {section.icon}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                      <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
                         {String(index + 1).padStart(2, '0')}
                       </span>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <h3 className="font-semibold text-gray-900 dark:text-white">
                         {section.title}
                       </h3>
                     </div>
                   </div>
                 </div>
-                <div className="text-indigo-600 dark:text-indigo-400">
+                <div className="text-yellow-600 dark:text-yellow-400">
                   {expandedSection === section.id ? (
                     <ChevronUp className="w-5 h-5" />
                   ) : (
@@ -533,8 +418,8 @@ export default function PrivacyPage() {
               </button>
               
               {expandedSection === section.id && (
-                <div className="px-6 pb-6 text-gray-700 dark:text-gray-300 leading-relaxed">
-                  <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="px-4 pb-4">
+                  <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
                     {section.content}
                   </div>
                 </div>
@@ -544,19 +429,19 @@ export default function PrivacyPage() {
         </div>
 
         {/* Bottom Notice */}
-        <div className="mt-12 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-6">
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
           <div className="flex items-start gap-3">
-            <Bell className="w-5 h-5 text-indigo-600 dark:text-indigo-400 mt-0.5 flex-shrink-0" />
-            <div className="text-sm text-indigo-900 dark:text-indigo-100">
-              <p className="font-semibold mb-2">Stay Informed</p>
+            <Bell className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-yellow-900 dark:text-yellow-100">
+              <p className="font-medium mb-1">Stay Informed</p>
               <p>
-                We'll notify you by email if we make significant changes to this privacy policy. Check back occasionally 
-                to stay up to date with how we're protecting your information.
+                We'll notify you by email if we make significant changes to this privacy policy. 
+                Check back occasionally to stay up to date with how we're protecting your information.
               </p>
             </div>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

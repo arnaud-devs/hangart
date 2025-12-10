@@ -29,8 +29,9 @@ export default function ArtistDashboardView({ user }: { user: any }) {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const artistArtworks = await artworkService.listArtworks();
-      const artworksList = (artistArtworks as any).results || [];
+      // Fetch only the current user's artworks
+      const myArtworksResponse = await artistService.getMyArtworks();
+      const artworksList = (myArtworksResponse as any).results || myArtworksResponse || [];
 
       const totalViews = artworksList.reduce((sum: number, a: any) => sum + (Number(a.views) || 0), 0);
       const totalLikes = artworksList.reduce((sum: number, a: any) => sum + (Number(a.likes) || 0), 0);
@@ -138,9 +139,6 @@ export default function ArtistDashboardView({ user }: { user: any }) {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Your Artworks</h3>
-            <a href="/artist/upload" className="text-sm text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 font-medium">
-              + Upload New
-            </a>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {artworks.map((artwork: any) => (

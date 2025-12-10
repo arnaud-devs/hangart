@@ -37,7 +37,7 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'draft' | 'pending' | 'rejected'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'draft' | 'submitted' | 'pending' | 'rejected' | 'sold' | 'archived'>('all');
   const [showModal, setShowModal] = useState(false);
   const [editingArtwork, setEditingArtwork] = useState<Artwork | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -138,15 +138,23 @@ export default function Page() {
   const stats = {
     total: artworks.length,
     approved: artworks.filter(a => a.status === 'approved').length,
+    submitted: artworks.filter(a => a.status === 'submitted').length,
+    draft: artworks.filter(a => a.status === 'draft').length,
     pending: artworks.filter(a => a.status === 'pending').length,
     rejected: artworks.filter(a => a.status === 'rejected').length,
+    sold: artworks.filter(a => a.status === 'sold').length,
+    archived: artworks.filter(a => a.status === 'archived').length,
   };
 
   // Filter artworks
   const filteredArtworks = artworks.filter(a => {
     if (statusFilter === 'approved') return a.status === 'approved';
+    if (statusFilter === 'submitted') return a.status === 'submitted';
+    if (statusFilter === 'draft') return a.status === 'draft';
     if (statusFilter === 'pending') return a.status === 'pending';
     if (statusFilter === 'rejected') return a.status === 'rejected';
+    if (statusFilter === 'sold') return a.status === 'sold';
+    if (statusFilter === 'archived') return a.status === 'archived';
     return true;
   });
 
@@ -194,12 +202,22 @@ export default function Page() {
           submitted: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
           rejected: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400',
           draft: 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400',
+          sold: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400',
+          archived: 'bg-gray-300 text-gray-700 dark:bg-gray-700/40 dark:text-gray-400',
         };
         const className = statusConfig[value as keyof typeof statusConfig] || statusConfig.draft;
-        
+        const labelMap: Record<string, string> = {
+          approved: 'Approved',
+          pending: 'Pending',
+          submitted: 'Submitted',
+          rejected: 'Rejected',
+          draft: 'Draft',
+          sold: 'Sold',
+          archived: 'Archived',
+        };
         return (
           <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${className}`}>
-            {value ? value.charAt(0).toUpperCase() + value.slice(1) : 'Draft'}
+            {labelMap[value] || value}
           </span>
         );
       },
@@ -363,7 +381,7 @@ export default function Page() {
               <div className="flex gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Approval Status
+                    Status
                   </label>
                   <select
                     value={statusFilter}
@@ -371,9 +389,13 @@ export default function Page() {
                     className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   >
                     <option value="all">All Artworks</option>
-                    <option value="approved">Approved Only</option>
-                    <option value="pending">Pending Only</option>
-                    <option value="rejected">Rejected Only</option>
+                    <option value="approved">Approved</option>
+                    <option value="submitted">Submitted</option>
+                    <option value="draft">Draft</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="sold">Sold</option>
+                    <option value="archived">Archived</option>
                   </select>
                 </div>
               </div>

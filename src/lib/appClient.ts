@@ -185,6 +185,9 @@ const appClient = {
   refreshAccessToken,
   getStoredUser,
   storeUser,
+  getBuyerProfile,
+  updateBuyerProfile,
+  listOrders,
 };
 
 export default appClient;

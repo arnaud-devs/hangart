@@ -23,7 +23,7 @@ export default function Breadcrumbs() {
   })];
 
   return (
-    <nav aria-label="Breadcrumb" className="container mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+    <nav aria-label="Breadcrumb" className="container mx-auto px-4 sm:px-6 lg:px-8 mb-4 dark:bg-gray-900">
       <ol className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
         {crumbs.map((c, i) => (
           <li key={c.href} className="flex items-center">

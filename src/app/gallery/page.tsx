@@ -143,7 +143,7 @@ export default function GalleryPage() {
   const totalPages = Math.ceil(totalCount / 20);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-[#f7f7f8] dark:bg-black py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">

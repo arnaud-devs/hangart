@@ -4,8 +4,8 @@
 
 /* Theme variables - default to light */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f7f8; /* softer off-white to reduce brightness */
+  --foreground: #1a1a1a;
   --muted: #6b6b6b;
   /* semantic mappings used by components */
   --color-background: var(--background);
@@ -43,6 +43,16 @@ html[data-theme="dark"] body {
     linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
   background-size: 40px 40px, 40px 40px;
+  background-position: 0 0, 0 0;
+}
+
+/* Subtle grid overlay in light (white) mode as well */
+html:not([data-theme="dark"]) body {
+  background-color: var(--background);
+  background-image:
+    linear-gradient(rgba(0,0,0,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.045) 1px, transparent 1px);
+  background-size: 36px 36px, 36px 36px; /* slightly denser grid for subtlety */
   background-position: 0 0, 0 0;
 }
 

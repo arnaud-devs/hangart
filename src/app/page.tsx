@@ -32,7 +32,7 @@ export default function Home() {
   const t = defaultTranslations;
 
   return (
-    <div className="bg-white dark:bg-black transition-colors duration-300">
+    <div className="bg-[#f7f7f8] dark:bg-black transition-colors duration-300">
       {/* Hero Section */}
       <section
         className="relative w-full bg-cover bg-center"

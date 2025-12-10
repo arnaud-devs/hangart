@@ -70,9 +70,9 @@ function LoginContent(){
   // No demo login helper — use real credentials to sign in
 
   return (
-    <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#0b1220] px-4">
+    <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-black px-4">
       <div className="w-full max-w-xl mx-auto">
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700">
+        <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg p-8 rounded-2xl shadow-2xl border border-black/5 dark:border-white/10">
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-12 rounded-lg bg-linear-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold">H</div>
             <div>

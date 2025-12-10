@@ -62,7 +62,7 @@ export default function ContactPage() {
       content: "hello@hangart.com",
       description: "Usually reply within a day",
       link: "mailto:hello@hangart.com",
-      color: "bg-blue-500 dark:bg-blue-600"
+      color: "bg-yellow-500 dark:bg-yellow-500"
     },
     {
       icon: <Phone className="w-6 h-6" />,
@@ -70,7 +70,7 @@ export default function ContactPage() {
       content: "+1 (555) 234-5678",
       description: "Mon-Fri, 9am-5pm EST",
       link: "tel:+15552345678",
-      color: "bg-emerald-500 dark:bg-emerald-600"
+      color: "bg-yellow-500 dark:bg-yellow-500"
     },
     {
       icon: <MapPin className="w-6 h-6" />,
@@ -78,7 +78,7 @@ export default function ContactPage() {
       content: "Brooklyn, New York",
       description: "By appointment only",
       link: "#",
-      color: "bg-purple-500 dark:bg-purple-600"
+      color: "bg-yellow-500 dark:bg-yellow-500"
     }
   ];
 
@@ -107,12 +107,19 @@ export default function ContactPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <main className="min-h-screen">
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-700 dark:to-teal-700 text-white py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
-        <div className="absolute top-10 right-10 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 left-10 w-96 h-96 bg-teal-400/10 rounded-full blur-3xl"></div>
+      <div className="relative text-white py-20 overflow-hidden">
+        {/* Grid overlay matches global style; rely on body background */}
+        <div className="absolute inset-0 -z-10 hidden dark:block" style={{
+          backgroundColor: '#000000',
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)',
+          backgroundSize: '40px 40px, 40px 40px',
+          backgroundPosition: '0 0, 0 0',
+        }} />
+        <div className="absolute top-10 right-10 w-72 h-72 bg-white/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
@@ -123,7 +130,7 @@ export default function ContactPage() {
             <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
               Get in Touch
             </h1>
-            <p className="text-xl text-emerald-50 leading-relaxed">
+            <p className="text-xl text-white/80 leading-relaxed">
               Questions about selling your art? Need help with an order? Just want to say hi? Drop us a line and we'll get back to you soon.
             </p>
           </div>
@@ -139,7 +146,7 @@ export default function ContactPage() {
               href={method.link}
               target={method.link.startsWith("http") ? "_blank" : undefined}
               rel={method.link.startsWith("http") ? "noopener noreferrer" : undefined}
-              className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl p-6 transition-all duration-300 hover:-translate-y-1 border border-gray-100 dark:border-gray-700"
+              className="group bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-lg hover:shadow-2xl p-6 transition-all duration-300 hover:-translate-y-1 border border-black/5 dark:border-white/10"
             >
               <div className={`${method.color} w-12 h-12 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform duration-300`}>
                 {method.icon}
@@ -147,7 +154,7 @@ export default function ContactPage() {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                 {method.title}
               </h3>
-              <p className="text-gray-900 dark:text-emerald-400 font-medium mb-1">
+              <p className="text-gray-900 dark:text-yellow-400 font-medium mb-1">
                 {method.content}
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -160,7 +167,7 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
+            <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-black/5 dark:border-white/10">
               <div className="mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                   Send a Message
@@ -186,7 +193,7 @@ export default function ContactPage() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                         placeholder="Jane Smith"
                       />
                     </div>
@@ -205,7 +212,7 @@ export default function ContactPage() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                         placeholder="jane@example.com"
                       />
                     </div>
@@ -227,7 +234,7 @@ export default function ContactPage() {
                         value={formData.subject}
                         onChange={handleChange}
                         required
-                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                         placeholder="What's this about?"
                       />
                     </div>
@@ -245,7 +252,7 @@ export default function ContactPage() {
                         value={formData.category}
                         onChange={handleChange}
                         required
-                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-gray-900 dark:text-white appearance-none cursor-pointer"
+                        className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-gray-900 dark:text-white appearance-none cursor-pointer"
                       >
                         {categories.map(cat => (
                           <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -267,7 +274,7 @@ export default function ContactPage() {
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
                     placeholder="Tell us what's on your mind..."
                   />
                   <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -280,7 +287,7 @@ export default function ContactPage() {
                   <button
                     type="submit"
                     disabled={status === "loading"}
-                    className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {status === "loading" ? (
                       <>
@@ -300,12 +307,12 @@ export default function ContactPage() {
               {/* Success Message */}
               {status === "success" && (
                 <div className="mt-6 flex items-start gap-3 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl">
-                  <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-medium text-emerald-900 dark:text-emerald-100">
+                    <p className="font-medium text-yellow-900 dark:text-yellow-100">
                       Message sent!
                     </p>
-                    <p className="text-sm text-emerald-700 dark:text-emerald-300 mt-1">
+                    <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
                       {statusMessage}
                     </p>
                   </div>
@@ -317,10 +324,10 @@ export default function ContactPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Office Hours */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+            <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-lg p-6 border border-black/5 dark:border-white/10">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <div className="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Office Hours
@@ -348,7 +355,7 @@ export default function ContactPage() {
             </div>
 
             {/* FAQs */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+            <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-lg p-6 border border-black/5 dark:border-white/10">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Common Questions
               </h3>
@@ -367,7 +374,7 @@ export default function ContactPage() {
             </div>
 
             {/* Social Media */}
-            <div className="bg-gradient-to-br from-emerald-600 to-teal-600 dark:from-emerald-700 dark:to-teal-700 rounded-2xl shadow-lg p-6 text-white">
+            <div className="bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg p-6 text-white">
               <h3 className="text-lg font-semibold mb-2">Find Us Online</h3>
               <p className="text-emerald-50 text-sm mb-4">
                 Follow for artist features and new artwork drops
@@ -408,7 +415,7 @@ export default function ContactPage() {
           <div className="relative">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center md:text-left">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-emerald-600 rounded-xl mb-4">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-yellow-600 rounded-xl mb-4">
                   <CheckCircle className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Quick Response</h3>
@@ -417,7 +424,7 @@ export default function ContactPage() {
                 </p>
               </div>
               <div className="text-center md:text-left">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-emerald-600 rounded-xl mb-4">
+                <div className="inline-flex items-center justifycenter w-12 h-12 bg-yellow-600 rounded-xl mb-4">
                   <MessageCircle className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Real People</h3>
@@ -426,7 +433,7 @@ export default function ContactPage() {
                 </p>
               </div>
               <div className="text-center md:text-left">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-emerald-600 rounded-xl mb-4">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-yellow-600 rounded-xl mb-4">
                   <Globe className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Worldwide</h3>

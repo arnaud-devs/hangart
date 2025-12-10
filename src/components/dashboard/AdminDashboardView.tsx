@@ -226,7 +226,7 @@ export default function AdminDashboardView() {
 
   return (
     <div className="space-y-6">
-      <div className="sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700 mb-8 p-6">
+      <div className="sticky top-0 z-40 bg-white/80 dark:bg-black backdrop-blur-lg border-b border-gray-200 dark:border-gray-700 mb-8 p-6">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Admin Dashboard</h1>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Welcome back, {user?.first_name}! Here's your marketplace overview.</p>
       </div>

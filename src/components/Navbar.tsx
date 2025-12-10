@@ -21,7 +21,6 @@ export default function Navbar() {
     { href: "/", label: "Home" },
     { href: "/gallery", label: "Gallery" },
     { href: "/artist", label: "Artists" },
-    { href: "/contact", label: "Contact" },
   ];
 
   const buyerLinks = [

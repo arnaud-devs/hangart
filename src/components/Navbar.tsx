@@ -20,12 +20,8 @@ export default function Navbar() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/gallery", label: "Gallery" },
-<<<<<<< HEAD
     { href: "/artists", label: "Artists" },
     { href: "/contact", label: "Contact" },
-=======
-    { href: "/artist", label: "Artists" },
->>>>>>> origin/main
   ];
 
   const buyerLinks = [

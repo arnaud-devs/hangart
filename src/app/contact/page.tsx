@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Mail, Phone, MapPin, Send, User, AtSign, MessageSquare, Building, CheckCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Send, User, AtSign, MessageSquare, Building, CheckCircle, MessageCircle, Globe, Linkedin, Instagram, Twitter, Facebook, Sparkles, Clock } from "lucide-react";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -38,10 +38,7 @@ export default function ContactPage() {
       content: "hello@hangart.com",
       description: "Reply within a day",
       link: "mailto:hello@hangart.com",
-<<<<<<< HEAD
-=======
       color: "bg-yellow-500 dark:bg-yellow-500"
->>>>>>> origin/main
     },
     {
       icon: <Phone className="w-5 h-5" />,
@@ -49,10 +46,7 @@ export default function ContactPage() {
       content: "+1 (555) 234-5678",
       description: "Mon-Fri, 9am-5pm EST",
       link: "tel:+15552345678",
-<<<<<<< HEAD
-=======
       color: "bg-yellow-500 dark:bg-yellow-500"
->>>>>>> origin/main
     },
     {
       icon: <MapPin className="w-5 h-5" />,
@@ -60,10 +54,7 @@ export default function ContactPage() {
       content: "Brooklyn, New York",
       description: "By appointment only",
       link: "#",
-<<<<<<< HEAD
-=======
       color: "bg-yellow-500 dark:bg-yellow-500"
->>>>>>> origin/main
     }
   ];
 
@@ -74,19 +65,26 @@ export default function ContactPage() {
     { value: "technical", label: "Technical Problem" },
   ];
 
+  const faqs = [
+    {
+      question: "How do I submit my artwork?",
+      answer: "Fill out the contact form and select 'I'm an Artist' as your topic. We'll get back to you with next steps."
+    },
+    {
+      question: "Can I buy art directly from the website?",
+      answer: "Yes! Browse our collection and use the contact form for any questions about purchasing."
+    },
+    {
+      question: "What payment methods do you accept?",
+      answer: "We accept major credit cards, PayPal, and bank transfers."
+    },
+    {
+      question: "How long does shipping take?",
+      answer: "Shipping times vary by location, but most orders are delivered within 7-14 business days."
+    }
+  ];
+
   return (
-<<<<<<< HEAD
-    <div className="min-h-screen bg-white dark:bg-gray-900">
-      {/* Header */}
-      <div className="max-w-6xl mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Get in Touch
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Have questions about our platform? We're here to help and would love to hear from you.
-          </p>
-=======
     <main className="min-h-screen">
       {/* Hero Section */}
       <div className="relative text-white py-20 overflow-hidden">
@@ -114,7 +112,6 @@ export default function ContactPage() {
               Questions about selling your art? Need help with an order? Just want to say hi? Drop us a line and we'll get back to you soon.
             </p>
           </div>
->>>>>>> origin/main
         </div>
 
         {/* Contact Methods */}
@@ -123,13 +120,9 @@ export default function ContactPage() {
             <a
               key={index}
               href={method.link}
-<<<<<<< HEAD
-              className="group p-6 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-yellow-400 dark:hover:border-yellow-600 transition-all duration-300 hover:shadow-lg dark:hover:shadow-gray-800/30"
-=======
               target={method.link.startsWith("http") ? "_blank" : undefined}
               rel={method.link.startsWith("http") ? "noopener noreferrer" : undefined}
               className="group bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-lg hover:shadow-2xl p-6 transition-all duration-300 hover:-translate-y-1 border border-black/5 dark:border-white/10"
->>>>>>> origin/main
             >
               <div className="w-12 h-12 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 flex items-center justify-center mb-4 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/50 transition-colors">
                 <div className="text-yellow-600 dark:text-yellow-400">
@@ -139,11 +132,7 @@ export default function ContactPage() {
               <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
                 {method.title}
               </h3>
-<<<<<<< HEAD
-              <p className="text-yellow-600 dark:text-yellow-400 font-medium mb-1">
-=======
               <p className="text-gray-900 dark:text-yellow-400 font-medium mb-1">
->>>>>>> origin/main
                 {method.content}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -156,11 +145,7 @@ export default function ContactPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Contact Form */}
           <div className="lg:col-span-2">
-<<<<<<< HEAD
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-8">
-=======
             <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-black/5 dark:border-white/10">
->>>>>>> origin/main
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                   Send us a message
@@ -185,11 +170,7 @@ export default function ContactPage() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-<<<<<<< HEAD
-                        className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-=======
                         className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
->>>>>>> origin/main
                         placeholder="Jane Smith"
                       />
                     </div>
@@ -208,11 +189,7 @@ export default function ContactPage() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-<<<<<<< HEAD
-                        className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-=======
                         className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
->>>>>>> origin/main
                         placeholder="jane@example.com"
                       />
                     </div>
@@ -233,11 +210,7 @@ export default function ContactPage() {
                         value={formData.subject}
                         onChange={handleChange}
                         required
-<<<<<<< HEAD
-                        className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-=======
                         className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
->>>>>>> origin/main
                         placeholder="What's this about?"
                       />
                     </div>
@@ -254,12 +227,8 @@ export default function ContactPage() {
                         name="category"
                         value={formData.category}
                         onChange={handleChange}
-<<<<<<< HEAD
-                        className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 appearance-none cursor-pointer"
-=======
                         required
                         className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-gray-900 dark:text-white appearance-none cursor-pointer"
->>>>>>> origin/main
                       >
                         {categories.map(cat => (
                           <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -279,37 +248,12 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleChange}
                     required
-<<<<<<< HEAD
-                    rows={5}
-                    className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
-                    placeholder="Tell us how we can help..."
-=======
                     rows={6}
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
                     placeholder="Tell us what's on your mind..."
->>>>>>> origin/main
                   />
                 </div>
 
-<<<<<<< HEAD
-                <button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {status === "loading" ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Sending...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-5 h-5" />
-                      <span>Send Message</span>
-                    </>
-                  )}
-                </button>
-=======
                 {/* Submit Button */}
                 <div>
                   <button
@@ -330,18 +274,9 @@ export default function ContactPage() {
                     )}
                   </button>
                 </div>
->>>>>>> origin/main
               </form>
 
               {status === "success" && (
-<<<<<<< HEAD
-                <div className="mt-6 flex items-start gap-3 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                  <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium text-green-900 dark:text-green-100">Message sent successfully!</p>
-                    <p className="text-sm text-green-700 dark:text-green-300 mt-1">
-                      We'll get back to you within 24 hours.
-=======
                 <div className="mt-6 flex items-start gap-3 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl">
                   <CheckCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
                   <div>
@@ -349,8 +284,7 @@ export default function ContactPage() {
                       Message sent!
                     </p>
                     <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-                      {statusMessage}
->>>>>>> origin/main
+                      {"We'll get back to you soon."}
                     </p>
                   </div>
                 </div>
@@ -360,10 +294,6 @@ export default function ContactPage() {
 
           {/* Side Info */}
           <div className="space-y-6">
-<<<<<<< HEAD
-            <div className="border border-gray-200 dark:border-gray-700 rounded-xl p-6">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Office Hours</h3>
-=======
             {/* Office Hours */}
             <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-lg p-6 border border-black/5 dark:border-white/10">
               <div className="flex items-center gap-3 mb-4">
@@ -374,7 +304,6 @@ export default function ContactPage() {
                   Office Hours
                 </h3>
               </div>
->>>>>>> origin/main
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Monday - Friday</span>
@@ -391,30 +320,6 @@ export default function ContactPage() {
               </div>
             </div>
 
-<<<<<<< HEAD
-            <div className="bg-yellow-600 rounded-xl p-6 text-white">
-              <h3 className="font-semibold mb-4">Quick Info</h3>
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-start gap-2">
-                  <div className="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-xs">✓</span>
-                  </div>
-                  <span>Response within 24 hours on weekdays</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-xs">✓</span>
-                  </div>
-                  <span>Real people, no automated responses</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-xs">✓</span>
-                  </div>
-                  <span>Worldwide support for artists & collectors</span>
-                </li>
-              </ul>
-=======
             {/* FAQs */}
             <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-lg p-6 border border-black/5 dark:border-white/10">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
@@ -502,11 +407,10 @@ export default function ContactPage() {
                   Supporting artists and collectors around the globe
                 </p>
               </div>
->>>>>>> origin/main
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

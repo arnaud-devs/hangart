@@ -2,7 +2,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import appClient, { get, post, saveTokens, clearAuthStorage, storeUser, getStoredUser } from './appClient';
+import { appClient, get, post, saveTokens, clearAuthStorage, storeUser, getStoredUser } from './appClient';
 import { useRouter } from 'next/navigation';
 
 type User = {

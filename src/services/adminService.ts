@@ -1,12 +1,13 @@
-import appClient,
-  { listUsers as clientListUsers,
-    getUser as clientGetUser,
-    createUser as clientCreateUser,
-    updateUser as clientUpdateUser,
-    deleteUser as clientDeleteUser,
-    listAdminArtists as clientListAdminArtists,
-    listAdminBuyers as clientListAdminBuyers,
-  } from '@/lib/appClient';
+import {
+  appClient,
+  listUsers as clientListUsers,
+  getUser as clientGetUser,
+  createUser as clientCreateUser,
+  updateUser as clientUpdateUser,
+  deleteUser as clientDeleteUser,
+  listAdminArtists as clientListAdminArtists,
+  listAdminBuyers as clientListAdminBuyers,
+} from '@/lib/appClient';
 
 // Lightweight wrapper for admin functions with a small fallback
 export async function listUsers(params?: Record<string, any>) {

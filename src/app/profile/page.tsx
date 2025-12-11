@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import appClient from '@/lib/appClient'
+import { appClient } from '@/lib/appClient'
 import type { BuyerProfileDTO } from '@/lib/types/api'
 import { useRouter } from 'next/navigation'
 

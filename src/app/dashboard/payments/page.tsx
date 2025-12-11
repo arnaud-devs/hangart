@@ -96,6 +96,9 @@ export default function PaymentsPage() {
   const [selectedPayment, setSelectedPayment] = useState<PaymentData | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  // Polling state
+  const [polling, setPolling] = useState(false);
+  const [pollingError, setPollingError] = useState<string | null>(null);
 
   // Load payments list
   const loadPayments = async (pageNum = 1, status = "", method = "", sort = "-created_at") => {
@@ -122,16 +125,46 @@ export default function PaymentsPage() {
   // Load payment details
   const loadPaymentDetails = async (paymentId: number) => {
     setLoadingDetails(true);
+    setPollingError(null);
     try {
       const response = await api.get(`/payments/${paymentId}/`);
       setSelectedPayment(response.data);
       setShowDetails(true);
+      // If payment is pending, start polling
+      if (response.data.status === 'pending') {
+        setPolling(true);
+      } else {
+        setPolling(false);
+      }
     } catch (error: any) {
       showToast("error", "Error", error.response?.data?.message || error.message || "Failed to load payment details");
     } finally {
       setLoadingDetails(false);
     }
   };
+
+  // Poll payment status every 10 seconds if pending
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (showDetails && selectedPayment && selectedPayment.status === 'pending' && polling) {
+      interval = setInterval(async () => {
+        try {
+          const resp = await api.get(`/payments/check/${selectedPayment.id}/`);
+          if (resp.data && resp.data.payment) {
+            setSelectedPayment((prev) => prev ? { ...prev, ...resp.data.payment } : resp.data.payment);
+            if (resp.data.payment.status !== 'pending') {
+              setPolling(false);
+            }
+          }
+        } catch (err: any) {
+          setPollingError(err?.message || 'Polling failed');
+        }
+      }, 10000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [showDetails, selectedPayment, polling]);
 
   useEffect(() => {
     loadPayments(page, statusFilter, methodFilter, sortBy);
@@ -482,6 +515,13 @@ export default function PaymentsPage() {
               <div className="space-y-6">
                 {/* Transaction Info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
+                  {polling && selectedPayment.status === 'pending' && (
+                    <div className="col-span-2 flex items-center gap-2 text-yellow-700 dark:text-yellow-200 text-sm mb-2">
+                      <Loader className="animate-spin w-4 h-4" />
+                      Polling payment status... (auto-refreshing)
+                      {pollingError && <span className="ml-2 text-red-500">{pollingError}</span>}
+                    </div>
+                  )}
                   <div>
                     <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Transaction ID</p>
                     <p className="font-mono text-sm font-semibold text-gray-900 dark:text-white">{selectedPayment.transaction_id}</p>

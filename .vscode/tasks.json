@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Install react-hot-toast for toast notifications",
+			"type": "shell",
+			"command": "npm install react-hot-toast",
+			"isBackground": false,
+			"group": "build"
+		}
+	]
+}

@@ -1,5 +1,5 @@
 // services/apiService.ts
-import appClient from '@/lib/appClient';
+import { appClient } from '@/lib/appClient';
 
 // User Management
 export const userService = {

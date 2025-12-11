@@ -1,9 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Eye, Filter, Download, Search, ChevronLeft, ChevronRight, DollarSign, CreditCard, Calendar, User, Clock, CheckCircle, AlertCircle, Loader } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
 import { appClient } from "@/lib/appClient";
+type APIOrder = {
+  id: number;
+  order_number: string;
+  buyer_name: string;
+  items_count: number;
+};
 
 interface PaymentLog {
   id: number;
@@ -42,13 +49,15 @@ interface PaymentData {
 interface Payment {
   id: number;
   order_number: string;
-  buyer_name: string;
   amount: string;
   payment_method: string;
   status: "successful" | "failed" | "pending" | "cancelled";
   transaction_id: string;
   created_at: string;
-  products?: { name: string }[];
+  order?: {
+    buyer_name?: string;
+    items_count?: number;
+  };
 }
 
 interface PaymentsResponse {
@@ -112,8 +121,34 @@ export default function PaymentsPage() {
       if (status) params.status = status;
       if (method) params.payment_method = method;
 
+      // Fetch payments
       const data: PaymentsResponse = await appClient.listPayments(params);
-      setPayments(data.results);
+      // Fetch all orders (for current page)
+      const orderNumbers = data.results.map((p) => p.order_number).filter(Boolean);
+      let orders: APIOrder[] = [];
+      if (orderNumbers.length > 0) {
+        // Fetch all orders (paginated)
+        const allOrdersResp = await appClient.listOrders();
+        let allOrders: APIOrder[] = [];
+        if (Array.isArray(allOrdersResp)) {
+          allOrders = allOrdersResp as unknown as APIOrder[];
+        } else if (allOrdersResp && Array.isArray(allOrdersResp.results)) {
+          allOrders = allOrdersResp.results as unknown as APIOrder[];
+        }
+        orders = allOrders.filter((o: APIOrder) => orderNumbers.includes(o.order_number));
+      }
+      // Attach buyer_name and items_count from order to each payment
+      const paymentsWithOrder = data.results.map((p) => {
+        const order = orders.find((o) => o.order_number === p.order_number);
+        return {
+          ...p,
+          order: {
+            buyer_name: order ? order.buyer_name : '-',
+            items_count: order ? order.items_count : 0,
+          },
+        };
+      });
+      setPayments(paymentsWithOrder);
       setTotalCount(data.count);
     } catch (error: any) {
       showToast("error", "Error", error.response?.data?.message || error.message || "Failed to load payments");
@@ -123,36 +158,9 @@ export default function PaymentsPage() {
   };
 
   // Load payment details
-  const loadPaymentDetails = async (paymentId: number) => {
-    setLoadingDetails(true);
-    setPollingError(null);
-    try {
-      const data = await appClient.getPayment(paymentId);
-      // Map API result to local PaymentData type
-      const mapped: PaymentData = {
-        ...data,
-        transaction_id: data.transaction_id || '',
-        user: {
-          ...data.user,
-          first_name: (data.user as any).first_name || '',
-          last_name: (data.user as any).last_name || '',
-        },
-        provider_response: data.provider_response || { gateway: '', charge_id: '' },
-        logs: data.logs || [],
-      };
-      setSelectedPayment(mapped);
-      setShowDetails(true);
-      // If payment is pending, start polling
-      if (mapped.status === 'pending') {
-        setPolling(true);
-      } else {
-        setPolling(false);
-      }
-    } catch (error: any) {
-      showToast("error", "Error", error.response?.data?.message || error.message || "Failed to load payment details");
-    } finally {
-      setLoadingDetails(false);
-    }
+  const router = useRouter();
+  const goToPaymentDetails = (paymentId: number) => {
+    router.push(`/dashboard/payments/${paymentId}`);
   };
 
   // Poll payment status every 10 seconds if pending
@@ -207,7 +215,7 @@ export default function PaymentsPage() {
     (payment) => {
       if (!payment) return false;
       const tx = typeof payment.transaction_id === 'string' ? payment.transaction_id : '';
-      const buyer = typeof payment.buyer_name === 'string' ? payment.buyer_name : '';
+      const buyer = typeof payment.order?.buyer_name === 'string' ? payment.order.buyer_name : '';
       const orderNum = typeof payment.order_number === 'string' ? payment.order_number : '';
       const search = searchTerm.toLowerCase();
       return (
@@ -226,7 +234,7 @@ export default function PaymentsPage() {
       ...payments.map((payment) => [
         payment.transaction_id,
         payment.order_number,
-        payment.buyer_name,
+        payment.order?.buyer_name,
         payment.amount,
         payment.payment_method,
         payment.status,
@@ -413,9 +421,6 @@ export default function PaymentsPage() {
                 <thead className="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-                      Transaction ID
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
                       Order #
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
@@ -458,23 +463,19 @@ export default function PaymentsPage() {
                           key={payment.id}
                           className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
                         >
-                          <td className="px-6 py-4">
-                            <span className="font-mono text-sm font-semibold text-gray-900 dark:text-white">{payment.transaction_id}</span>
-                          </td>
+                          {/* Transaction ID column removed */}
                           <td className="px-6 py-4">
                             <span className="font-semibold text-gray-900 dark:text-white">{payment.order_number}</span>
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
                               <User className="w-4 h-4 text-gray-400" />
-                              <span className="text-gray-700 dark:text-gray-300">{payment.buyer_name}</span>
+                              <span className="text-gray-700 dark:text-gray-300">{payment.order?.buyer_name || '-'}</span>
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            {/* Products Sold: show comma-separated product names if available */}
-                            {Array.isArray(payment.products) && payment.products.length > 0
-                              ? payment.products.map((prod: any) => prod.name).join(", ")
-                              : "-"}
+                            {/* Products Sold: show items_count from order */}
+                            {typeof payment.order?.items_count === 'number' ? payment.order.items_count : '-'}
                           </td>
                           <td className="px-6 py-4">
                             <span className="font-semibold text-emerald-600 dark:text-emerald-400">${payment.amount}</span>
@@ -498,9 +499,8 @@ export default function PaymentsPage() {
                           </td>
                           <td className="px-6 py-4 text-center">
                             <button
-                              onClick={() => loadPaymentDetails(payment.id)}
-                              disabled={loadingDetails}
-                              className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors disabled:opacity-50"
+                              onClick={() => goToPaymentDetails(payment.id)}
+                              className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors"
                             >
                               <Eye className="w-4 h-4" />
                               View
@@ -545,173 +545,7 @@ export default function PaymentsPage() {
           </div>
         </div>
 
-        {/* Payment Details Modal */}
-        {showDetails && selectedPayment && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Payment Details</h2>
-                <button
-                  onClick={() => setShowDetails(false)}
-                  className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <div className="space-y-6">
-                {/* Transaction Info */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
-                  {polling && selectedPayment.status === 'pending' && (
-                    <div className="col-span-2 flex items-center gap-2 text-yellow-700 dark:text-yellow-200 text-sm mb-2">
-                      <Loader className="animate-spin w-4 h-4" />
-                      Polling payment status... (auto-refreshing)
-                      {pollingError && <span className="ml-2 text-red-500">{pollingError}</span>}
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Transaction ID</p>
-                    <p className="font-mono text-sm font-semibold text-gray-900 dark:text-white">{selectedPayment.transaction_id}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Status</p>
-                    <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${statusColors[selectedPayment.status].badge}`}>
-                      <span>{statusEmojis[selectedPayment.status]}</span>
-                      {selectedPayment.status.charAt(0).toUpperCase() + selectedPayment.status.slice(1)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Order Info */}
-                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Order Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Order Number</p>
-                      <p className="font-semibold text-gray-900 dark:text-white">{selectedPayment.order.order_number}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Order Status</p>
-                      <p className="font-semibold text-gray-900 dark:text-white capitalize">{selectedPayment.order.status}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Order Amount</p>
-                      <p className="font-semibold text-emerald-600 dark:text-emerald-400">${selectedPayment.order.total_amount}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Payment Info */}
-                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Payment Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Buyer</p>
-                      <p className="text-gray-900 dark:text-white">
-                        {selectedPayment.user.first_name} {selectedPayment.user.last_name}
-                      </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{selectedPayment.user.email}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Amount</p>
-                      <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">${selectedPayment.amount}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Payment Method</p>
-                      <p className="text-gray-900 dark:text-white">
-                        <span className="text-lg">{paymentMethodIcons[selectedPayment.payment_method] || "💳"}</span>
-                        <span className="ml-2 capitalize">{selectedPayment.payment_method}</span>
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Gateway</p>
-                      <p className="text-gray-900 dark:text-white capitalize">{selectedPayment.provider_response.gateway}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Provider Response */}
-                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-700/30">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Gateway Response</h3>
-                  <div className="space-y-2">
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Charge ID</p>
-                      <p className="font-mono text-sm text-gray-900 dark:text-white break-all">{selectedPayment.provider_response.charge_id}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Timestamps */}
-                <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Created At</p>
-                    <p className="text-gray-900 dark:text-white">
-                      {new Date(selectedPayment.created_at).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Updated At</p>
-                    <p className="text-gray-900 dark:text-white">
-                      {new Date(selectedPayment.updated_at).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Transaction Logs */}
-                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Transaction History</h3>
-                  <div className="space-y-3">
-                    {selectedPayment.logs && selectedPayment.logs.length > 0 ? (
-                      selectedPayment.logs.map((log, index) => (
-                        <div key={log.id} className="flex gap-4 pb-3 border-b border-gray-200 dark:border-gray-700 last:border-b-0">
-                          <div className="flex-shrink-0">
-                            <div className="flex items-center justify-center h-8 w-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30">
-                              <Clock className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                            </div>
-                          </div>
-                          <div className="flex-grow">
-                            <p className="text-sm font-medium text-gray-900 dark:text-white">{log.message}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                              {new Date(log.timestamp).toLocaleString("en-US", {
-                                year: "numeric",
-                                month: "short",
-                                day: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                second: "2-digit",
-                              })}
-                            </p>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-gray-600 dark:text-gray-400 text-sm">No transaction logs available</p>
-                    )}
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setShowDetails(false)}
-                  className="w-full mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Payment details modal removed. Now handled by /dashboard/payments/[id] page. */}
       </div>
     </div>
   );

@@ -376,6 +376,7 @@ export default function PaymentsPage() {
                     <option value="bank">Bank Transfer</option>
                     <option value="wallet">Wallet</option>
                     <option value="paypal">PayPal</option>
+                    <option value="momo">MoMo</option>
                   </select>
                 </div>
 

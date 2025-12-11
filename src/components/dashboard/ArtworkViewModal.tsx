@@ -1,10 +1,24 @@
 "use client";
 
+
 import React from 'react';
 import type { Artwork } from '@/lib/sampleArtworks';
 
-export default function ArtworkViewModal({ artwork, onClose }: { artwork: Artwork | null; onClose: () => void }) {
+export default function ArtworkViewModal({ artwork, onClose }: { artwork: any | null; onClose: () => void }) {
   if (!artwork) return null;
+
+  // Collect all images: main + additional
+  const images: string[] = [];
+  if (artwork.image || artwork.main_image) images.push(artwork.image || artwork.main_image);
+  if (Array.isArray(artwork.additional_images)) {
+    artwork.additional_images.forEach((img: string) => {
+      let src = img;
+      if (src && !src.startsWith('http') && !src.startsWith('/')) {
+        src = `https://hangart.pythonanywhere.com/media/artworks/images/${src}`;
+      }
+      images.push(src);
+    });
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -15,37 +29,29 @@ export default function ArtworkViewModal({ artwork, onClose }: { artwork: Artwor
           <button onClick={onClose} aria-label="Close" className="text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100">✕</button>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="md:col-span-1">
-            <img src={artwork.image} alt={artwork.title} className="w-full h-56 object-cover rounded" />
-            <div className="mt-3 text-sm text-gray-600 dark:text-gray-300">By {artwork.artistName}</div>
-            <div className="mt-1 text-sm font-medium text-gray-900 dark:text-gray-100">{artwork.currency} {artwork.price.toFixed(2)}</div>
-            <div className="mt-2">
-              {artwork.status === 'approved' ? (
-                <span className="inline-flex items-center gap-2 text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1 rounded-full text-sm">Approved</span>
-              ) : artwork.status === 'pending' ? (
-                <span className="inline-flex items-center gap-2 text-yellow-700 dark:text-yellow-300 bg-yellow-50 dark:bg-yellow-900/10 px-3 py-1 rounded-full text-sm">Pending</span>
-              ) : (
-                <span className="inline-flex items-center gap-2 text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/10 px-3 py-1 rounded-full text-sm">Rejected</span>
-              )}
-            </div>
+        {/* Image Gallery */}
+        {images.length > 0 && (
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4">
+            {images.map((src, idx) => (
+              <img key={idx} src={src} alt={`${artwork.title} - Image ${idx + 1}`} className="w-full h-56 object-cover rounded" />
+            ))}
           </div>
+        )}
 
-          <div className="md:col-span-2">
-            <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Description</h4>
-            <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">{artwork.description || 'No description provided.'}</p>
+        <div className="mt-4">
+          <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Description</h4>
+          <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">{artwork.description || 'No description provided.'}</p>
+        </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="text-sm text-gray-500 dark:text-gray-400">Views</div>
-              <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{artwork.views}</div>
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <div className="text-sm text-gray-500 dark:text-gray-400">Views</div>
+          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{artwork.views}</div>
 
-              <div className="text-sm text-gray-500 dark:text-gray-400">Likes</div>
-              <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{artwork.likes}</div>
+          <div className="text-sm text-gray-500 dark:text-gray-400">Likes</div>
+          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{artwork.likes}</div>
 
-              <div className="text-sm text-gray-500 dark:text-gray-400">Income</div>
-              <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{artwork.currency} {artwork.income.toFixed(2)}</div>
-            </div>
-          </div>
+          <div className="text-sm text-gray-500 dark:text-gray-400">Income</div>
+          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{artwork.currency} {artwork.income?.toFixed ? artwork.income.toFixed(2) : artwork.income}</div>
         </div>
 
         <div className="mt-6 flex justify-end">

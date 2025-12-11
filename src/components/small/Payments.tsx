@@ -664,16 +664,16 @@ export default function PaymentPage({ orderId }: PaymentPageProps) {
             <div className="space-y-4 mb-6">
               {order.items && order.items.map((item: any, index: number) => {
                 const quantity = typeof item.quantity === 'number' ? item.quantity : 1;
-                const unitPrice = typeof item.unitPrice === 'number' ? item.unitPrice : 
-                                typeof item.price === 'number' ? item.price : 0;
+                const unitPrice = Number(item.price);
+                const artwork = item.artwork || {};
                 return (
                   <div key={index} className="flex justify-between items-center py-3 border-b border-gray-100">
                     <div className="flex items-center gap-3 flex-1">
-                      {item.productImage && (
+                      {artwork.main_image && (
                         <div className="w-12 h-12 relative rounded-lg overflow-hidden flex-shrink-0">
                           <Image
-                            src={item.productImage}
-                            alt={item.productName || `Product ${index + 1}`}
+                            src={artwork.main_image}
+                            alt={artwork.title || `Artwork ${index + 1}`}
                             fill
                             className="object-cover"
                           />
@@ -681,7 +681,7 @@ export default function PaymentPage({ orderId }: PaymentPageProps) {
                       )}
                       <div className="flex-1">
                         <div className="font-medium text-gray-900">
-                          {item.productName || `Product ${index + 1}`}
+                          {artwork.title || `Artwork ${index + 1}`}
                         </div>
                         <div className="text-sm text-gray-500">
                           Qty: {quantity} × ${unitPrice.toFixed(2)}
@@ -702,27 +702,21 @@ export default function PaymentPage({ orderId }: PaymentPageProps) {
                 <span className="text-gray-600">Subtotal:</span>
                 <span className="text-gray-900">${Number(order.subtotal).toFixed(2)}</span>
               </div>
-              {Number(order.shippingFee) > 0 && (
+              {Number(order.shipping_fee) > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Shipping:</span>
-                  <span className="text-gray-900">${Number(order.shippingFee).toFixed(2)}</span>
+                  <span className="text-gray-900">${Number(order.shipping_fee).toFixed(2)}</span>
                 </div>
               )}
-              {Number(order.taxAmount) > 0 && (
+              {Number(order.commission) > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Tax:</span>
-                  <span className="text-gray-900">${Number(order.taxAmount).toFixed(2)}</span>
-                </div>
-              )}
-              {Number(order.discountAmount) > 0 && (
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Discount:</span>
-                  <span className="text-green-600">-${Number(order.discountAmount).toFixed(2)}</span>
+                  <span className="text-gray-600">Commission:</span>
+                  <span className="text-gray-900">${Number(order.commission).toFixed(2)}</span>
                 </div>
               )}
               <div className="flex justify-between text-lg font-bold pt-3 border-t border-gray-200">
                 <span className="text-gray-900">Total:</span>
-                <span className="text-blue-600">${Number(order.totalAmount).toFixed(2)} {order.currency}</span>
+                <span className="text-blue-600">${Number(order.total_amount).toFixed(2)} {order.currency || 'USD'}</span>
               </div>
             </div>
 

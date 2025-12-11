@@ -142,17 +142,24 @@ export default function ArtworkPage({ params }: { params: any }) {
           {/* Additional Images */}
           {artwork.additional_images && artwork.additional_images.length > 0 && (
             <div className="mt-4 grid grid-cols-4 gap-2">
-              {artwork.additional_images.map((img, idx) => (
-                <div key={idx} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
-                  <Image
-                    src={img}
-                    alt={`${artwork.title} - Image ${idx + 1}`}
-                    fill
-                    sizes="100px"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
+              {artwork.additional_images.map((img, idx) => {
+                let src = img;
+                if (src && !src.startsWith('http') && !src.startsWith('/')) {
+                  // Assume backend media path if not absolute or root-relative
+                  src = `https://hangart.pythonanywhere.com/media/artworks/images/${src}`;
+                }
+                return (
+                  <div key={idx} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
+                    <Image
+                      src={src}
+                      alt={`${artwork.title} - Image ${idx + 1}`}
+                      fill
+                      sizes="100px"
+                      className="object-cover"
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

@@ -7,14 +7,73 @@ import { useToast } from "@/components/ui/Toast";
 import { listOrders, updateOrderStatus } from "@/lib/appClient";
 import { useAuth } from "@/lib/authProvider";
 
+interface BuyerProfile {
+  id: number;
+  user_id: number;
+  username: string;
+  email: string;
+  profile_photo?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  date_of_birth?: string;
+}
+interface Buyer {
+  id: number;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: string;
+  phone?: string;
+  is_verified?: boolean;
+  join_date?: string;
+  artist_profile?: any;
+  buyer_profile?: BuyerProfile;
+  admin_profile?: any;
+}
+interface Artwork {
+  id: number;
+  artist_id: number;
+  artist_name: string;
+  title: string;
+  slug: string;
+  category: string;
+  medium: string;
+  price: string;
+  is_available: boolean;
+  main_image?: string;
+  status: string;
+  created_at: string;
+}
+
+interface OrderItem {
+  id: number;
+  artwork: Artwork;
+  price: string;
+  quantity: number;
+}
+
 interface Order {
   id: number;
   buyer_name: string;
+  buyer?: Buyer;
   order_number: string;
-  status: "pending" | "paid" | "processing" | "shipped" | "delivered" | "cancelled";
+  status: "pending_payment" | "paid" | "processing" | "shipped" | "delivered" | "cancelled" | "refunded";
   total_amount: string;
+  subtotal?: string;
+  shipping_fee?: string;
+  commission?: string;
+  shipping_address?: string;
+  tracking_number?: string;
+  payment_method?: string;
+  payment_reference?: string;
+  admin_notes?: string;
   created_at: string;
+  updated_at?: string;
   items_count: number;
+  items?: OrderItem[];
 }
 
 interface OrdersResponse {
@@ -24,25 +83,30 @@ interface OrdersResponse {
   results: Order[];
 }
 
-const statusColors: Record<string, { bg: string; text: string; badge: string }> = {
-  pending: { bg: "bg-yellow-50 dark:bg-yellow-900/20", text: "text-yellow-700 dark:text-yellow-200", badge: "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200" },
-  paid: { bg: "bg-green-50 dark:bg-green-900/20", text: "text-green-700 dark:text-green-200", badge: "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200" },
-  processing: { bg: "bg-blue-50 dark:bg-blue-900/20", text: "text-blue-700 dark:text-blue-200", badge: "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200" },
-  shipped: { bg: "bg-purple-50 dark:bg-purple-900/20", text: "text-purple-700 dark:text-purple-200", badge: "bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200" },
-  delivered: { bg: "bg-emerald-50 dark:bg-emerald-900/20", text: "text-emerald-700 dark:text-emerald-200", badge: "bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200" },
-  cancelled: { bg: "bg-red-50 dark:bg-red-900/20", text: "text-red-700 dark:text-red-200", badge: "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200" },
-};
 
-const statusEmojis: Record<string, string> = {
-  pending: "⏳",
-  paid: "✅",
-  processing: "🔄",
-  shipped: "📦",
-  delivered: "🎉",
-  cancelled: "❌",
-};
+
+  // ...existing code...
 
 export default function OrdersPage() {
+    const statusColors: Record<string, { bg: string; text: string; badge: string }> = {
+      pending_payment: { bg: "bg-yellow-50 dark:bg-yellow-900/20", text: "text-yellow-700 dark:text-yellow-200", badge: "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200" },
+      paid: { bg: "bg-green-50 dark:bg-green-900/20", text: "text-green-700 dark:text-green-200", badge: "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200" },
+      processing: { bg: "bg-blue-50 dark:bg-blue-900/20", text: "text-blue-700 dark:text-blue-200", badge: "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200" },
+      shipped: { bg: "bg-purple-50 dark:bg-purple-900/20", text: "text-purple-700 dark:text-purple-200", badge: "bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200" },
+      delivered: { bg: "bg-emerald-50 dark:bg-emerald-900/20", text: "text-emerald-700 dark:text-emerald-200", badge: "bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200" },
+      cancelled: { bg: "bg-red-50 dark:bg-red-900/20", text: "text-red-700 dark:text-red-200", badge: "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200" },
+      refunded: { bg: "bg-gray-100 dark:bg-gray-800/20", text: "text-gray-700 dark:text-gray-300", badge: "bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300" },
+    };
+
+    const statusEmojis: Record<string, string> = {
+      pending_payment: "⏳",
+      paid: "✅",
+      processing: "🔄",
+      shipped: "📦",
+      delivered: "🎉",
+      cancelled: "❌",
+      refunded: "💸",
+    };
   const router = useRouter();
   const { showToast } = useToast();
   const { user, loading: authLoading } = useAuth();
@@ -55,7 +119,7 @@ export default function OrdersPage() {
 
   // Filter states
   const [statusFilter, setStatusFilter] = useState<string>("");
-  const [paymentFilter, setPaymentFilter] = useState<string>("");
+  // Removed paymentFilter state
   const [sortBy, setSortBy] = useState<string>("-created_at");
   const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -89,7 +153,7 @@ export default function OrdersPage() {
   }, [mounted, authLoading, user, router]);
 
   // Load orders using the documented API
-  const loadOrders = async (pageNum = 1, status = "", payment = "", sort = "-created_at") => {
+  const loadOrders = async (pageNum = 1, status = "", sort = "-created_at") => {
     setLoading(true);
     try {
       const params: any = {
@@ -97,7 +161,6 @@ export default function OrdersPage() {
         ordering: sort,
       };
       if (status) params.status = status;
-      if (payment) params.payment_method = payment;
 
       const response = await listOrders(params);
       
@@ -142,30 +205,33 @@ export default function OrdersPage() {
   useEffect(() => {
     // Load orders if mounted (auth check disabled for development)
     if (mounted) {
-      loadOrders(page, statusFilter, paymentFilter, sortBy);
+      loadOrders(page, statusFilter, sortBy);
     }
-  }, [page, statusFilter, paymentFilter, sortBy, mounted]);
+  }, [page, statusFilter, sortBy, mounted]);
 
   const handleStatusFilterChange = (status: string) => {
     setStatusFilter(status);
     setPage(1);
   };
 
-  const handlePaymentFilterChange = (payment: string) => {
-    setPaymentFilter(payment);
-    setPage(1);
-  };
+  // Removed handlePaymentFilterChange
 
   const handleSortChange = (sort: string) => {
     setSortBy(sort);
     setPage(1);
   };
 
-  const filteredBySearch = orders.filter(
-    (order) =>
-      order.order_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.buyer_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filtering logic for status, payment method, and search
+  const filteredOrders = orders.filter((order) => {
+    let statusMatch = true;
+    let searchMatch = true;
+    if (statusFilter) statusMatch = order.status === statusFilter;
+    if (searchTerm) {
+      searchMatch = order.order_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.buyer_name.toLowerCase().includes(searchTerm.toLowerCase());
+    }
+    return statusMatch && searchMatch;
+  });
 
   const totalPages = Math.ceil(totalCount / pageSize);
 
@@ -222,7 +288,7 @@ export default function OrdersPage() {
       await updateOrderStatus(selectedOrder.id, payload);
       showToast("success", "Success", "Order status updated successfully");
       setShowUpdateModal(false);
-      await loadOrders(page, statusFilter, paymentFilter, sortBy);
+      await loadOrders(page, statusFilter, sortBy);
     } catch (error: any) {
       showToast("error", "Error", error.response?.data?.message || error.message || "Failed to update order status");
     } finally {
@@ -256,7 +322,7 @@ export default function OrdersPage() {
             <div className="p-4 rounded-lg bg-white dark:bg-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Total Revenue</p>
+                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Orders Value</p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">
                     ${orders.reduce((sum, order) => sum + parseFloat(order.total_amount), 0).toFixed(2)}
                   </p>
@@ -268,24 +334,24 @@ export default function OrdersPage() {
             <div className="p-4 rounded-lg bg-white dark:bg-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">This Page</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{filteredBySearch.length}</p>
+                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Paid Orders</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{orders.filter(o => o.status === 'paid').length}</p>
                 </div>
-                <Eye className="w-8 h-8 text-purple-500 opacity-20" />
+                <DollarSign className="w-8 h-8 text-green-500 opacity-20" />
               </div>
             </div>
 
             <div className="p-4 rounded-lg bg-white dark:bg-gray-700">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Page</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {page} / {totalPages || 1}
-                  </p>
+                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Pending Orders</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{orders.filter(o => o.status === 'pending_payment').length}</p>
                 </div>
-                <Calendar className="w-8 h-8 text-orange-500 opacity-20" />
+                <Package className="w-8 h-8 text-yellow-500 opacity-20" />
               </div>
             </div>
+
+            {/* Removed 'This Page' and 'Page' cards as requested */}
           </div>
 
           {/* Filters Section */}
@@ -316,31 +382,17 @@ export default function OrdersPage() {
                     className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   >
                     <option value="">All Statuses</option>
-                    <option value="pending">Pending</option>
+                    <option value="pending_payment">Pending Payment</option>
                     <option value="paid">Paid</option>
                     <option value="processing">Processing</option>
                     <option value="shipped">Shipped</option>
                     <option value="delivered">Delivered</option>
                     <option value="cancelled">Cancelled</option>
+                    <option value="refunded">Refunded</option>
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
-                    <Filter className="w-4 h-4" />
-                    Payment Method
-                  </label>
-                  <select
-                    value={paymentFilter}
-                    onChange={(e) => handlePaymentFilterChange(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-                  >
-                    <option value="">All Methods</option>
-                    <option value="card">Card</option>
-                    <option value="bank">Bank Transfer</option>
-                    <option value="wallet">Wallet</option>
-                  </select>
-                </div>
+                {/* Removed Payment Method filter */}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
@@ -407,7 +459,7 @@ export default function OrdersPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredBySearch.length === 0 ? (
+                  {filteredOrders.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="px-6 py-12 text-center">
                         <Package className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
@@ -415,7 +467,7 @@ export default function OrdersPage() {
                       </td>
                     </tr>
                   ) : (
-                    filteredBySearch.map((order) => {
+                    filteredOrders.map((order) => {
                       const colors = statusColors[order.status] || statusColors.pending;
                       return (
                         <tr
@@ -456,10 +508,7 @@ export default function OrdersPage() {
                           <td className="px-6 py-4 text-center">
                             <div className="flex items-center justify-center gap-2">
                               <button
-                                onClick={() => {
-                                  setSelectedOrder(order);
-                                  setShowDetails(true);
-                                }}
+                                onClick={() => router.push(`/dashboard/orders/${order.id}`)}
                                 className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors"
                               >
                                 <Eye className="w-4 h-4" />
@@ -513,76 +562,6 @@ export default function OrdersPage() {
           </div>
         </div>
 
-        {/* Order Details Modal */}
-        {showDetails && selectedOrder && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full p-6 max-h-96 overflow-y-auto">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Order Details</h2>
-                <button
-                  onClick={() => setShowDetails(false)}
-                  className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Order Number</p>
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">{selectedOrder.order_number}</p>
-                </div>
-
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Buyer</p>
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-gray-400" />
-                    <p className="text-gray-900 dark:text-white">{selectedOrder.buyer_name}</p>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Status</p>
-                  <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${(statusColors[selectedOrder.status] || statusColors.pending).badge}`}>
-                    <span>{statusEmojis[selectedOrder.status] || '❓'}</span>
-                    {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Total Amount</p>
-                    <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400">${selectedOrder.total_amount}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Items Count</p>
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">{selectedOrder.items_count}</p>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Order Date</p>
-                  <p className="text-gray-900 dark:text-white">
-                    {new Date(selectedOrder.created_at).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                </div>
-
-                <button
-                  onClick={() => setShowDetails(false)}
-                  className="w-full mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Update Status Modal */}
         {showUpdateModal && selectedOrder && (

@@ -75,8 +75,15 @@ export default async function RootLayout({ children }: RootLayoutProps) {
                   <Navbar />
                 </header>
 
+<<<<<<< HEAD
                 <div className="w-full sticky top-[73px] z-40 dark:bg-gray-900">
                   <Breadcrumbs />
+=======
+                <div className="w-full sticky top-[73px] z-40">
+                  <div className="p-4">
+                    <Breadcrumbs/>
+                  </div>
+>>>>>>> origin/main
                 </div>
               </HideWhenDashboard>
 

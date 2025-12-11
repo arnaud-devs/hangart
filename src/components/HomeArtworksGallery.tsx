@@ -92,7 +92,7 @@ export default function HomeArtworksGallery() {
       <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Discover unique artworks from talented artists around the world</p>
 
       {/* Filters Section */}
-      <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+      <div className="mt-6 p-4 bg-gray-50 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl border border-gray-200 dark:border-white/10">
         <div className="space-y-4">
           {/* Search Bar */}
           <div className="relative">
@@ -105,7 +105,7 @@ export default function HomeArtworksGallery() {
                 setSearchTerm(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-white/10 bg-white dark:bg-black/40 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
           </div>
 
@@ -123,7 +123,7 @@ export default function HomeArtworksGallery() {
                   setCategoryFilter(e.target.value);
                   setPage(1);
                 }}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 bg-white dark:bg-black/40 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               >
                 <option value="">All Categories</option>
                 {categories.map((cat) => (
@@ -146,7 +146,7 @@ export default function HomeArtworksGallery() {
                   setMediumFilter(e.target.value);
                   setPage(1);
                 }}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 bg-white dark:bg-black/40 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               >
                 <option value="">All Mediums</option>
                 {mediums.map((med) => (
@@ -169,7 +169,7 @@ export default function HomeArtworksGallery() {
                   setSortBy(e.target.value);
                   setPage(1);
                 }}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 bg-white dark:bg-black/40 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               >
                 <option value="-created_at">Newest First</option>
                 <option value="created_at">Oldest First</option>
@@ -183,7 +183,7 @@ export default function HomeArtworksGallery() {
             <div className="flex items-end">
               <button
                 onClick={handleResetFilters}
-                className="w-full px-4 py-2 bg-gray-400 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700 text-white font-medium rounded-lg transition-colors"
+                className="w-full px-4 py-2 bg-gray-400 hover:bg-gray-500 dark:bg-white/10 dark:hover:bg-white/20 text-white font-medium rounded-lg transition-colors"
               >
                 Reset Filters
               </button>

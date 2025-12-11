@@ -28,7 +28,7 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
   }
 
   return (
-    <article className="bg-[#F6F6F7] dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+    <article className="bg-white dark:bg-white/5 dark:backdrop-blur-lg dark:border dark:border-white/10 rounded-2xl shadow-md hover:shadow-xl overflow-hidden transition-all duration-300">
       <Link href={`/artworks/${artwork.id}`} className="block">
         <div className="relative w-full h-48 bg-gray-100 dark:bg-gray-700">
           <Image

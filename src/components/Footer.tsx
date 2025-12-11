@@ -1,7 +1,7 @@
 // components/Footer.tsx
 export default function Footer() {
   return (
-    <footer className="w-full bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 mt-auto">
+    <footer className="w-full bg-gray-100 dark:bg-black border-t border-gray-200 dark:border-white/10 mt-auto">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About Section */}
@@ -79,7 +79,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
+        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-white/10">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               © {new Date().getFullYear()} HangartGallery. All rights reserved.

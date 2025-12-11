@@ -70,6 +70,7 @@ function buildUrl(path: string, params?: Record<string, any>): string {
 }
 
 // Main API fetch function
+let redirectingToLogin = false;
 async function apiFetch(path: string, opts: FetchOpts = {}, params?: Record<string, any>) {
   const url = buildUrl(path, params);
   const access = storageGet('accessToken');
@@ -99,8 +100,19 @@ async function apiFetch(path: string, opts: FetchOpts = {}, params?: Record<stri
         return apiFetch(path, { ...opts, retry: true }, params);
       } else {
         clearAuthStorage();
+        // Avoid redirect loop when already on login page or during redirect
         if (typeof window !== 'undefined') {
-          window.location.href = '/login';
+          const currentPath = window.location.pathname || '/';
+          const isOnAuthPage = currentPath.startsWith('/login') || currentPath.startsWith('/signup');
+          if (!isOnAuthPage && !redirectingToLogin) {
+            redirectingToLogin = true;
+            const params = new URLSearchParams();
+            if (currentPath && currentPath !== '/login') {
+              params.set('redirect', currentPath + (window.location.search || ''));
+            }
+            const target = '/login' + (params.toString() ? `?${params.toString()}` : '');
+            try { window.location.assign(target); } catch { window.location.href = target; }
+          }
         }
         throw new Error('Authentication failed');
       }

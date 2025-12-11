@@ -246,21 +246,21 @@ export default function Carousel({
               {/* Badges */}
               <div className="flex flex-wrap gap-2 md:gap-3 animate-fade-in-up">
                 {currentSlide.featured && (
-                  <span className="px-3 py-1 bg-red-500 text-white text-xs md:text-sm font-bold rounded-full animate-pulse">
+                  <span className="px-3 py-1 bg-yellow-600 text-white text-xs md:text-sm font-bold rounded-full animate-pulse">
                     <Sparkles className="w-3 h-3 inline mr-1" />
                     Featured
                   </span>
                 )}
                 {currentSlide.discount && currentSlide.discount > 0 && (
-                  <span className="px-3 py-1 bg-green-500 text-white text-xs md:text-sm font-bold rounded-full animate-bounce">
+                  <span className="px-3 py-1 bg-yellow-600 text-white text-xs md:text-sm font-bold rounded-full animate-bounce">
                     {currentSlide.discount}% OFF
                   </span>
                 )}
-                <span className="px-3 py-1 bg-blue-500 text-white text-xs md:text-sm font-bold rounded-full animate-pulse">
+                <span className="px-3 py-1 bg-yellow-600 text-white text-xs md:text-sm font-bold rounded-full animate-pulse">
                   <TrendingUp className="w-3 h-3 inline mr-1" />
                   Limited Time
                 </span>
-                <span className="px-3 py-1 bg-purple-500 text-white text-xs md:text-sm font-bold rounded-full">
+                <span className="px-3 py-1 bg-yellow-600 text-white text-xs md:text-sm font-bold rounded-full">
                   <Palette className="w-3 h-3 inline mr-1" />
                   {slides.length} Artworks
                 </span>
@@ -280,7 +280,7 @@ export default function Carousel({
               <div className="flex items-center gap-4 animate-fade-in-up delay-100">
                 {getDiscountedPrice(currentSlide) ? (
                   <>
-                    <span className="text-3xl md:text-4xl font-bold text-yellow-400 animate-pulse">
+                    <span className="text-3xl md:text-4xl font-bold text-yellow-600 animate-pulse">
                       ${getDiscountedPrice(currentSlide)?.toFixed(2)}
                     </span>
                     <span className="text-xl md:text-2xl text-gray-300 line-through">
@@ -288,7 +288,7 @@ export default function Carousel({
                     </span>
                   </>
                 ) : (
-                  <span className="text-3xl md:text-4xl font-bold text-yellow-400">
+                  <span className="text-3xl md:text-4xl font-bold text-yellow-600">
                     ${Number(currentSlide.price).toFixed(2)}
                   </span>
                 )}
@@ -309,13 +309,13 @@ export default function Carousel({
               <div className="flex flex-wrap gap-3 md:gap-4 pt-4 animate-fade-in-up delay-300">
                 <Link 
                   href="/gallery"
-                  className="px-6 md:px-8 py-3 md:py-4 bg-yellow-400 text-gray-900 font-bold text-base md:text-lg rounded-lg hover:bg-yellow-300 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 animate-pulse hover:animate-none inline-flex items-center gap-2"
+                  className="px-6 md:px-8 py-3 md:py-4 bg-yellow-600 text-white font-bold text-base md:text-lg rounded-lg hover:bg-yellow-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 animate-pulse hover:animate-none inline-flex items-center gap-2"
                 >
                   Shop Now →
                 </Link>
                 <Link 
                   href="/gallery"
-                  className="px-6 md:px-8 py-3 md:py-4 border-2 border-white font-bold text-base md:text-lg rounded-lg hover:bg-white hover:text-gray-900 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
+                  className="px-6 md:px-8 py-3 md:py-4 border-2 border-yellow-600 text-yellow-600 font-bold text-base md:text-lg rounded-lg hover:bg-yellow-600 hover:text-white transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
                 >
                   <Heart className="w-5 h-5" />
                   Browse All {slides.length}
@@ -324,7 +324,7 @@ export default function Carousel({
 
               {/* Special Offer Text */}
               <div className="pt-4 animate-fade-in-up delay-400">
-                <p className="text-yellow-300 font-semibold animate-pulse text-sm md:text-base">
+                <p className="text-yellow-600 font-semibold animate-pulse text-sm md:text-base">
                   🚚 Free Shipping • ⚡ Discover {slides.length} Amazing Artworks
                 </p>
               </div>
@@ -337,7 +337,7 @@ export default function Carousel({
                   ? 'opacity-100 scale-100' 
                   : 'opacity-0 scale-95'
               }`}>
-                <div className="absolute -inset-4 bg-gradient-to-r from-yellow-400/20 to-purple-600/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-300 animate-pulse" />
+                <div className="absolute -inset-4 bg-gradient-to-r from-yellow-600/30 to-yellow-600/10 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-300 animate-pulse" />
                 <div className="relative w-full max-w-md mx-auto rounded-2xl overflow-hidden shadow-2xl transform group-hover:scale-105 transition-transform duration-300">
                   <Image 
                     src={currentSlide.image} 
@@ -350,8 +350,8 @@ export default function Carousel({
                   />
                 </div>
                 {/* Floating Elements */}
-                <div className="absolute -top-4 -right-4 w-8 h-8 bg-yellow-400 rounded-full animate-bounce delay-1000" />
-                <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-purple-400 rounded-full animate-bounce delay-500" />
+                <div className="absolute -top-4 -right-4 w-8 h-8 bg-yellow-600 rounded-full animate-bounce delay-1000" />
+                <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-yellow-600 rounded-full animate-bounce delay-500" />
               </div>
             </div>
           </div>
@@ -376,8 +376,8 @@ export default function Carousel({
               onClick={() => goToSlide(i)}
               className={`transition-all duration-300 rounded-full ${
                 i === currentIndex 
-                  ? 'w-8 md:w-12 h-2 bg-white' 
-                  : 'w-2 h-2 bg-white/50 hover:bg-white/70'
+                  ? 'w-8 md:w-12 h-2 bg-yellow-600' 
+                  : 'w-2 h-2 bg-yellow-200 hover:bg-yellow-400'
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />
@@ -394,8 +394,8 @@ export default function Carousel({
       </div>
 
       {/* Decorative Elements */}
-      <div className="absolute -bottom-32 -right-32 w-64 md:w-80 h-64 md:h-80 rounded-full bg-yellow-400 opacity-10 blur-3xl animate-pulse" />
-      <div className="absolute -top-32 -left-32 w-64 md:w-80 h-64 md:h-80 rounded-full bg-purple-600 opacity-10 blur-3xl animate-pulse delay-1000" />
+      <div className="absolute -bottom-32 -right-32 w-64 md:w-80 h-64 md:h-80 rounded-full bg-yellow-600 opacity-10 blur-3xl animate-pulse" />
+      <div className="absolute -top-32 -left-32 w-64 md:w-80 h-64 md:h-80 rounded-full bg-yellow-600 opacity-10 blur-3xl animate-pulse delay-1000" />
     </section>
   );
 }

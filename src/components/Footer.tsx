@@ -70,7 +70,7 @@ export default function Footer() {
               <button
                 suppressHydrationWarning
                 type="submit"
-                className="px-6 py-2 text-sm font-medium text-[#DFDFD6] bg-gray-900 dark:bg-white dark:text-gray-900 rounded-md hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+                className="px-6 py-2 text-sm font-medium text-[#DFDFD6] bg-yellow-600 rounded-md cursor-pointer hover:bg-yellow-700 dark:hover:bg-yellow-500 transition-colors"
               >
                 Subscribe
               </button>

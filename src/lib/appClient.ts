@@ -1,3 +1,10 @@
+// Admin: List all payments (paginated, with filters)
+export async function listPayments(params?: Record<string, any>): Promise<any> {
+  return get('/payments/', params);
+}
+export { appClient };
+// Check payment status by payment reference
+// Duplicate checkPaymentStatus removed. Use the main implementation below.
 // lib/appClient.ts
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://hangart.pythonanywhere.com/api';
 
@@ -185,21 +192,7 @@ export function storeUser(user: any) {
   storageSet('user', JSON.stringify(user));
 }
 
-const appClient = {
-  apiFetch,
-  get,
-  post,
-  put,
-  patch,
-  del,
-  saveTokens,
-  clearAuthStorage,
-  refreshAccessToken,
-  getStoredUser,
-  storeUser,
-};
-
-export default appClient;
+// ...existing code...
 
 // Artwork helpers
 import type {
@@ -219,8 +212,6 @@ import type {
   Tokens,
   OrderDTO,
   OrderCreatePayload,
-  PaymentDTO,
-  PaymentInitiatePayload,
 } from './types/api';
 
 export async function listArtworks(params?: Record<string, any>): Promise<ArtworkListItem[] | Paginated<ArtworkListItem>> {
@@ -426,22 +417,6 @@ export async function updateOrderStatus(id: number, payload: any): Promise<Order
   return patch(`/orders/${id}/update-status/`, payload);
 }
 
-// Payments
-export async function initiatePayment(orderId: number, payload: PaymentInitiatePayload): Promise<PaymentDTO> {
-  return post(`/payments/initiate/${orderId}/`, payload) as Promise<PaymentDTO>;
-}
-
-export async function paymentsWebhook(payload: any): Promise<any> {
-  return post('/payments/webhook/', payload);
-}
-
-export async function listMyPayments(): Promise<PaymentDTO[] | Paginated<PaymentDTO>> {
-  return get('/payments/my-payments/');
-}
-
-export async function getPayment(id: number): Promise<PaymentDTO> {
-  return get(`/payments/${id}/`) as Promise<PaymentDTO>;
-}
 
 // Cart
 export async function getCart(): Promise<any> {
@@ -463,3 +438,207 @@ export async function removeFromCart(artworkId: number): Promise<any> {
 export async function clearCart(): Promise<any> {
   return post('/cart/clear/', {}) as Promise<any>;
 }
+
+
+// Payment-related interfaces
+export interface PaymentInitiatePayload {
+  payment_method: 'momo' | 'card' | 'paypal';
+  phone_number?: string;
+  currency?: string;
+  payer_message?: string;
+}
+
+export interface PaymentResponse {
+  success: boolean;
+  payment: {
+    id: number;
+    order: {
+      id: number;
+      order_number: string;
+      total_amount: string;
+      currency: string;
+    };
+    payment_method: string;
+    amount: string;
+    phone?: string;
+    transaction_id?: string;
+    status: 'pending' | 'successful' | 'failed' | 'cancelled';
+    created_at: string;
+  };
+  message: string;
+  instructions?: string;
+  client_secret?: string; // For Stripe
+  approval_url?: string; // For PayPal
+}
+
+export interface PaymentStatusResponse {
+  status: 'pending' | 'successful' | 'failed' | 'cancelled';
+  payment: {
+    id: number;
+    transaction_id?: string;
+    amount: string;
+    phone?: string;
+    status: 'pending' | 'successful' | 'failed' | 'cancelled';
+    provider_response?: any;
+  };
+  order_updated?: {
+    order_id: number;
+    status: string;
+    artworks_updated: number;
+  };
+  message: string;
+}
+
+export interface PaymentDTO {
+  id: number;
+  order: {
+    id: number;
+    order_number: string;
+    total_amount: string;
+    currency: string;
+    status: string;
+  };
+  user: {
+    id: number;
+    username: string;
+    email: string;
+  };
+  payment_method: string;
+  amount: string;
+  phone?: string;
+  transaction_id?: string;
+  provider_response?: any;
+  status: 'pending' | 'successful' | 'failed' | 'cancelled';
+  created_at: string;
+  updated_at: string;
+  logs?: Array<{
+    id: number;
+    message: string;
+    timestamp: string;
+  }>;
+}
+
+// ==================== PAYMENT FUNCTIONS ====================
+
+/**
+ * Initiate a payment for an order
+ * POST /api/payments/initiate/<order_id>/
+ */
+export async function initiatePayment(
+  orderId: number, 
+  payload: PaymentInitiatePayload
+): Promise<PaymentResponse> {
+  return post(`/payments/initiate/${orderId}/`, payload) as Promise<PaymentResponse>;
+}
+
+/**
+ * Check payment status and poll MTN MoMo API for updates
+ * GET /api/payments/check/<payment_id>/
+ * IMPORTANT: Frontend MUST poll this endpoint every 10-15 seconds after payment initiation
+ */
+export async function checkPaymentStatus(paymentReference: string): Promise<PaymentStatusResponse> {
+  return get(`/payments/check/${paymentReference}/`) as Promise<PaymentStatusResponse>;
+}
+
+/**
+ * Get payment transaction details
+ * GET /api/payments/<id>/
+ */
+export async function getPayment(id: number): Promise<PaymentDTO> {
+  return get(`/payments/${id}/`) as Promise<PaymentDTO>;
+}
+
+/**
+ * Get all payments for authenticated user
+ * GET /api/payments/my-payments/
+ */
+export async function listMyPayments(): Promise<PaymentDTO[] | Paginated<PaymentDTO>> {
+  return get('/payments/my-payments/');
+}
+
+/**
+ * Receive payment confirmation from gateways (admin/webhook use)
+ * POST /api/payments/webhook/
+ */
+export async function paymentsWebhook(payload: any): Promise<any> {
+  return post('/payments/webhook/', payload);
+}
+
+/**
+ * MTN MoMo specific webhook (called by MTN API)
+ * POST /api/payments/momo-webhook/
+ */
+export async function momoWebhook(payload: any): Promise<any> {
+  return post('/payments/momo-webhook/', payload);
+}
+
+// Payments (add these to your imports above if needed)
+// ...existing code...
+
+// REMOVE OR COMMENT OUT THE DUPLICATE checkPaymentStatus function at line 1-3
+
+// Update the appClient object to include all payment functions
+const appClient = {
+  apiFetch,
+  get,
+  post,
+  put,
+  patch,
+  del,
+  saveTokens,
+  clearAuthStorage,
+  refreshAccessToken,
+  getStoredUser,
+  storeUser,
+  
+  // === PAYMENT FUNCTIONS ===
+  listPayments,
+  initiatePayment,
+  checkPaymentStatus, // This should be the one from line 415, not line 1
+  getPayment,
+  listMyPayments,
+  paymentsWebhook,
+  momoWebhook,
+  
+  // ... your other existing functions
+  getBuyerProfile,
+  updateBuyerProfile,
+  listOrders,
+  getOrder,
+  createOrder,
+  listMyOrders,
+  updateOrderStatus,
+  getCart,
+  addToCart,
+  updateCartItem,
+  removeFromCart,
+  clearCart,
+  listArtworks,
+  getArtwork,
+  createArtwork,
+  updateArtwork,
+  deleteArtwork,
+  getMyArtworks,
+  submitArtworkForReview,
+  updateArtworkStatus,
+  rawFetch: apiFetch,
+  listUsers,
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser,
+  listAdminArtists,
+  getAdminArtist,
+  verifyArtistByAdmin,
+  listAdminBuyers,
+  listAdminAdmins,
+  register,
+  login,
+  tokenRefresh,
+  getMe,
+  updateMe,
+  changePassword,
+  getArtistProfile,
+  updateArtistProfile,
+  getPublicArtistProfile,
+};

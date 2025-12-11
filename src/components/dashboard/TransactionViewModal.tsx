@@ -29,7 +29,9 @@ export default function TransactionViewModal({ tx, onClose }: { tx: Transaction 
           <div className="md:col-span-1">
             <img src={art?.image || '/arts/art1.jpg'} alt={tx.artworkTitle} className="w-full h-40 object-cover rounded" />
             <div className="mt-3 text-sm text-gray-600 dark:text-gray-300">{tx.artworkTitle}</div>
-            <div className="mt-1 text-sm font-medium text-gray-900 dark:text-gray-100">{tx.currency} {tx.amount.toFixed(2)}</div>
+            <div className="mt-1 text-sm font-medium text-gray-900 dark:text-gray-100">
+              {tx.currency ? tx.currency : '$'} {typeof tx.amount === 'number' ? tx.amount.toFixed(2) : (parseFloat(tx.amount) ? parseFloat(tx.amount).toFixed(2) : '0.00')}
+            </div>
             <div className="mt-2 text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2"><CreditCard className="w-4 h-4 text-gray-400" />{tx.paymentMethod || 'card'}</div>
           </div>
 

@@ -20,7 +20,8 @@ export default function Navbar() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/gallery", label: "Gallery" },
-    { href: "/artist", label: "Artists" },
+    { href: "/artists", label: "Artists" },
+    { href: "/contact", label: "Contact" },
   ];
 
   const buyerLinks = [
@@ -58,7 +59,7 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-yellow-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -75,7 +76,7 @@ export default function Navbar() {
                   <button
                     onClick={() => setHelpMenuOpen(!helpMenuOpen)}
                     onBlur={() => setTimeout(() => setHelpMenuOpen(false), 200)}
-                    className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                    className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-yellow-600 transition-colors"
                   >
                     Help
                     <ChevronDown className={`w-4 h-4 transition-transform ${helpMenuOpen ? 'rotate-180' : ''}`} />

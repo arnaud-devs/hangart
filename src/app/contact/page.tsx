@@ -1,25 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Send, 
-  MessageCircle, 
-  Clock, 
-  Globe,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  CheckCircle,
-  User,
-  AtSign,
-  MessageSquare,
-  Building,
-  Sparkles
-} from "lucide-react";
+import { Mail, Phone, MapPin, Send, User, AtSign, MessageSquare, Building, CheckCircle, MessageCircle, Globe, Linkedin, Instagram, Twitter, Facebook, Sparkles, Clock } from "lucide-react";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -29,8 +11,7 @@ export default function ContactPage() {
     category: "general",
     message: ""
   });
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [statusMessage, setStatusMessage] = useState<string>("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -45,27 +26,22 @@ export default function ContactPage() {
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     setStatus("success");
-    setStatusMessage("Thanks! We got your message and will get back to you soon.");
     setFormData({ name: "", email: "", subject: "", category: "general", message: "" });
     
-    // Reset status after 5 seconds
-    setTimeout(() => {
-      setStatus("idle");
-      setStatusMessage("");
-    }, 5000);
+    setTimeout(() => setStatus("idle"), 5000);
   };
 
   const contactMethods = [
     {
-      icon: <Mail className="w-6 h-6" />,
+      icon: <Mail className="w-5 h-5" />,
       title: "Email",
       content: "hello@hangart.com",
-      description: "Usually reply within a day",
+      description: "Reply within a day",
       link: "mailto:hello@hangart.com",
       color: "bg-yellow-500 dark:bg-yellow-500"
     },
     {
-      icon: <Phone className="w-6 h-6" />,
+      icon: <Phone className="w-5 h-5" />,
       title: "Phone",
       content: "+1 (555) 234-5678",
       description: "Mon-Fri, 9am-5pm EST",
@@ -73,7 +49,7 @@ export default function ContactPage() {
       color: "bg-yellow-500 dark:bg-yellow-500"
     },
     {
-      icon: <MapPin className="w-6 h-6" />,
+      icon: <MapPin className="w-5 h-5" />,
       title: "Office",
       content: "Brooklyn, New York",
       description: "By appointment only",
@@ -87,22 +63,24 @@ export default function ContactPage() {
     { value: "artist", label: "I'm an Artist" },
     { value: "buyer", label: "Buying Art" },
     { value: "technical", label: "Technical Problem" },
-    { value: "partnership", label: "Business Inquiry" },
-    { value: "feedback", label: "Feedback/Suggestion" }
   ];
 
   const faqs = [
     {
-      question: "How quickly will I hear back?",
-      answer: "We try to respond within 24 hours on weekdays, sometimes a bit longer on weekends."
+      question: "How do I submit my artwork?",
+      answer: "Fill out the contact form and select 'I'm an Artist' as your topic. We'll get back to you with next steps."
     },
     {
-      question: "Can I schedule a call?",
-      answer: "Yes! Mention your preferred time in the message and we'll reach out to confirm."
+      question: "Can I buy art directly from the website?",
+      answer: "Yes! Browse our collection and use the contact form for any questions about purchasing."
     },
     {
-      question: "Do you respond to everyone?",
-      answer: "Absolutely. Every message gets read and answered by a real person on our team."
+      question: "What payment methods do you accept?",
+      answer: "We accept major credit cards, PayPal, and bank transfers."
+    },
+    {
+      question: "How long does shipping take?",
+      answer: "Shipping times vary by location, but most orders are delivered within 7-14 business days."
     }
   ];
 
@@ -135,10 +113,8 @@ export default function ContactPage() {
             </p>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12 pb-20">
-        {/* Contact Methods Grid */}
+        {/* Contact Methods */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           {contactMethods.map((method, index) => (
             <a
@@ -148,44 +124,45 @@ export default function ContactPage() {
               rel={method.link.startsWith("http") ? "noopener noreferrer" : undefined}
               className="group bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-lg hover:shadow-2xl p-6 transition-all duration-300 hover:-translate-y-1 border border-black/5 dark:border-white/10"
             >
-              <div className={`${method.color} w-12 h-12 rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                {method.icon}
+              <div className="w-12 h-12 rounded-lg bg-yellow-50 dark:bg-yellow-900/30 flex items-center justify-center mb-4 group-hover:bg-yellow-100 dark:group-hover:bg-yellow-900/50 transition-colors">
+                <div className="text-yellow-600 dark:text-yellow-400">
+                  {method.icon}
+                </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
                 {method.title}
               </h3>
               <p className="text-gray-900 dark:text-yellow-400 font-medium mb-1">
                 {method.content}
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 {method.description}
               </p>
             </a>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8">
           {/* Contact Form */}
           <div className="lg:col-span-2">
             <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-black/5 dark:border-white/10">
               <div className="mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                  Send a Message
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  Send us a message
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Fill out the form and we'll get back to you shortly.
+                <p className="text-gray-600 dark:text-gray-300">
+                  Fill out the form below and we'll get back to you as soon as possible.
                 </p>
               </div>
 
               <form onSubmit={onSubmit} className="space-y-6">
-                {/* Name and Email Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Your Name
                     </label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <input
                         type="text"
                         id="name"
@@ -201,10 +178,10 @@ export default function ContactPage() {
 
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Email
+                      Email Address
                     </label>
                     <div className="relative">
-                      <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <input
                         type="email"
                         id="email"
@@ -219,14 +196,13 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Subject and Category Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Subject
                     </label>
                     <div className="relative">
-                      <MessageSquare className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <MessageSquare className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <input
                         type="text"
                         id="subject"
@@ -245,7 +221,7 @@ export default function ContactPage() {
                       Topic
                     </label>
                     <div className="relative">
-                      <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                       <select
                         id="category"
                         name="category"
@@ -262,7 +238,6 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Message */}
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Message
@@ -277,9 +252,6 @@ export default function ContactPage() {
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
                     placeholder="Tell us what's on your mind..."
                   />
-                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    {formData.message.length} characters
-                  </p>
                 </div>
 
                 {/* Submit Button */}
@@ -304,7 +276,6 @@ export default function ContactPage() {
                 </div>
               </form>
 
-              {/* Success Message */}
               {status === "success" && (
                 <div className="mt-6 flex items-start gap-3 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl">
                   <CheckCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
@@ -313,7 +284,7 @@ export default function ContactPage() {
                       Message sent!
                     </p>
                     <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
-                      {statusMessage}
+                      {"We'll get back to you soon."}
                     </p>
                   </div>
                 </div>
@@ -321,7 +292,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Sidebar */}
+          {/* Side Info */}
           <div className="space-y-6">
             {/* Office Hours */}
             <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-lg p-6 border border-black/5 dark:border-white/10">
@@ -336,7 +307,7 @@ export default function ContactPage() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Monday - Friday</span>
-                  <span className="font-medium text-gray-900 dark:text-white">9am - 5pm</span>
+                  <span className="font-medium text-gray-900 dark:text-white">9am - 5pm EST</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Saturday</span>
@@ -345,11 +316,6 @@ export default function ContactPage() {
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Sunday</span>
                   <span className="font-medium text-gray-900 dark:text-white">Closed</span>
-                </div>
-                <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    EST (New York time)
-                  </p>
                 </div>
               </div>
             </div>

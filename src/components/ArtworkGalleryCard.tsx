@@ -86,6 +86,16 @@ export default function ArtworkGalleryCard({
       // ignore
     }
   };
+  function StatusBadge({ status }: { status?: string }) {
+    if (status === 'sold') return <span className="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-xs font-medium">Sold</span>;
+    if (status === 'approved') return <span className="inline-flex items-center gap-1 text-blue-700 bg-blue-50 px-2 py-0.5 rounded text-xs font-medium">Approved</span>;
+    if (status === 'submitted') return <span className="inline-flex items-center gap-1 text-yellow-700 bg-yellow-50 px-2 py-0.5 rounded text-xs font-medium">Submitted</span>;
+    if (status === 'draft') return <span className="inline-flex items-center gap-1 text-gray-700 bg-gray-50 px-2 py-0.5 rounded text-xs font-medium">Draft</span>;
+    if (status === 'rejected') return <span className="inline-flex items-center gap-1 text-red-700 bg-red-50 px-2 py-0.5 rounded text-xs font-medium">Rejected</span>;
+    if (status === 'archived') return <span className="inline-flex items-center gap-1 text-gray-500 bg-gray-200 px-2 py-0.5 rounded text-xs font-medium">Archived</span>;
+    return null;
+  }
+
   return (
     <div className="group relative bg-[#F6F6F7] dark:bg-gray-800 rounded-lg overflow-hidden">
       {/* Image container with hover overlay */}
@@ -97,7 +107,12 @@ export default function ArtworkGalleryCard({
           className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
         />
-        
+        {/* Status badge overlay */}
+        {('status' in arguments[0]) && arguments[0].status && (
+          <div className="absolute top-2 left-2 z-10">
+            <StatusBadge status={arguments[0].status} />
+          </div>
+        )}
         {/* Hover action buttons */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
           <button

@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { adminService, artworkService } from '@/services/apiServices';
+import { listPayments } from '@/lib/appClient';
 import { useAuth } from '@/lib/authProvider';
 import { listAdminBuyers, listOrders } from '@/lib/appClient';
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import StatsCard from '@/components/dashboard/StatsCard';
-import { TrendingUp, Users, Image, ShoppingCart, CreditCard, RotateCcw, DollarSign, AlertCircle } from 'lucide-react';
+import { TrendingUp, Users, Image, ShoppingCart, CreditCard, RotateCcw, DollarSign, AlertCircle, Clock } from 'lucide-react';
 import ArtworkDetailsModal from '@/components/dashboard/ArtworkDetailsModal';
 
 interface DashboardStats {
@@ -21,6 +22,8 @@ interface DashboardStats {
   completed_payments: number;
   recent_artworks: any[];
   top_artists: any[];
+  inventory_value: number;
+  total_payments: number;
 }
 
 type ColorType = 'blue' | 'green' | 'purple' | 'orange' | 'red' | 'emerald';
@@ -55,42 +58,88 @@ export default function AdminDashboardView() {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      const [artworks, artists, buyers, orders] = await Promise.all([
+      const [artworks, artists, buyers, orders, paymentsData] = await Promise.all([
         artworkService.listArtworks(),
         adminService.getUsers({ role: 'artist' }),
         listAdminBuyers(),
         listOrders(),
+        listPayments(),
       ]);
 
       const artworksList = (artworks as any).results || [];
       const artistsList = (artists as any).results || [];
       const buyersList = Array.isArray(buyers) ? buyers : (buyers as any).results || [];
       const ordersList = Array.isArray(orders) ? orders : (orders as any).results || [];
-      
+      const paymentsList = (paymentsData as any).results || [];
+
+      // Inventory value: sum of all artwork prices
+      const inventoryValue = artworksList.reduce((sum: number, a: any) => sum + (Number(a.price) || 0), 0);
+      // Total payments: sum of all payment amounts (regardless of status)
+      const totalPayments = paymentsList.reduce((sum: number, p: any) => sum + (Number(p.amount) || 0), 0);
+
       const dashboardStats: DashboardStats = {
         total_artworks: (artworks as any).count || artworksList.length || 0,
         total_artists: (artists as any).count || artistsList.length || 0,
         total_buyers: (buyers as any).count || buyersList.length || 0,
         total_orders: (orders as any).count || ordersList.length || 0,
-        total_revenue: artworksList.reduce((sum: number, a: any) => sum + (Number(a.price) || 0), 0),
-        pending_approvals: artworksList.filter((a: any) => a.status === 'pending').length || 0,
+        total_revenue: totalPayments, // Now sum of all payments
+        // Match /approvals: count artworks with status 'submitted' or 'pending'
+        pending_approvals: artworksList.filter((a: any) => a.status === 'submitted' || a.status === 'pending').length || 0,
         total_refunds: 0,
-        pending_payments: 0,
-        completed_payments: 0,
+        pending_payments: paymentsList.filter((p: any) => p.status === 'pending').length || 0,
+        completed_payments: paymentsList.filter((p: any) => p.status === 'successful').length || 0,
         recent_artworks: artworksList.slice(0, 5),
         top_artists: artistsList.slice(0, 5),
+        inventory_value: inventoryValue,
+        total_payments: paymentsList.length,
       };
 
       setStats(dashboardStats);
 
-      setChartData([
-        { month: 'Jan', artworks: 12, artists: 8, orders: 24 },
-        { month: 'Feb', artworks: 19, artists: 12, orders: 36 },
-        { month: 'Mar', artworks: 15, artists: 10, orders: 28 },
-        { month: 'Apr', artworks: 22, artists: 14, orders: 42 },
-        { month: 'May', artworks: 28, artists: 18, orders: 54 },
-        { month: 'Jun', artworks: 35, artists: 24, orders: 68 },
-      ]);
+      // Build monthly chart data from real backend data
+      // Group by month for orders, artworks, and artists
+      function getMonth(dateStr: string): string {
+        const d = new Date(dateStr);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      }
+
+      // Orders by month
+      const ordersByMonth: Record<string, number> = {};
+      ordersList.forEach((o: any) => {
+        const m = getMonth(o.created_at);
+        ordersByMonth[m] = (ordersByMonth[m] ?? 0) + 1;
+      });
+
+      // Artworks by month
+      const artworksByMonth: Record<string, number> = {};
+      artworksList.forEach((a: any) => {
+        const m = getMonth(a.created_at);
+        artworksByMonth[m] = (artworksByMonth[m] ?? 0) + 1;
+      });
+
+      // Artists by month
+      const artistsByMonth: Record<string, number> = {};
+      artistsList.forEach((a: any) => {
+        const m = getMonth(a.created_at);
+        artistsByMonth[m] = (artistsByMonth[m] ?? 0) + 1;
+      });
+
+      // Get all months present in any dataset
+      const allMonths = Array.from(new Set([
+        ...Object.keys(ordersByMonth),
+        ...Object.keys(artworksByMonth),
+        ...Object.keys(artistsByMonth),
+      ])).sort();
+
+      // Build chart data array
+      const monthlyChartData = allMonths.map((month: string) => ({
+        month,
+        orders: ordersByMonth[month] ?? 0,
+        artworks: artworksByMonth[month] ?? 0,
+        artists: artistsByMonth[month] ?? 0,
+      }));
+
+      setChartData(monthlyChartData);
     } catch (err: any) {
       setError(err.message || 'Failed to load dashboard data');
       console.error('Error loading dashboard:', err);
@@ -121,12 +170,36 @@ export default function AdminDashboardView() {
     );
   }
 
-  const statusData = [
-    { name: 'Approved', value: stats?.total_artworks || 0, fill: '#10b981' },
-    { name: 'Pending', value: stats?.pending_approvals || 0, fill: '#f59e0b' },
-    { name: 'Rejected', value: Math.max(0, Math.floor((stats?.total_artworks || 0) * 0.1)), fill: '#ef4444' },
-  ];
-
+  // Compute real status counts from all artworks
+  const statusColors: Record<string, string> = {
+    draft: '#64748b',
+    submitted: '#f59e0b',
+    approved: '#10b981',
+    rejected: '#ef4444',
+    sold: '#6366f1',
+    archived: '#a1a1aa',
+  };
+  const statusLabels: Record<string, string> = {
+    draft: 'Draft',
+    submitted: 'Submitted',
+    approved: 'Approved',
+    rejected: 'Rejected',
+    sold: 'Sold',
+    archived: 'Archived',
+  };
+  const artworkStatusCounts: Record<string, number> = {};
+  // Use all artworks for pie chart, not just recent
+  const allArtworks = stats?.recent_artworks && Array.isArray(stats.recent_artworks) ? stats.recent_artworks : [];
+  allArtworks.forEach((a: any) => {
+    const s = a.status;
+    if (s) artworkStatusCounts[s] = (artworkStatusCounts[s] ?? 0) + 1;
+  });
+  // Build pie chart data for all statuses
+  const statusData = Object.keys(statusLabels).map((status) => ({
+    name: statusLabels[status],
+    value: artworkStatusCounts[status] ?? 0,
+    fill: statusColors[status],
+  })).filter(d => d.value > 0);
   const statsCards: StatsCardData[] = [
     {
       title: "Total Artworks",
@@ -153,11 +226,11 @@ export default function AdminDashboardView() {
       trend: { value: 5, isPositive: true }
     },
     {
-      title: "Pending Approvals",
+      title: "Pending Review",
       value: stats?.pending_approvals || 0,
-      icon: TrendingUp,
-      color: "orange",
-      description: "Awaiting review"
+      icon: Clock,
+      color: "blue",
+      description: "Artworks awaiting review"
     },
     {
       title: "Total Orders",
@@ -168,44 +241,22 @@ export default function AdminDashboardView() {
       trend: { value: 15, isPositive: true }
     },
     {
-      title: "Total Revenue",
-      value: `$${(stats?.total_revenue || 0).toLocaleString()}`,
-      icon: TrendingUp,
-      color: "purple",
-      description: "Platform earnings",
-      trend: { value: 22, isPositive: true }
-    },
-    {
-      title: "Approved Artworks",
-      value: Math.max(0, (stats?.total_artworks || 0) - (stats?.pending_approvals || 0)),
-      icon: Image,
-      color: "green",
-      description: "Ready to display",
+      title: "Inventory Value",
+      value: `$${(stats?.inventory_value || 0).toLocaleString()}`,
+      icon: DollarSign,
+      color: "blue",
+      description: "Value of all artworks",
       trend: { value: 10, isPositive: true }
     },
     {
-      title: "Approval Rate",
-      value: `${stats?.total_artworks ? Math.round(((stats?.total_artworks - stats?.pending_approvals) / stats?.total_artworks) * 100) : 0}%`,
-      icon: TrendingUp,
-      color: "red",
-      description: "Quality metric",
-      trend: { value: 3, isPositive: true }
-    },
-    {
-      title: "Completed Payments",
-      value: stats?.completed_payments || 0,
+      title: "Total Payments",
+      value: stats?.total_payments || 0,
       icon: CreditCard,
-      color: "green",
-      description: "Successful transactions",
-      trend: { value: 18, isPositive: true }
+      color: "purple",
+      description: "All payment transactions",
+      trend: { value: 22, isPositive: true }
     },
-    {
-      title: "Pending Payments",
-      value: stats?.pending_payments || 0,
-      icon: AlertCircle,
-      color: "orange",
-      description: "Awaiting processing"
-    },
+    // Removed Approved Artworks and Approval Rate cards
     {
       title: "Total Refunds",
       value: `$${(stats?.total_refunds || 0).toLocaleString()}`,
@@ -214,14 +265,6 @@ export default function AdminDashboardView() {
       description: "Refund amount",
       trend: { value: 2, isPositive: false }
     },
-    {
-      title: "Payment Success Rate",
-      value: `${stats?.completed_payments && (stats?.completed_payments + stats?.pending_payments) ? Math.round((stats?.completed_payments / (stats?.completed_payments + stats?.pending_payments)) * 100) : 0}%`,
-      icon: DollarSign,
-      color: "blue",
-      description: "Transaction reliability",
-      trend: { value: 4, isPositive: true }
-    }
   ];
 
   return (
@@ -255,7 +298,15 @@ export default function AdminDashboardView() {
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="month" stroke="#6b7280" />
+                <XAxis dataKey="month" stroke="#6b7280">
+                  <text
+                    x={150}
+                    y={270}
+                    textAnchor="middle"
+                    fill="#6b7280"
+                    fontSize={14}
+                  >Month/Year</text>
+                </XAxis>
                 <YAxis stroke="#6b7280" />
                 <Tooltip 
                   contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px', color: '#fff' }}
@@ -335,10 +386,10 @@ export default function AdminDashboardView() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                        {artist.first_name} {artist.last_name}
+                        {artist.username || 'Unknown'}
                       </div>
                       <div className="text-xs text-gray-500 dark:text-gray-400">
-                        {artist.email}
+                        {artist.email || ''}
                       </div>
                     </div>
                   </div>

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Eye, Filter, Download, Search, ChevronLeft, ChevronRight, DollarSign, CreditCard, Calendar, User, Clock, CheckCircle, AlertCircle, Loader } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
-import api from "@/lib/api";
+import { appClient } from "@/lib/appClient";
 
 interface PaymentLog {
   id: number;
@@ -48,6 +48,7 @@ interface Payment {
   status: "successful" | "failed" | "pending" | "cancelled";
   transaction_id: string;
   created_at: string;
+  products?: { name: string }[];
 }
 
 interface PaymentsResponse {
@@ -111,8 +112,7 @@ export default function PaymentsPage() {
       if (status) params.status = status;
       if (method) params.payment_method = method;
 
-      const response = await api.get("/payments/", { params });
-      const data: PaymentsResponse = response.data;
+      const data: PaymentsResponse = await appClient.listPayments(params);
       setPayments(data.results);
       setTotalCount(data.count);
     } catch (error: any) {
@@ -127,11 +127,23 @@ export default function PaymentsPage() {
     setLoadingDetails(true);
     setPollingError(null);
     try {
-      const response = await api.get(`/payments/${paymentId}/`);
-      setSelectedPayment(response.data);
+      const data = await appClient.getPayment(paymentId);
+      // Map API result to local PaymentData type
+      const mapped: PaymentData = {
+        ...data,
+        transaction_id: data.transaction_id || '',
+        user: {
+          ...data.user,
+          first_name: (data.user as any).first_name || '',
+          last_name: (data.user as any).last_name || '',
+        },
+        provider_response: data.provider_response || { gateway: '', charge_id: '' },
+        logs: data.logs || [],
+      };
+      setSelectedPayment(mapped);
       setShowDetails(true);
       // If payment is pending, start polling
-      if (response.data.status === 'pending') {
+      if (mapped.status === 'pending') {
         setPolling(true);
       } else {
         setPolling(false);
@@ -149,10 +161,16 @@ export default function PaymentsPage() {
     if (showDetails && selectedPayment && selectedPayment.status === 'pending' && polling) {
       interval = setInterval(async () => {
         try {
-          const resp = await api.get(`/payments/check/${selectedPayment.id}/`);
-          if (resp.data && resp.data.payment) {
-            setSelectedPayment((prev) => prev ? { ...prev, ...resp.data.payment } : resp.data.payment);
-            if (resp.data.payment.status !== 'pending') {
+          const resp = await appClient.checkPaymentStatus(String(selectedPayment.id));
+          if (resp && resp.payment) {
+            setSelectedPayment((prev) => prev ? {
+              ...prev,
+              status: resp.payment.status,
+              transaction_id: resp.payment.transaction_id || prev.transaction_id,
+              amount: resp.payment.amount || prev.amount,
+              provider_response: resp.payment.provider_response || prev.provider_response,
+            } : prev);
+            if (resp.payment.status !== 'pending') {
               setPolling(false);
             }
           }
@@ -186,10 +204,18 @@ export default function PaymentsPage() {
   };
 
   const filteredBySearch = payments.filter(
-    (payment) =>
-      payment.transaction_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.buyer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.order_number.toLowerCase().includes(searchTerm.toLowerCase())
+    (payment) => {
+      if (!payment) return false;
+      const tx = typeof payment.transaction_id === 'string' ? payment.transaction_id : '';
+      const buyer = typeof payment.buyer_name === 'string' ? payment.buyer_name : '';
+      const orderNum = typeof payment.order_number === 'string' ? payment.order_number : '';
+      const search = searchTerm.toLowerCase();
+      return (
+        tx.toLowerCase().includes(search) ||
+        buyer.toLowerCase().includes(search) ||
+        orderNum.toLowerCase().includes(search)
+      );
+    }
   );
 
   const totalPages = Math.ceil(totalCount / pageSize);
@@ -232,7 +258,7 @@ export default function PaymentsPage() {
         {/* Main Card */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
           {/* Stats Section */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
             <div className="p-4 rounded-lg bg-white dark:bg-gray-700">
               <div className="flex items-center justify-between">
                 <div>
@@ -264,6 +290,18 @@ export default function PaymentsPage() {
                   </p>
                 </div>
                 <CheckCircle className="w-8 h-8 text-green-500 opacity-20" />
+              </div>
+            </div>
+
+            <div className="p-4 rounded-lg bg-white dark:bg-gray-700">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Failed</p>
+                  <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+                    {payments.filter((p) => p.status === "failed").length}
+                  </p>
+                </div>
+                <AlertCircle className="w-8 h-8 text-red-500 opacity-20" />
               </div>
             </div>
 
@@ -384,6 +422,9 @@ export default function PaymentsPage() {
                       Buyer
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+                      Products Sold
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
                       Amount
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
@@ -428,6 +469,12 @@ export default function PaymentsPage() {
                               <User className="w-4 h-4 text-gray-400" />
                               <span className="text-gray-700 dark:text-gray-300">{payment.buyer_name}</span>
                             </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            {/* Products Sold: show comma-separated product names if available */}
+                            {Array.isArray(payment.products) && payment.products.length > 0
+                              ? payment.products.map((prod: any) => prod.name).join(", ")
+                              : "-"}
                           </td>
                           <td className="px-6 py-4">
                             <span className="font-semibold text-emerald-600 dark:text-emerald-400">${payment.amount}</span>

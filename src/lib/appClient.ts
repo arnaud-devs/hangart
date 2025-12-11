@@ -1,3 +1,7 @@
+// Admin: List all payments (paginated, with filters)
+export async function listPayments(params?: Record<string, any>): Promise<any> {
+  return get('/payments/', params);
+}
 export { appClient };
 // Check payment status by payment reference
 // Duplicate checkPaymentStatus removed. Use the main implementation below.
@@ -576,6 +580,7 @@ const appClient = {
   storeUser,
   
   // === PAYMENT FUNCTIONS ===
+  listPayments,
   initiatePayment,
   checkPaymentStatus, // This should be the one from line 415, not line 1
   getPayment,

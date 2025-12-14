@@ -231,8 +231,8 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6">
-      <div className="w-full mx-auto">
+    <div className="min-h-screen dark:bg-black  p-6">
+      <div className="">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Orders Management</h1>
@@ -240,10 +240,10 @@ export default function OrdersPage() {
         </div>
 
         {/* Main Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg overflow-hidden">
           {/* Stats Section */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-            <div className="p-4 rounded-lg bg-white dark:bg-gray-700">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5">
+            <div className="p-4 rounded-lg bg-white dark:bg-white/5">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Total Orders</p>
@@ -253,7 +253,7 @@ export default function OrdersPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-lg bg-white dark:bg-gray-700">
+            <div className="p-4 rounded-lg bg-white dark:bg-white/5">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Total Revenue</p>
@@ -265,7 +265,7 @@ export default function OrdersPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-lg bg-white dark:bg-gray-700">
+            <div className="p-4 rounded-lg bg-white dark:bg-white/5">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">This Page</p>
@@ -275,7 +275,7 @@ export default function OrdersPage() {
               </div>
             </div>
 
-            <div className="p-4 rounded-lg bg-white dark:bg-gray-700">
+            <div className="p-4 rounded-lg bg-white dark:bg-white/5">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Page</p>
@@ -289,7 +289,7 @@ export default function OrdersPage() {
           </div>
 
           {/* Filters Section */}
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5">
             <div className="flex flex-col gap-4">
               {/* Search Bar */}
               <div className="relative">
@@ -299,7 +299,7 @@ export default function OrdersPage() {
                   placeholder="Search by order # or buyer name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                 />
               </div>
 
@@ -313,7 +313,7 @@ export default function OrdersPage() {
                   <select
                     value={statusFilter}
                     onChange={(e) => handleStatusFilterChange(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full px-4 py-2 rounded-lg border border-white/10 dark:bg-white/5 bg-white text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   >
                     <option value="">All Statuses</option>
                     <option value="pending">Pending</option>
@@ -333,7 +333,7 @@ export default function OrdersPage() {
                   <select
                     value={paymentFilter}
                     onChange={(e) => handlePaymentFilterChange(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   >
                     <option value="">All Methods</option>
                     <option value="card">Card</option>
@@ -350,7 +350,7 @@ export default function OrdersPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => handleSortChange(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   >
                     <option value="-created_at">Newest First</option>
                     <option value="created_at">Oldest First</option>
@@ -362,7 +362,7 @@ export default function OrdersPage() {
                 <div className="flex items-end">
                   <button
                     onClick={handleExport}
-                    className="w-full px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                    className="w-full px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
                   >
                     <Download className="w-4 h-4" />
                     Export CSV
@@ -376,12 +376,12 @@ export default function OrdersPage() {
           <div className="overflow-x-auto">
             {loading ? (
               <div className="p-8 text-center">
-                <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
+                <div className="w-12 h-12 border-4 border-emerald-200 border-t-yellow-600 rounded-full animate-spin mx-auto mb-4"></div>
                 <p className="text-gray-600 dark:text-gray-400">Loading orders...</p>
               </div>
             ) : (
               <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+                <thead className="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
                       Order #
@@ -438,7 +438,7 @@ export default function OrdersPage() {
                             </span>
                           </td>
                           <td className="px-6 py-4">
-                            <span className="font-semibold text-emerald-600 dark:text-emerald-400">${order.total_amount}</span>
+                            <span className="font-semibold text-yellow-600 dark:text-yellow-400">${order.total_amount}</span>
                           </td>
                           <td className="px-6 py-4">
                             <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded">
@@ -460,7 +460,7 @@ export default function OrdersPage() {
                                   setSelectedOrder(order);
                                   setShowDetails(true);
                                 }}
-                                className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors"
+                                className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors"
                               >
                                 <Eye className="w-4 h-4" />
                                 View
@@ -484,7 +484,7 @@ export default function OrdersPage() {
           </div>
 
           {/* Pagination */}
-          <div className="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-between">
+          <div className="p-6 border-t border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 flex items-center justify-between">
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Showing <span className="font-semibold">{(page - 1) * pageSize + 1}</span> to{" "}
               <span className="font-semibold">

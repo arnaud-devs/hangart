@@ -73,7 +73,7 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-[#f7f7f8] dark:bg-black">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6 flex items-center justify-between">
           <div>
@@ -110,7 +110,7 @@ export default function UsersPage() {
                       </td>
                       <td className="px-6 py-4 text-right text-sm">
                         <div className="flex justify-end gap-2">
-                          <button onClick={() => toggleVerify(u)} className="text-sm px-3 py-1 rounded bg-emerald-600 text-white">{(u.role === 'artist' ? (u.artist_profile?.verified_by_admin ? 'Unverify' : 'Verify') : (u.is_verified ? 'Unverify' : 'Verify'))}</button>
+                          <button onClick={() => toggleVerify(u)} className="text-sm px-3 py-1 rounded bg-yellow-600 text-white">{(u.role === 'artist' ? (u.artist_profile?.verified_by_admin ? 'Unverify' : 'Verify') : (u.is_verified ? 'Unverify' : 'Verify'))}</button>
                         </div>
                       </td>
                     </tr>

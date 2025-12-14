@@ -226,7 +226,7 @@ export default function Page() {
   ];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6  bg-[#f7f7f8] dark:bg-black">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Artwork Approvals</h1>
@@ -277,7 +277,7 @@ export default function Page() {
 
       {/* Empty State */}
       {artworks.length === 0 && !loading && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+        <div className="bg-white dark:bg-white/5 rounded-lg shadow-sm border border-white/10 dark:border-gray-700 p-12 text-center">
           <Clock className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">No Pending Artworks</h3>
           <p className="text-gray-600 dark:text-gray-400">
@@ -300,7 +300,7 @@ export default function Page() {
       {showModal && selectedArtwork && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
           <div className="absolute inset-0 bg-black/40" onClick={closeModal} />
-          <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 z-10 text-gray-900 dark:text-gray-100 m-4">
+          <div className="relative bg-white dark:bg-white/5 rounded-lg shadow-lg w-full max-w-2xl p-6 z-10 text-gray-900 dark:text-gray-100 m-4">
             <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
               {modalAction === 'approve' && <CheckCircle className="w-6 h-6 text-green-600" />}
               {modalAction === 'reject' && <XCircle className="w-6 h-6 text-red-600" />}
@@ -309,7 +309,7 @@ export default function Page() {
             </h3>
 
             {/* Artwork Preview */}
-            <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+            <div className="mb-6 p-4 bg-gray-50 dark:bg-white/5 rounded-lg">
               <div className="flex gap-4">
                 {selectedArtwork.main_image && (
                   <img 

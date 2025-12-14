@@ -226,7 +226,7 @@ export default function Page() {
       key: 'actions',
       label: 'Actions',
       render: (_: any, row: Artwork) => (
-        <div className="flex gap-2">
+        <div className="flex gap-2 ">
           <button
             onClick={() => handleViewArtwork(row.id)}
             className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors"
@@ -267,7 +267,7 @@ export default function Page() {
   ];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#f7f7f8] dark:bg-black">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Artworks Management</h1>

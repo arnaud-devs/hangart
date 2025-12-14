@@ -87,7 +87,7 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
   };
 
   return (
-    <header className="sticky w-full top-0 z-50 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-700/50">
+    <header className="sticky w-full top-0 z-50 left-0 right-0 bg-white dark:bg-black  dark:border-gray-700/50">
       <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Left side - Menu and Search */}
@@ -108,7 +108,7 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-white/5 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-white/5 focus:border-white/5 sm:text-sm dark:border-white/5"
                 />
               </div>
             </div>
@@ -150,7 +150,7 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
                       }}
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center ring-2 ring-white dark:ring-gray-700 shadow-md">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center ring-2 ring-white dark:ring-gray-700 shadow-md">
                       <span className="text-white font-semibold text-sm">
                         {user.first_name?.charAt(0).toUpperCase()}{user.last_name?.charAt(0).toUpperCase()}
                       </span>
@@ -165,7 +165,7 @@ export const Header = ({ sidebarOpen, setSidebarOpen, onLogout }: HeaderProps) =
 
                 {dropdownOpen && (
                   <div 
-                    className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+                    className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-black ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="py-1" role="menu">

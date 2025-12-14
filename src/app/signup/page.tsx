@@ -157,11 +157,11 @@ function SignupContent() {
   }
 
   return (
-    <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-[#0b1220] px-4">
-      <div className="w-full max-w-2xl mx-auto">
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700">
+    <main className="min-h-[70vh] flex items-center justify-center  bg-[#f7f7f8] dark:bg-black px-4">
+      <div className="w-full max-w-2xl mx-auto py-6">
+        <div className="bg-white dark:bg-white/5 p-8 rounded-2xl shadow-2xl border border-gray-100 dark:border-white/10">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold">H</div>
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-600 to-teal-500 flex items-center justify-center text-white font-bold">H</div>
             <div>
               <h1 className="text-2xl font-semibold">Create account</h1>
               <p className="text-sm text-gray-500 dark:text-gray-400">Join Hangart to buy, sell and showcase artworks.</p>
@@ -187,7 +187,7 @@ function SignupContent() {
               type="text" 
               {...register('username', { required: 'Username is required' })} 
             />
-            {errors.username && <p className="text-sm text-red-600">{String(errors.username.message)}</p>}
+            {errors.username && <p className="text-sm dark:border-white/10 text-red-600">{String(errors.username.message)}</p>}
           </div>
 
           <div>
@@ -247,7 +247,7 @@ function SignupContent() {
 
           <div>
             <Label htmlFor="role">Role</Label>
-            <select id="role" className="mt-1 block w-full border rounded px-3 py-2" {...register('role', { required: 'Role is required' })}>
+            <select id="role" className="mt-1 block w-full border dark:bg-white/5 dark:text-gray-800 rounded px-3 py-2" {...register('role', { required: 'Role is required' })}>
               <option value="">Select role</option>
               <option value="artist">Artist</option>
               <option value="buyer">Buyer</option>
@@ -278,7 +278,7 @@ function SignupContent() {
 
         <p className="mt-4 text-sm text-gray-600 text-center">
           Already have an account?{' '}
-          <Link href={redirect ? `/login?redirect=${redirect}` : "/login"} className="text-blue-600 hover:underline">
+          <Link href={redirect ? `/login?redirect=${redirect}` : "/login"} className="text-yellow-600 hover:underline">
             Log in
           </Link>
         </p>

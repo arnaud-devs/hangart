@@ -35,7 +35,7 @@ export default function DataTable<T extends Record<string, any>>({
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
-  const [showFilters, setShowFilters] = useState(false);
+  // Remove showFilters state, always show filters inline if provided
 
   // Search and filter
   const filteredData = useMemo(() => {
@@ -135,16 +135,11 @@ export default function DataTable<T extends Record<string, any>>({
               />
             </div>
           </div>
+          {/* Always show filters inline if provided */}
+          {filters && (
+            <div className="flex items-center">{filters}</div>
+          )}
           <div className="flex gap-2">
-            {filters && (
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
-              >
-                <Filter className="w-4 h-4" />
-                Filters
-              </button>
-            )}
             <button
               onClick={handleExport}
               className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
@@ -154,11 +149,6 @@ export default function DataTable<T extends Record<string, any>>({
             </button>
           </div>
         </div>
-        {showFilters && filters && (
-          <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
-            {filters}
-          </div>
-        )}
       </div>
 
       {/* Table */}

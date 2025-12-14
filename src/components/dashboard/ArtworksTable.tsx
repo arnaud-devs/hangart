@@ -52,7 +52,6 @@ export default function ArtworksTable({ artworks, onUpdate, onDelete }: Props) {
                   <img src={a.image} alt={a.title} className="w-16 h-12 object-cover rounded" />
                   <div>
                     <div className="font-medium text-gray-900 dark:text-gray-100">{a.title}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-300">by {a.artistName}</div>
                   </div>
                 </td>
                 <td className="px-4 py-3 text-gray-900 dark:text-gray-100">{a.currency} {Number(a.price).toFixed(2)}</td>

@@ -83,7 +83,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               </HideWhenDashboard>
 
               <div className="flex flex-col min-h-[calc(100vh-73px)]">
-                <main className="flex-1 w-full container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <main className="flex-1 w-full container mx-auto px-4 sm:px-6 lg:px-8 py-6 ">
                   {children}
                 </main>
 

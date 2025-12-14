@@ -1,8 +1,9 @@
+// Removed stray Category column object that caused syntax error
 "use client";
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Image, TrendingUp, CheckCircle, Clock, Edit2, Trash2, Send, Eye } from 'lucide-react';
+import { Image, TrendingUp, CheckCircle, Clock, Edit2, Trash2, Send, Eye, DollarSign } from 'lucide-react';
 import { artworkService, artistService } from '@/services/apiServices';
 import { useAuth } from '@/lib/authProvider';
 import { useToast } from '@/components/ui/Toast';
@@ -37,7 +38,8 @@ export default function Page() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'draft' | 'pending' | 'rejected'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'draft' | 'submitted' | 'rejected' | 'sold' | 'archived'>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [showModal, setShowModal] = useState(false);
   const [editingArtwork, setEditingArtwork] = useState<Artwork | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -138,16 +140,27 @@ export default function Page() {
   const stats = {
     total: artworks.length,
     approved: artworks.filter(a => a.status === 'approved').length,
-    pending: artworks.filter(a => a.status === 'pending').length,
+    submitted: artworks.filter(a => a.status === 'submitted').length,
+    draft: artworks.filter(a => a.status === 'draft').length,
     rejected: artworks.filter(a => a.status === 'rejected').length,
+    sold: artworks.filter(a => a.status === 'sold').length,
+    archived: artworks.filter(a => a.status === 'archived').length,
   };
 
-  // Filter artworks
+  // Get unique categories for filter dropdown
+  const uniqueCategories = Array.from(new Set(artworks.map(a => a.category).filter(Boolean)));
+
+  // Filter artworks by status and category
   const filteredArtworks = artworks.filter(a => {
-    if (statusFilter === 'approved') return a.status === 'approved';
-    if (statusFilter === 'pending') return a.status === 'pending';
-    if (statusFilter === 'rejected') return a.status === 'rejected';
-    return true;
+    let statusMatch = true;
+    let categoryMatch = true;
+    if (statusFilter !== 'all') {
+      statusMatch = a.status === statusFilter;
+    }
+    if (categoryFilter !== 'all') {
+      categoryMatch = a.category === categoryFilter;
+    }
+    return statusMatch && categoryMatch;
   });
 
   const columns = [
@@ -190,26 +203,42 @@ export default function Page() {
       render: (value: string) => {
         const statusConfig = {
           approved: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
-          pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
           submitted: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
           rejected: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400',
           draft: 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400',
+          sold: 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400',
+          archived: 'bg-gray-300 text-gray-700 dark:bg-gray-700/40 dark:text-gray-400',
         };
         const className = statusConfig[value as keyof typeof statusConfig] || statusConfig.draft;
-        
+        const labelMap: Record<string, string> = {
+          approved: 'Approved',
+          submitted: 'Submitted',
+          rejected: 'Rejected',
+          draft: 'Draft',
+          sold: 'Sold',
+          archived: 'Archived',
+        };
         return (
           <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${className}`}>
-            {value ? value.charAt(0).toUpperCase() + value.slice(1) : 'Draft'}
+            {labelMap[value] || value}
           </span>
         );
       },
     },
     {
-      key: 'views',
-      label: 'Views',
+      key: 'artist_name',
+      label: 'Artist',
       sortable: true,
-      render: (value: number) => (
-        <span className="text-gray-900 dark:text-gray-100">{value || 0}</span>
+      render: (value: string) => (
+        <span className="text-gray-900 dark:text-gray-100">{value || 'Unknown'}</span>
+      ),
+    },
+    {
+      key: 'category',
+      label: 'Category',
+      sortable: true,
+      render: (value: string) => (
+        <span className="text-gray-900 dark:text-gray-100">{value || 'N/A'}</span>
       ),
     },
     {
@@ -303,17 +332,17 @@ export default function Page() {
         />
         <StatsCard
           title="Pending Review"
-          value={stats.pending}
+          value={stats.submitted}
           icon={Clock}
           color="orange"
           description="Awaiting approval"
         />
         <StatsCard
-          title="Trending"
-          value={Math.max(...artworks.map(a => a.views || 0))}
-          icon={TrendingUp}
+          title="Total Value"
+          value={`$${artworks.reduce((sum, a) => sum + (Number(a.price) || 0), 0).toLocaleString()}`}
+          icon={DollarSign}
           color="purple"
-          description="Highest views"
+          description="Value of all artworks"
         />
       </div>
 
@@ -360,20 +389,36 @@ export default function Page() {
           itemsPerPage={10}
           filters={
             user?.role !== 'artist' ? (
-              <div className="flex gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Approval Status
-                  </label>
+              <div className="flex items-center gap-4 w-full">
+                <div className="flex flex-col">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value as any)}
                     className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    style={{ minWidth: 140 }}
                   >
-                    <option value="all">All Artworks</option>
-                    <option value="approved">Approved Only</option>
-                    <option value="pending">Pending Only</option>
-                    <option value="rejected">Rejected Only</option>
+                    <option value="all">All</option>
+                    <option value="draft">Draft</option>
+                    <option value="submitted">Submitted</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="sold">Sold</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </div>
+                <div className="flex flex-col">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
+                  <select
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    style={{ minWidth: 140 }}
+                  >
+                    <option value="all">All</option>
+                    {uniqueCategories.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -407,6 +452,7 @@ export default function Page() {
   );
 }
 
+
 function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void; onSave: (payload: any) => void; editingArtwork?: Artwork | null }) {
   const [title, setTitle] = useState(editingArtwork?.title || '');
   const [description, setDescription] = useState(editingArtwork?.description || '');
@@ -420,6 +466,8 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
   const [creationYear, setCreationYear] = useState(editingArtwork?.creation_year?.toString() || '');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState(editingArtwork?.main_image || '');
+  const [additionalImageFiles, setAdditionalImageFiles] = useState<File[]>([]);
+  const [additionalImagePreviews, setAdditionalImagePreviews] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -431,6 +479,28 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAdditionalImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const arr = Array.from(files);
+      setAdditionalImageFiles(arr);
+      // Generate previews
+      Promise.all(
+        arr.map(
+          (file) =>
+            new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(file);
+            })
+        )
+      ).then(setAdditionalImagePreviews);
+    } else {
+      setAdditionalImageFiles([]);
+      setAdditionalImagePreviews([]);
     }
   };
 
@@ -455,23 +525,45 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
       return;
     }
 
+
     if (editingArtwork) {
       // Update existing artwork - send only changed fields
-      const payload: any = {};
-      
-      // Only include fields that have values or have been changed
-      if (title && title.trim()) payload.title = title;
-      if (description !== undefined && description !== null) payload.description = description;
-      if (price) payload.price = price;
-      if (isAvailable !== undefined) payload.is_available = isAvailable;
-      if (category !== undefined && category !== null) payload.category = category || null;
-      if (medium !== undefined && medium !== null) payload.medium = medium || null;
-      if (widthCm) payload.width_cm = widthCm;
-      if (heightCm) payload.height_cm = heightCm;
-      if (depthCm) payload.depth_cm = depthCm;
-      if (creationYear) payload.creation_year = creationYear;
-      
-      onSave(payload);
+      // If additional images or main image are being updated, use FormData
+      const hasNewMainImage = !!imageFile;
+      const hasNewAdditionalImages = additionalImageFiles.length > 0;
+      if (hasNewMainImage || hasNewAdditionalImages) {
+        const fd = new FormData();
+        if (title && title.trim()) fd.append('title', title);
+        if (description !== undefined && description !== null) fd.append('description', description);
+        if (price) fd.append('price', price);
+        if (isAvailable !== undefined) fd.append('is_available', String(isAvailable));
+        if (category !== undefined && category !== null) fd.append('category', category || '');
+        if (medium !== undefined && medium !== null) fd.append('medium', medium || '');
+        if (widthCm) fd.append('width_cm', widthCm);
+        if (heightCm) fd.append('height_cm', heightCm);
+        if (depthCm) fd.append('depth_cm', depthCm);
+        if (creationYear) fd.append('creation_year', creationYear);
+        if (hasNewMainImage) fd.append('main_image', imageFile!);
+        if (hasNewAdditionalImages) {
+          const names = additionalImageFiles.map(f => f.name);
+          fd.append('additional_images', JSON.stringify(names));
+        }
+        onSave(fd);
+      } else {
+        // No new images, send as JSON
+        const payload: any = {};
+        if (title && title.trim()) payload.title = title;
+        if (description !== undefined && description !== null) payload.description = description;
+        if (price) payload.price = price;
+        if (isAvailable !== undefined) payload.is_available = isAvailable;
+        if (category !== undefined && category !== null) payload.category = category || null;
+        if (medium !== undefined && medium !== null) payload.medium = medium || null;
+        if (widthCm) payload.width_cm = widthCm;
+        if (heightCm) payload.height_cm = heightCm;
+        if (depthCm) payload.depth_cm = depthCm;
+        if (creationYear) payload.creation_year = creationYear;
+        onSave(payload);
+      }
     } else {
       // Create new artwork - send FormData
       const fd = new FormData();
@@ -486,7 +578,10 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
       if (depthCm) fd.append('depth_cm', depthCm);
       if (creationYear) fd.append('creation_year', creationYear);
       if (imageFile) fd.append('main_image', imageFile);
-
+      if (additionalImageFiles.length > 0) {
+        const names = additionalImageFiles.map(f => f.name);
+        fd.append('additional_images', JSON.stringify(names));
+      }
       onSave(fd);
     }
 
@@ -590,6 +685,28 @@ function ArtworkModal({ onClose, onSave, editingArtwork }: { onClose: () => void
                 />
                 {errors.imageFile && <p className="text-red-500 text-xs mt-1">{errors.imageFile}</p>}
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Supported formats: JPG, PNG, GIF, WebP</p>
+              </div>
+
+              {/* Additional Images */}
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+                  Additional Images
+                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">(Optional, you can select multiple)</span>
+                </label>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleAdditionalImagesChange}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded dark:bg-gray-700"
+                />
+                {additionalImagePreviews.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {additionalImagePreviews.map((src, idx) => (
+                      <img key={idx} src={src} alt={`Additional Preview ${idx + 1}`} className="w-16 h-16 object-cover rounded" />
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="mt-4">

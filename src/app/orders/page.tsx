@@ -484,6 +484,15 @@ export default function OrdersPage() {
                                 <span>Download Receipt</span>
                               </button>
                             )}
+                            {order.status.toLowerCase() === 'pending_payment' && (
+                              <button
+                                className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm"
+                                onClick={() => router.push(`/payments/${order.id}`)}
+                              >
+                                <CreditCard className="w-4 h-4" />
+                                <span>Pay Now</span>
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>

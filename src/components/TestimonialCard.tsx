@@ -20,7 +20,7 @@ export default function TestimonialCard({
   image,
 }: TestimonialCardProps) {
   return (
-    <div className="bg-white dark:bg-white/5 dark:backdrop-blur-lg dark:border dark:border-white/10 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300">
+    <figure className="bg-white dark:bg-white/5 dark:backdrop-blur-lg dark:border dark:border-white/10 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300" aria-label="Testimonial">
       {/* Rating stars */}
       <div className="flex items-center gap-1 mb-4">
         {Array.from({ length: 5 }).map((_, i) => (
@@ -31,14 +31,16 @@ export default function TestimonialCard({
                 ? 'fill-yellow-400 text-yellow-400'
                 : 'text-gray-300 dark:text-gray-600'
             }`}
+            aria-hidden="true"
           />
         ))}
+        <span className="sr-only">{rating} out of 5 stars</span>
       </div>
 
       {/* Comment */}
-      <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 leading-relaxed">
+      <blockquote className="text-gray-700 dark:text-gray-300 text-sm mb-4 leading-relaxed">
         "{comment}"
-      </p>
+      </blockquote>
 
       {/* Author info */}
       <div className="flex items-center gap-3">
@@ -58,7 +60,7 @@ export default function TestimonialCard({
             </span>
           </div>
         )}
-        <div>
+        <figcaption className="mt-2">
           <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
             {name}
           </p>
@@ -67,8 +69,8 @@ export default function TestimonialCard({
               {role && location ? `${role}, ${location}` : role || location}
             </p>
           )}
-        </div>
+        </figcaption>
       </div>
-    </div>
+    </figure>
   )
 }

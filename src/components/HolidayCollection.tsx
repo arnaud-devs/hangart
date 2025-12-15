@@ -56,9 +56,9 @@ export default function HolidayCollection() {
   };
 
   return (
-    <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12" aria-labelledby="holiday-collection-title">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl md:text-3xl font-serif text-gray-900 dark:text-gray-100">
+        <h2 id="holiday-collection-title" className="text-2xl md:text-3xl font-serif text-gray-900 dark:text-gray-100">
           {t('holiday.collection_title')}
         </h2>
         {!loading && artworks.length > itemsPerPage && (
@@ -82,7 +82,7 @@ export default function HolidayCollection() {
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center min-h-[300px]">
+        <div className="flex justify-center items-center min-h-[300px]" role="status" aria-live="polite">
           <div className="flex flex-col items-center gap-4">
             <Loader className="w-8 h-8 text-emerald-600 animate-spin" />
             <p className="text-gray-600 dark:text-gray-400">{t('holiday.loading')}</p>

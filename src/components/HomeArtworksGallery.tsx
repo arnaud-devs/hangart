@@ -89,8 +89,8 @@ export default function HomeArtworksGallery() {
   };
 
   return (
-    <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h2 className="text-2xl font-semibold font-serif text-gray-900 dark:text-gray-100">{t('homeGallery.title')}</h2>
+    <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12" aria-labelledby="home-gallery-title">
+      <h2 id="home-gallery-title" className="text-2xl font-semibold font-serif text-gray-900 dark:text-gray-100">{t('homeGallery.title')}</h2>
       <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t('homeGallery.subtitle')}</p>
 
       {/* Filters Section */}
@@ -107,6 +107,7 @@ export default function HomeArtworksGallery() {
                 setSearchTerm(e.target.value);
                 setPage(1);
               }}
+              aria-label={t('homeGallery.search.placeholder')}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-white/10 bg-white dark:bg-black/40 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
           </div>
@@ -125,6 +126,7 @@ export default function HomeArtworksGallery() {
                   setCategoryFilter(e.target.value);
                   setPage(1);
                 }}
+                aria-label={t('homeGallery.filters.category')}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 bg-white dark:bg-black/40 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               >
                 <option value="">{t('homeGallery.filters.all_categories')}</option>
@@ -148,6 +150,7 @@ export default function HomeArtworksGallery() {
                   setMediumFilter(e.target.value);
                   setPage(1);
                 }}
+                aria-label={t('homeGallery.filters.medium')}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 bg-white dark:bg-black/40 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               >
                 <option value="">{t('homeGallery.filters.all_mediums')}</option>
@@ -171,6 +174,7 @@ export default function HomeArtworksGallery() {
                   setSortBy(e.target.value);
                   setPage(1);
                 }}
+                aria-label={t('homeGallery.filters.sort_by')}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 bg-white dark:bg-black/40 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               >
                 <option value="-created_at">{t('homeGallery.sort.newest_first')}</option>
@@ -195,14 +199,14 @@ export default function HomeArtworksGallery() {
       </div>
 
       {/* Results Count */}
-      <div className="mt-6 text-sm text-gray-600 dark:text-gray-400">
+      <div className="mt-6 text-sm text-gray-600 dark:text-gray-400" aria-live="polite">
         {loading ? t('homeGallery.loading') : t('homeGallery.results_count', { count: artworks.length, total: totalCount })}
       </div>
 
       {/* Artworks Grid */}
       <div className="mt-6">
         {loading ? (
-          <div className="flex justify-center items-center min-h-[400px]">
+          <div className="flex justify-center items-center min-h-[400px]" role="status" aria-live="polite">
             <div className="flex flex-col items-center gap-4">
               <Loader className="w-12 h-12 text-emerald-600 animate-spin" />
               <p className="text-gray-600 dark:text-gray-400">{t('homeGallery.loading_artworks')}</p>
@@ -238,7 +242,7 @@ export default function HomeArtworksGallery() {
 
       {/* Pagination */}
       {totalCount > 20 && (
-        <div className="mt-8 flex justify-center items-center gap-4">
+        <nav className="mt-8 flex justify-center items-center gap-4" aria-label={t('homeGallery.pagination.page_navigation')}>
           <button
             onClick={() => setPage(Math.max(1, page - 1))}
             disabled={page === 1}
@@ -256,7 +260,7 @@ export default function HomeArtworksGallery() {
           >
             {t('homeGallery.pagination.next')}
           </button>
-        </div>
+        </nav>
       )}
     </section>
   );

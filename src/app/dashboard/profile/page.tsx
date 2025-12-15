@@ -173,7 +173,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-6">
+      <div className="min-h-screen flex items-center justify-center p-6">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-400">Loading profile...</p>
@@ -186,7 +186,7 @@ export default function ProfilePage() {
   const profileInfo = artistProfile || buyerProfile;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6">
+    <div className="min-h-screen bg-[#f7f7f8] dark:bg-black p-6">
       <div className="w-full mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -195,11 +195,11 @@ export default function ProfilePage() {
         </div>
 
         {/* Main Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+        <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg overflow-hidden">
           {/* User Header Section */}
           {user && (
-            <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 px-8 py-6">
-              <div className="flex items-center justify-between">
+            <div className=" from-yellow-600 to-yellow-700 px-8 py-6 dark:bg-white/5">
+              <div className="flex items-center justify-between ">
                 <div className="flex items-center gap-4">
                   <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center border-3 border-white">
                     {profileInfo?.profile_photo ? (
@@ -245,7 +245,7 @@ export default function ProfilePage() {
           )}
 
           {/* Tabs */}
-          <div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+          <div className="border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
             <div className="flex">
               {[
                 { id: "general", label: "General Information" },
@@ -257,7 +257,7 @@ export default function ProfilePage() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex-1 px-6 py-4 font-medium transition-colors ${
                     activeTab === tab.id
-                      ? "border-b-2 border-emerald-500 text-emerald-600 dark:text-emerald-400"
+                      ? "border-b-2 border-yellow-500 text-yellow-600 dark:text-yellow-400"
                       : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
                   }`}
                 >
@@ -271,7 +271,7 @@ export default function ProfilePage() {
           <div className="p-8">
             {/* General Information Tab */}
             {activeTab === "general" && (
-              <div className="space-y-6">
+              <div className="space-y-6  dark:bg-white/5">
                 {isEditMode ? (
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -283,7 +283,7 @@ export default function ProfilePage() {
                           type="text"
                           value={editFormData.first_name}
                           onChange={(e) => setEditFormData({ ...editFormData, first_name: e.target.value })}
-                          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                         />
                       </div>
                       <div>
@@ -294,7 +294,7 @@ export default function ProfilePage() {
                           type="text"
                           value={editFormData.last_name}
                           onChange={(e) => setEditFormData({ ...editFormData, last_name: e.target.value })}
-                          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                         />
                       </div>
                     </div>
@@ -309,7 +309,7 @@ export default function ProfilePage() {
                           type="email"
                           value={editFormData.email}
                           onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
-                          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                         />
                       </div>
                       <div>
@@ -322,7 +322,7 @@ export default function ProfilePage() {
                           value={editFormData.phone}
                           onChange={(e) => setEditFormData({ ...editFormData, phone: e.target.value })}
                           placeholder="+250789123456"
-                          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+                          className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
                         />
                       </div>
                     </div>
@@ -331,7 +331,7 @@ export default function ProfilePage() {
                       <button
                         onClick={handleSaveGeneralEdit}
                         disabled={saving}
-                        className="flex-1 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                        className="flex-1 px-6 py-3 bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-400 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
                       >
                         <Save className="w-4 h-4" />
                         {saving ? "Saving..." : "Save Changes"}
@@ -341,25 +341,25 @@ export default function ProfilePage() {
                 ) : (
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
+                      <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-lg">
                         <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-2">First Name</p>
                         <p className="text-lg font-semibold text-gray-900 dark:text-white">{formData.first_name || "—"}</p>
                       </div>
-                      <div className="p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
+                      <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-lg">
                         <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-2">Last Name</p>
                         <p className="text-lg font-semibold text-gray-900 dark:text-white">{formData.last_name || "—"}</p>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
+                      <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-lg">
                         <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-1">
                           <Mail className="w-3 h-3" />
                           Email Address
                         </p>
                         <p className="text-lg font-semibold text-gray-900 dark:text-white">{formData.email || "—"}</p>
                       </div>
-                      <div className="p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
+                      <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-lg">
                         <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-2 flex items-center gap-1">
                           <Phone className="w-3 h-3" />
                           Phone Number
@@ -369,7 +369,7 @@ export default function ProfilePage() {
                     </div>
 
                     {user && (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 dark:bg-white/5 rounded-lg">
                         <div>
                           <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Member Since</p>
                           <p className="font-semibold text-gray-900 dark:text-white">

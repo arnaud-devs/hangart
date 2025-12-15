@@ -37,12 +37,12 @@ export default function Page() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-[#f7f7f8] dark:bg-black">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Settings</h2>
         <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">Application preferences and UI settings.</p>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
+        <div className="bg-white dark:bg-white/5 rounded-lg shadow p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium text-gray-900 dark:text-gray-100">Theme</div>

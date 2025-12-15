@@ -293,7 +293,7 @@ export default function AdminDashboardView() {
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Line Chart - Trends */}
-          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+          <div className="lg:col-span-2 bg-white dark:bg-white/5 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-white/10">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Activity Trends</h3>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
@@ -321,7 +321,7 @@ export default function AdminDashboardView() {
           </div>
 
           {/* Pie Chart - Status */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-white/5  rounded-lg shadow-sm p-6 border border-gray-200 dark:border-white/10">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Artwork Status</h3>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -347,11 +347,11 @@ export default function AdminDashboardView() {
 
         {/* Recent Artworks and Top Artists */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-white/5 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-white/10">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Recent Artworks</h3>
             <div className="space-y-3">
               {stats?.recent_artworks?.map((artwork: any) => (
-                <div key={artwork.id} className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer" onClick={() => handleViewArtwork(artwork.id)}>
+                <div key={artwork.id} className="flex items-center justify-between p-3 border border-gray-200 dark:border-white/10 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors cursor-pointer" onClick={() => handleViewArtwork(artwork.id)}>
                   <div className="flex items-center space-x-3 flex-1">
                     <img
                       src={artwork.main_image || '/placeholder.jpg'}
@@ -375,13 +375,13 @@ export default function AdminDashboardView() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-white/5 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-white/10">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Top Artists</h3>
             <div className="space-y-3">
               {stats?.top_artists?.map((artist: any, index: number) => (
-                <div key={artist.id} className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <div key={artist.id} className="flex items-center justify-between p-3 border border-gray-200 dark:border-white/10 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors">
                   <div className="flex items-center space-x-3 flex-1">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-semibold">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-yellow-600 flex items-center justify-center text-white font-semibold">
                       {index + 1}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -393,7 +393,7 @@ export default function AdminDashboardView() {
                       </div>
                     </div>
                   </div>
-                  <div className="text-sm font-semibold text-green-600 dark:text-green-400 ml-2">
+                  <div className="text-sm font-semibold text-yellow-600 dark:text-yellow-600 ml-2">
                     Active
                   </div>
                 </div>

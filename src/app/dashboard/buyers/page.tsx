@@ -85,7 +85,7 @@ export default function BuyersPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#f7f7f8] dark:bg-black">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Buyers Management</h1>

@@ -194,7 +194,7 @@ export default function GalleryPage() {
                       setPage(1);
                     }}
                     placeholder="Search artworks..."
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 dark:bg-white/5 rounded-md bg-white  text-gray-900 dark:text-gray-100 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -219,7 +219,7 @@ export default function GalleryPage() {
                       setSortBy(e.target.value);
                       setPage(1);
                     }}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
+                    className="w-full px-3 py-2 border border-gray-300 dark:bg-white/5 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
                   >
                     <option value="-created_at">Newest First</option>
                     <option value="created_at">Oldest First</option>
@@ -420,7 +420,7 @@ export default function GalleryPage() {
                     <Link
                       key={artwork.id}
                       href={`/artworks/${artwork.id}`}
-                      className="group relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                      className="group relative bg-white dark:bg-white/5 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                     >
                       <div className="relative aspect-square bg-gray-100 dark:bg-gray-700">
                         <Image
@@ -448,7 +448,7 @@ export default function GalleryPage() {
                           {artwork.artist_name || "Unknown Artist"}
                         </p>
                         <div className="flex items-center justify-between">
-                          <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                          <span className="font-semibold text-yellow-600 dark:text-yellow-600">
                             ${artwork.price}
                           </span>
                           {artwork.category && (

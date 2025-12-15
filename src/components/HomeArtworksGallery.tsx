@@ -24,6 +24,8 @@ interface PaginatedResponse {
 }
 
 export default function HomeArtworksGallery() {
+  const { useI18n } = require('@/lib/i18nClient');
+  const { t } = useI18n();
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -88,8 +90,8 @@ export default function HomeArtworksGallery() {
 
   return (
     <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h2 className="text-2xl font-semibold font-serif text-gray-900 dark:text-gray-100">Browse Artworks Gallery</h2>
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">Discover unique artworks from talented artists around the world</p>
+      <h2 className="text-2xl font-semibold font-serif text-gray-900 dark:text-gray-100">{t('homeGallery.title')}</h2>
+      <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t('homeGallery.subtitle')}</p>
 
       {/* Filters Section */}
       <div className="mt-6 p-4 bg-gray-50 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl border border-gray-200 dark:border-white/10">
@@ -99,7 +101,7 @@ export default function HomeArtworksGallery() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
-              placeholder="Search by title, description, or artist name..."
+              placeholder={t('homeGallery.search.placeholder')}
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -115,7 +117,7 @@ export default function HomeArtworksGallery() {
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
                 <Filter className="w-4 h-4" />
-                Category
+                {t('homeGallery.filters.category')}
               </label>
               <select
                 value={categoryFilter}
@@ -125,7 +127,7 @@ export default function HomeArtworksGallery() {
                 }}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 bg-white dark:bg-black/40 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               >
-                <option value="">All Categories</option>
+                <option value="">{t('homeGallery.filters.all_categories')}</option>
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
@@ -138,7 +140,7 @@ export default function HomeArtworksGallery() {
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
                 <Filter className="w-4 h-4" />
-                Medium
+                {t('homeGallery.filters.medium')}
               </label>
               <select
                 value={mediumFilter}
@@ -148,7 +150,7 @@ export default function HomeArtworksGallery() {
                 }}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 bg-white dark:bg-black/40 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               >
-                <option value="">All Mediums</option>
+                <option value="">{t('homeGallery.filters.all_mediums')}</option>
                 {mediums.map((med) => (
                   <option key={med} value={med}>
                     {med}
@@ -161,7 +163,7 @@ export default function HomeArtworksGallery() {
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
                 <Filter className="w-4 h-4" />
-                Sort By
+                {t('homeGallery.filters.sort_by')}
               </label>
               <select
                 value={sortBy}
@@ -171,11 +173,11 @@ export default function HomeArtworksGallery() {
                 }}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-white/10 bg-white dark:bg-black/40 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               >
-                <option value="-created_at">Newest First</option>
-                <option value="created_at">Oldest First</option>
-                <option value="-price">Price: High to Low</option>
-                <option value="price">Price: Low to High</option>
-                <option value="title">Title: A to Z</option>
+                <option value="-created_at">{t('homeGallery.sort.newest_first')}</option>
+                <option value="created_at">{t('homeGallery.sort.oldest_first')}</option>
+                <option value="-price">{t('homeGallery.sort.price_high_low')}</option>
+                <option value="price">{t('homeGallery.sort.price_low_high')}</option>
+                <option value="title">{t('homeGallery.sort.title_a_z')}</option>
               </select>
             </div>
 
@@ -185,7 +187,7 @@ export default function HomeArtworksGallery() {
                 onClick={handleResetFilters}
                 className="w-full px-4 py-2 bg-gray-400 hover:bg-gray-500 dark:bg-white/10 dark:hover:bg-white/20 text-white font-medium rounded-lg transition-colors"
               >
-                Reset Filters
+                {t('homeGallery.filters.reset')}
               </button>
             </div>
           </div>
@@ -194,7 +196,7 @@ export default function HomeArtworksGallery() {
 
       {/* Results Count */}
       <div className="mt-6 text-sm text-gray-600 dark:text-gray-400">
-        {loading ? "Loading..." : `Showing ${artworks.length} of ${totalCount} artworks`}
+        {loading ? t('homeGallery.loading') : t('homeGallery.results_count', { count: artworks.length, total: totalCount })}
       </div>
 
       {/* Artworks Grid */}
@@ -203,7 +205,7 @@ export default function HomeArtworksGallery() {
           <div className="flex justify-center items-center min-h-[400px]">
             <div className="flex flex-col items-center gap-4">
               <Loader className="w-12 h-12 text-emerald-600 animate-spin" />
-              <p className="text-gray-600 dark:text-gray-400">Loading artworks...</p>
+              <p className="text-gray-600 dark:text-gray-400">{t('homeGallery.loading_artworks')}</p>
             </div>
           </div>
         ) : artworks.length > 0 ? (
@@ -223,12 +225,12 @@ export default function HomeArtworksGallery() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-gray-600 dark:text-gray-400 text-lg">No artworks found matching your filters.</p>
+            <p className="text-gray-600 dark:text-gray-400 text-lg">{t('homeGallery.no_results')}</p>
             <button
               onClick={handleResetFilters}
               className="mt-4 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors"
             >
-              Clear Filters
+              {t('homeGallery.clear_filters')}
             </button>
           </div>
         )}
@@ -242,17 +244,17 @@ export default function HomeArtworksGallery() {
             disabled={page === 1}
             className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            Previous
+            {t('homeGallery.pagination.previous')}
           </button>
           <span className="text-sm text-gray-600 dark:text-gray-400">
-            Page {page} of {Math.ceil(totalCount / 20)}
+            {t('homeGallery.pagination.page_of', { page, pages: Math.ceil(totalCount / 20) })}
           </span>
           <button
             onClick={() => setPage(page + 1)}
             disabled={page >= Math.ceil(totalCount / 20)}
             className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            Next
+            {t('homeGallery.pagination.next')}
           </button>
         </div>
       )}

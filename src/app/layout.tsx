@@ -12,6 +12,8 @@ import React from "react";
 import { cookies } from "next/headers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { I18nProvider } from "@/lib/i18nClient";
+import { getTranslations } from "@/lib/i18n";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,12 +31,23 @@ type RootLayoutProps = Readonly<{ children: React.ReactNode }>;
 
 export default async function RootLayout({ children }: RootLayoutProps) {
   let cookieTheme: string | undefined = undefined;
+  let lang: string | undefined = undefined;
+  let messages: any = {};
   try {
     const cookieStore = await cookies();
     const c = (cookieStore as any).get?.("theme");
     cookieTheme = c?.value;
+    const l = (cookieStore as any).get?.("lang");
+    lang = l?.value;
   } catch (e) {
     cookieTheme = undefined;
+  }
+
+  // Load translations server-side and pass down to the client provider
+  try {
+    messages = await getTranslations(lang);
+  } catch (e) {
+    messages = {};
   }
 
   return (
@@ -67,6 +80,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         className={`${inter.variable} text-gray-900 dark:text-gray-100 overflow-x-hidden antialiased font-sans`}
       >
         {/* Wrap with AuthProvider first, then CartProvider, then ToastProvider */}
+        <I18nProvider lang={lang || 'en'} messages={messages}>
         <AuthProvider>
           <CartProvider>
             <ToastProvider>
@@ -96,6 +110,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
             </ToastProvider>
           </CartProvider>
         </AuthProvider>
+        </I18nProvider>
       </body>
     </html>
   );

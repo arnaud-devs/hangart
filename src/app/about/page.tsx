@@ -4,29 +4,31 @@ import React from "react";
 import { Users, Palette, Globe, Sparkles, Target, Heart, Shield } from "lucide-react";
 
 export default function AboutPage() {
+  const { useI18n } = require('@/lib/i18nClient');
+  const { t } = useI18n();
   const values = [
     {
       icon: <Heart className="w-6 h-6" />,
-      title: "Artist Support",
-      description: "We champion artists by providing fair commissions and tools to grow their creative careers.",
+      title: t('about.values.artist_support.title'),
+      description: t('about.values.artist_support.desc'),
       color: "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400"
     },
     {
       icon: <Shield className="w-6 h-6" />,
-      title: "Authentic Art",
-      description: "Every piece is original and verified, ensuring you get genuine artwork directly from creators.",
+      title: t('about.values.authentic_art.title'),
+      description: t('about.values.authentic_art.desc'),
       color: "bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400"
     },
     {
       icon: <Users className="w-6 h-6" />,
-      title: "Community First",
-      description: "We foster a supportive, inclusive community where artists and collectors connect and thrive.",
+      title: t('about.values.community_first.title'),
+      description: t('about.values.community_first.desc'),
       color: "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
     },
     {
       icon: <Globe className="w-6 h-6" />,
-      title: "Global Access",
-      description: "Bringing together artists and collectors from around the world in one accessible platform.",
+      title: t('about.values.global_access.title'),
+      description: t('about.values.global_access.desc'),
       color: "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400"
     }
   ];
@@ -40,14 +42,14 @@ export default function AboutPage() {
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-full mb-4">
               <Sparkles className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
               <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
-                About HangArt
+                {t('about.badge')}
               </span>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Empowering artists, inspiring collectors
+              {t('about.hero_title')}
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              A global marketplace connecting talented artists with passionate collectors. We believe in the power of original art to transform spaces and lives.
+              {t('about.hero_subtitle')}
             </p>
           </div>
         </div>
@@ -80,27 +82,26 @@ export default function AboutPage() {
             <div className="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
               <Target className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Our Mission</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{t('about.mission.title')}</h2>
           </div>
           <p className="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
-            To make art accessible, support creative careers, and foster a vibrant, supportive art community. 
-            Whether you're a seasoned collector or just starting your journey, HangArt is your home for inspiration and connection.
+            {t('about.mission.body')}
           </p>
           <div className="flex items-center gap-2 text-yellow-600 dark:text-yellow-400 font-medium">
             <Sparkles className="w-4 h-4" />
-            <span>Join us and discover the art that moves you</span>
+            <span>{t('about.mission.cta')}</span>
           </div>
         </div>
 
         {/* Story Section */}
         <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Our Story</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t('about.story.title')}</h2>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              Founded by artists and art lovers, HangArt began with a simple idea: make it easier for artists to share their work with the world and for collectors to discover unique pieces.
+              {t('about.story.p1')}
             </p>
             <p className="text-gray-600 dark:text-gray-300">
-              Today, we're proud to support thousands of artists worldwide, helping them turn their passion into sustainable careers while bringing beautiful, original art into homes and spaces everywhere.
+              {t('about.story.p2')}
             </p>
           </div>
           <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700">
@@ -128,7 +129,7 @@ export default function AboutPage() {
         {/* CTA Section */}
         <div className="text-center">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Ready to explore?
+            {t('about.cta.title')}
           </h2>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
@@ -136,14 +137,14 @@ export default function AboutPage() {
               className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors"
             >
               <Palette className="w-4 h-4" />
-              Browse Artwork
+              {t('about.cta.browse')}
             </a>
             <a
               href="/contact"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-lg border border-gray-300 dark:border-gray-600 transition-colors"
             >
               <Users className="w-4 h-4" />
-              Contact Us
+              {t('about.cta.contact')}
             </a>
           </div>
         </div>

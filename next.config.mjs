@@ -5,6 +5,16 @@ const nextConfig = {
     // .next/dev/types stubs referencing non-emitted route.js modules
     ignoreBuildErrors: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'hangart.pythonanywhere.com',
+        port: '',
+        pathname: '/media/**',
+      },
+    ],
+  },
 };
 
 export default nextConfig;

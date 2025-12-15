@@ -21,7 +21,6 @@ export default function Navbar() {
     { href: "/", label: "Home" },
     { href: "/gallery", label: "Gallery" },
     { href: "/artists", label: "Artists" },
-    { href: "/contact", label: "Contact" },
   ];
 
   const buyerLinks = [
@@ -44,7 +43,7 @@ export default function Navbar() {
       {/* Note: useAuth is client-only, Navbar is client component */}
       {/* eslint-disable-next-line react-hooks/rules-of-hooks */}
       {null}
-      <nav className="sticky top-0 z-50 w-full border-b border-gray-200/50 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-sm">
+      <nav className="sticky top-0 z-50 w-full border-b border-gray-200/50  dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-4">
             {/* Left - Logo */}
@@ -59,7 +58,7 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-yellow-600 transition-colors"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -76,20 +75,20 @@ export default function Navbar() {
                   <button
                     onClick={() => setHelpMenuOpen(!helpMenuOpen)}
                     onBlur={() => setTimeout(() => setHelpMenuOpen(false), 200)}
-                    className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-yellow-600 transition-colors"
+                    className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-600 transition-colors "
                   >
                     Help
                     <ChevronDown className={`w-4 h-4 transition-transform ${helpMenuOpen ? 'rotate-180' : ''}`} />
                   </button>
                   
                   {helpMenuOpen && (
-                    <div className="absolute top-full mt-2 right-0 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
+                    <div className="absolute top-full mt-2 right-0 w-48 bg-white dark:bg-white/5 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50">
                       {helpLinks.map((link) => (
                         <Link
                           key={link.href}
                           href={link.href}
                           onClick={() => setHelpMenuOpen(false)}
-                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-yellow-600 dark:hover:text-yellow-600 transition-colors"
                         >
                           {link.label}
                         </Link>
@@ -106,7 +105,7 @@ export default function Navbar() {
                 <input
                   type="search"
                   placeholder="Search for arts product"
-                  className="w-full rounded-full border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                  className="w-full rounded-full border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-white/5 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                 />
               </div>
             </div>

@@ -209,7 +209,7 @@ export default function ArtistsPage() {
   ];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#f7f7f8] dark:bg-black ">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Artists Management</h1>
@@ -297,7 +297,7 @@ export default function ArtistsPage() {
       />
 
       {/* Server pagination controls */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="bg-white dark:bg-white/5 rounded-lg shadow-sm border border-gray-200 dark:border-white/10 p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="text-sm text-gray-600 dark:text-gray-400">
           Page {page} of {totalPages} • {totalCount || artists.length} artists
         </div>

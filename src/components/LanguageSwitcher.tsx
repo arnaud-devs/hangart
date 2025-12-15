@@ -85,7 +85,7 @@ export default function LanguageSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-40 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 z-40">
+        <div className="absolute right-0 mt-2 w-40 rounded-md bg-white dark:bg-white/5 shadow-lg ring-1 ring-black/5 z-40">
           <ul className="py-1">
             {LOCALES.map((l) => (
               <li key={l}>

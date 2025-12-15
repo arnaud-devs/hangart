@@ -168,14 +168,14 @@ export const Sidebar = ({
           aria-current={active ? 'page' : undefined}
           className={`group flex items-center w-full px-4 py-3.5 text-sm font-medium rounded-xl transition-all duration-200 relative ${
             active
-              ? 'bg-gradient-to-r from-emerald-50 to-emerald-100/80 text-emerald-700 shadow-sm border border-emerald-200/50 dark:from-emerald-700 dark:to-emerald-800 dark:text-emerald-200'
-              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:scale-[1.02] dark:hover:bg-gray-700 dark:hover:text-gray-100'
+              ? 'bg-gradient-to-r from-emerald-50 to-yellow-100/80 text-yellow-700 shadow-sm border border-yellow-200/50 dark:from-yellow-700 dark:to-yellow-800 dark:text-yellow-200'
+              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:scale-[1.02] dark:hover:bg-white/5 dark:hover:text-gray-100'
           }`}
           style={{ paddingLeft: `${depth * 16 + 16}px` }}
         >
           <Icon className={`w-5 h-5 mr-4 transition-all duration-200 ${
             active 
-              ? 'text-emerald-600 dark:text-emerald-300' 
+              ? 'text-yellow-600 dark:text-yellow-600' 
               : 'text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-200'
           }`} />
           <span className="font-semibold">{item.label}</span>
@@ -191,7 +191,7 @@ export const Sidebar = ({
           )}
           
           {active && !hasChildren && (
-            <div className="absolute right-2 w-2 h-2 bg-emerald-500 rounded-full"></div>
+            <div className="absolute right-2 w-2 h-2 bg-yellow-500 rounded-full"></div>
           )}
         </button>
         
@@ -218,15 +218,15 @@ export const Sidebar = ({
       )}
       
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-white dark:bg-gray-800 shadow-2xl transform transition-all duration-300 ease-out border-r border-gray-100 dark:border-gray-700 flex flex-col h-screen lg:h-screen lg:top-0 lg:left-0 lg:translate-x-0 ${
+      <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#f7f7f8] dark:bg-black shadow-2xl transform transition-all duration-300 ease-out border-r border-gray-100 dark:border-white/5 flex flex-col h-screen lg:h-screen lg:top-0 lg:left-0 lg:translate-x-0 ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       }`} role="navigation" aria-label="Main sidebar">
         
         {/* Fixed Header */}
         <div className="flex-shrink-0">
-          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-700 dark:to-teal-700">
+          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-100 dark:border-white/5  from-emerald-50 to-teal-50 dark:bg-black">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 via-yellow-600 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
                 <Image className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -253,7 +253,7 @@ export const Sidebar = ({
         </div>
 
         {/* Fixed Footer */}
-        <div className="px-4 py-4 border-t border-gray-100 dark:border-gray-700">
+        <div className="px-4 py-4 border-t border-gray-100 dark:border-white/5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img src={user?.profileImage || '/person-m-3.webp'} alt="avatar" className="w-10 h-10 rounded-full object-cover" />

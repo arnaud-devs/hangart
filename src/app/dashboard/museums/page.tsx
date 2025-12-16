@@ -84,7 +84,7 @@ export default function Page() {
   const museumArts = rawArts ? JSON.parse(rawArts) : [];
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-[#f7f7f8] dark:bg-black">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -92,14 +92,14 @@ export default function Page() {
             <p className="text-sm text-gray-500 dark:text-gray-300">Create, edit and remove museums.</p>
           </div>
           <div>
-            <button onClick={() => { setEditing(null); setShowAdd(true); }} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded">Add Museum</button>
+            <button onClick={() => { setEditing(null); setShowAdd(true); }} className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded">Add Museum</button>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-white/5 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-900">
+              <thead className="bg-gray-50 dark:bg-white/5">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Name</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Location</th>
@@ -108,7 +108,7 @@ export default function Page() {
                   <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
+              <tbody className="bg-white dark:bg-white/5 divide-y divide-gray-100 dark:divide-gray-700">
                 {museums.map(m => (
                   <tr key={m.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-4 py-3">

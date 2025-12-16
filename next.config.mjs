@@ -6,7 +6,14 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['hangart.pythonanywhere.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'hangart.pythonanywhere.com',
+        port: '',
+        pathname: '/media/**',
+      },
+    ],
   },
 };
 

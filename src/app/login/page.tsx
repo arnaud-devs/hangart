@@ -72,11 +72,10 @@ function LoginContent(){
   // No demo login helper — use real credentials to sign in
 
   return (
-    <main className="min-h-[70vh] flex items-center justify-center bg-gray-50 dark:bg-black px-4">
+    <main className="min-h-[70vh] flex items-center justify-center bg-[#f7f7f8] dark:bg-black px-4">
       <div className="w-full max-w-xl mx-auto">
         <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg p-8 rounded-2xl shadow-2xl border border-black/5 dark:border-white/10">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded-lg bg-linear-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold">H</div>
             <div>
               <h1 className="text-2xl font-semibold">{t('login.welcome')}</h1>
               <p className="text-sm text-gray-500 dark:text-gray-400">{t('login.welcome_desc')}</p>
@@ -87,9 +86,9 @@ function LoginContent(){
           <h1 className="text-2xl font-semibold mb-4">{t('login.title')}</h1>
 
           {showRedirectMessage && (
-            <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
-              <p className="text-sm text-blue-700 dark:text-blue-400">
-                {t('login.redirect_checkout')}
+            <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-600 rounded-md">
+              <p className="text-sm text-yellow-700 dark:text-yellow-400">
+                Please log in to continue to checkout
               </p>
             </div>
           )}
@@ -99,15 +98,15 @@ function LoginContent(){
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <Label htmlFor="identifier">{t('login.identifier_label')}</Label>
-              <Input id="identifier" type="text" placeholder={t('login.identifier_placeholder')} {...register('identifier', { required: t('login.errors.identifier_required') })} />
+              <Label htmlFor="identifier">Username or Email</Label>
+              <Input id="identifier" type="text" placeholder="e.g. amina or amina@example.com" {...register('identifier', { required: 'Username or email is required' })} className='border-yellow-600 focus:border-yellow-600 active:border-yellow-600'  />
               {errors.identifier && <p className="text-sm text-red-600">{String(errors.identifier.message)}</p>}
             </div>
 
             <div>
               <Label htmlFor="password">{t('login.password_label')}</Label>
               <div className="relative">
-                <Input id="password" type={showPassword ? 'text' : 'password'} {...register('password', { required: 'Password is required' })} />
+                <Input id="password" type={showPassword ? 'text' : 'password'} {...register('password', { required: 'Password is required' })} className='border-yellow-600 ' />
                 <button
                   type="button"
                   aria-label={showPassword ? t('login.hide_password') : t('login.show_password')}

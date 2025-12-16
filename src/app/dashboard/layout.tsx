@@ -1,7 +1,7 @@
 // app/dashboard/layout.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { Sidebar } from "@/components/dashboard/sidebar"; 
 import { Header } from "@/components/dashboard/header";
@@ -119,7 +119,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100">
+    <div className="flex min-h-screen  text-gray-900 dark:text-gray-100">
       <Sidebar 
         isOpen={sidebarOpen} 
         setIsOpen={setSidebarOpen}

@@ -314,7 +314,7 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="min-h-screen dark:bg-black  p-6">
+    <div className="min-h-screen dark:bg-black   p-6">
       <div className="">
         {/* Header */}
         <div className="mb-8">

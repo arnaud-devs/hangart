@@ -226,7 +226,7 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-black py-6">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="mb-8">
@@ -249,7 +249,7 @@ export default function OrdersPage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search orders..."
-                className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 dark:border-white/10 rounded-lg bg-white dark:bg-white/5 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               />
               {query && (
                 <button
@@ -269,7 +269,7 @@ export default function OrdersPage() {
                   setLoading(false);
                 });
               }}
-              className="flex items-center space-x-2 px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors"
+              className="flex items-center space-x-2 px-4 py-2.5 bg-white dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors"
             >
               <RefreshCw className="w-4 h-4" />
               <span>Refresh</span>
@@ -285,7 +285,7 @@ export default function OrdersPage() {
                 className={`inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   statusFilter === status
                     ? 'bg-yellow-600 text-white'
-                    : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    : 'bg-white dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }`}
               >
                 <span className="mr-2">
@@ -299,7 +299,7 @@ export default function OrdersPage() {
                    <Package className="w-4 h-4" />}
                 </span>
                 {statusLabels[status as keyof typeof statusLabels]}
-                <span className="ml-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-1.5 py-0.5 rounded text-xs">
+                <span className="ml-1.5 bg-gray-200 dark:bg-white/5 dark:border-white/20 text-gray-700 dark:text-gray-300 px-1.5 py-0.5 rounded text-xs">
                   {statusCounts[status as keyof typeof statusCounts] || 0}
                 </span>
               </button>
@@ -317,7 +317,7 @@ export default function OrdersPage() {
         {/* Orders List */}
         <div className="space-y-4">
           {filtered.map((order: Order) => (
-            <div key={order.id} className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow">
+            <div key={order.id} className="bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden hover:shadow-md transition-shadow">
               {/* Order Header */}
               <div className="p-4 border-b border-gray-100 dark:border-gray-700">
                 <div className="flex items-center justify-between">
@@ -356,7 +356,7 @@ export default function OrdersPage() {
               </div>
 
               {/* Quick Summary */}
-              <div className="p-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-100 dark:border-gray-600">
+              <div className="p-4 bg-gray-50 dark:bg-white/5 border-b border-gray-100 dark:border-white/10">
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
@@ -381,7 +381,7 @@ export default function OrdersPage() {
 
               {/* Expanded Details */}
               {openId === order.id.toString() && (
-                <div className="bg-white dark:bg-gray-800 border-t-4 border-yellow-600">
+                <div className="bg-white dark:bg-white/5 border-t-4 border-yellow-600">
                   <div className="p-6">
                     <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                       {/* Order Items */}
@@ -395,7 +395,7 @@ export default function OrdersPage() {
                         </div>
                         <div className="space-y-3">
                           {order.items.map((item, idx) => (
-                            <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                            <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10">
                               <div className="flex items-center space-x-4 flex-1">
                                 <div className="w-12 h-12 bg-white dark:bg-gray-600 rounded border border-gray-300 dark:border-gray-500 flex items-center justify-center flex-shrink-0 overflow-hidden">
                                   <img
@@ -428,7 +428,7 @@ export default function OrdersPage() {
                       {/* Order Information & Actions */}
                       <div className="space-y-6">
                         {/* Order Details Card */}
-                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-5">
+                        <div className="bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 p-5">
                           <div className="flex items-center space-x-2 mb-4">
                             <Hash className="w-5 h-5 text-yellow-600" />
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Order Details</h3>
@@ -462,7 +462,7 @@ export default function OrdersPage() {
                         </div>
 
                         {/* Shipping Address */}
-                        <div className="bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-5">
+                        <div className="bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 p-5">
                           <div className="flex items-center space-x-2 mb-4">
                             <Truck className="w-5 h-5 text-yellow-600" />
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Shipping Address</h3>
@@ -471,7 +471,7 @@ export default function OrdersPage() {
                         </div>
 
                         {/* Quick Actions */}
-                        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 p-5">
+                        <div className="bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 p-5">
                           <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Quick Actions</h3>
                           <div className="space-y-2">
                             <button className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors text-sm">

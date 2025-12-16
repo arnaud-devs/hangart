@@ -43,15 +43,15 @@ export default function ContactPage() {
     {
       icon: <Phone className="w-5 h-5" />,
       title: "Phone",
-      content: "+1 (555) 234-5678",
-      description: "Mon-Fri, 9am-5pm EST",
-      link: "tel:+15552345678",
+      content: "+250 787 235 97",
+      description: "Mon-Fri, 9am-5pm G.M.T",
+      link: "tel:+250 787 235 97",
       color: "bg-yellow-500 dark:bg-yellow-500"
     },
     {
       icon: <MapPin className="w-5 h-5" />,
       title: "Office",
-      content: "Brooklyn, New York",
+      content: "Gasabo, Kigali",
       description: "By appointment only",
       link: "#",
       color: "bg-yellow-500 dark:bg-yellow-500"
@@ -161,7 +161,7 @@ export default function ContactPage() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Monday - Friday</span>
-                  <span className="font-medium text-gray-900 dark:text-white">9am - 5pm EST</span>
+                  <span className="font-medium text-gray-900 dark:text-white">9am - 5pm G.M.T</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Saturday</span>

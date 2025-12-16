@@ -12,6 +12,8 @@ import React from "react";
 import { cookies } from "next/headers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import VoiceRecognitionClientWrapper from '@/components/VoiceRecognitionClientWrapper';
+// Remove dynamic import and client hooks from server layout
 
 const inter = Inter({
   variable: "--font-inter",
@@ -26,6 +28,7 @@ export const metadata: Metadata = {
 };
 
 type RootLayoutProps = Readonly<{ children: React.ReactNode }>;
+
 
 export default async function RootLayout({ children }: RootLayoutProps) {
   let cookieTheme: string | undefined = undefined;
@@ -93,6 +96,8 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               </div>
 
               <CartDrawer />
+              {/* Floating Voice Recognition Button (Client Only) */}
+              <VoiceRecognitionClientWrapper />
             </ToastProvider>
           </CartProvider>
         </AuthProvider>

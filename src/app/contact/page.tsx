@@ -43,15 +43,15 @@ export default function ContactPage() {
     {
       icon: <Phone className="w-5 h-5" />,
       title: "Phone",
-      content: "+1 (555) 234-5678",
-      description: "Mon-Fri, 9am-5pm EST",
-      link: "tel:+15552345678",
+      content: "+250 787 235 97",
+      description: "Mon-Fri, 9am-5pm G.M.T",
+      link: "tel:+250 787 235 97",
       color: "bg-yellow-500 dark:bg-yellow-500"
     },
     {
       icon: <MapPin className="w-5 h-5" />,
       title: "Office",
-      content: "Brooklyn, New York",
+      content: "Gasabo, Kigali",
       description: "By appointment only",
       link: "#",
       color: "bg-yellow-500 dark:bg-yellow-500"

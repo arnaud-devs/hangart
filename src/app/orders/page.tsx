@@ -21,6 +21,7 @@ import {
   CreditCard,
   Search,
   Truck,
+  RefreshCcw,
 } from 'lucide-react';
 
 interface OrderItem {
@@ -95,6 +96,11 @@ const StatusBadge = ({ status }: { status: string }) => {
       icon: <X className="w-3 h-3 mr-1" />,
       label: 'Cancelled'
     },
+    refunded:{
+      color: 'bg-red-50 text-red-800 border-red-200',
+      icon: <RefreshCcw className="w-3 h-3 mr-1" />,
+      label: 'Refunded'
+    }
   };
 
   const config = statusConfig[status.toLowerCase()] || {
@@ -166,6 +172,7 @@ export default function OrdersPage() {
     paid: 'Paid',
     delivered: 'Delivered',
     cancelled: 'Cancelled',
+    refunded: 'Refunded'
   };
 
   const statusCounts = useMemo(() => {
@@ -278,7 +285,7 @@ export default function OrdersPage() {
 
           {/* Status Filter Tabs */}
           <div className="flex flex-wrap gap-2">
-            {['all', 'pending_payment', 'confirmed', 'processing', 'shipped', 'paid', 'delivered', 'cancelled'].map((status) => (
+            {['all', 'pending_payment', 'confirmed', 'processing', 'shipped', 'paid', 'delivered', 'cancelled','refunded'].map((status) => (
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
@@ -296,6 +303,7 @@ export default function OrdersPage() {
                    status === 'paid' ? <CheckCircle className="w-4 h-4" /> :
                    status === 'delivered' ? <CheckCircle className="w-4 h-4" /> :
                    status === 'cancelled' ? <X className="w-4 h-4" /> :
+                   status === 'refunded' ? <RefreshCcw className="w-4 h-4" /> :
                    <Package className="w-4 h-4" />}
                 </span>
                 {statusLabels[status as keyof typeof statusLabels]}

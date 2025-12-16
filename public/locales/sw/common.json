@@ -33,5 +33,189 @@
   "testimonials_title": "Wakusanyaji Wetu Wanasema Nini",
   "testimonials_subtitle": "Kuaminika na maelfu ya wapenzi wa sanaa ulimwenguni kote",
   "prev_artworks": "Kazi za sanaa za awali",
-  "next_artworks": "Kazi za sanaa zinazofuata"
+  "next_artworks": "Kazi za sanaa zinazofuata",
+  "brand.name": "Hangart",
+  "search.placeholder": "Tafuta kazi za sanaa",
+  "nav.home": "Nyumbani",
+  "nav.gallery": "Jumba la sanaa",
+  "nav.artists": "Wasanii",
+  "nav.contact": "Mawasiliano",
+  "nav.cart": "Mkokoteni",
+  "nav.orders": "Oda",
+  "nav.payments": "Malipo",
+  "nav.refunds": "Marejesho",
+  "nav.help": "Msaada",
+  "nav.faq": "Maswali",
+  "nav.shipping": "Usafirishaji",
+  "nav.terms": "Masharti",
+  "nav.privacy": "Faragha",
+  "nav.navigation": "Uabiri",
+  "nav.buyer": "Mnunuzi",
+  "nav.help_info": "Msaada & Taarifa",
+  "nav.shopping_cart": "Mkokoteni",
+  "footer.about": "Gundua sanaa asilia kutoka kwa wasanii wanaoibuka ulimwenguni. Makusanyo ya uchoraji, upigaji picha, uchongaji na zaidi.",
+  "footer.shop": "Duka",
+  "footer.customer_service": "Huduma kwa wateja",
+  "footer.newsletter": "Jarida",
+  "footer.newsletter_desc": "Jisajili kupata masasisho ya kazi mpya na ofa maalum.",
+  "footer.email_placeholder": "Barua pepe yako",
+  "footer.subscribe": "Jisajili",
+  "footer.all_artworks": "Kazi zote",
+  "footer.paintings": "Uchoraji",
+  "footer.photography": "Upigaji picha",
+  "footer.sculpture": "Uchongaji",
+  "footer.featured_artists": "Wasanii walioteuliwa",
+  "footer.collections": "Makusanyo",
+  "footer.about_us": "Kuhusu sisi",
+  "footer.contact": "Mawasiliano",
+  "footer.shipping_returns": "Usafirishaji & Marejesho",
+  "footer.faq": "Maswali",
+  "footer.support": "Msaada",
+  "footer.privacy_policy": "Sera ya faragha",
+  "footer.terms_of_service": "Masharti ya huduma",
+  "footer.copyright": "© {year} Hangart. Haki zote zimehifadhiwa.",
+  "footer.copyright_full": "© {year} HangartGallery. Haki zote zimehifadhiwa.",
+  "gallery": {
+    "title": "Jumba la sanaa",
+    "subtitle": "Gundua kazi za kipekee kutoka kwa wasanii wenye vipaji duniani"
+  },
+  "login": {
+    "welcome": "Karibu tena Hangart",
+    "welcome_desc": "Ingia ili kudhibiti kazi zako, ununuzi na dashibodi.",
+    "title": "Ingia",
+    "redirect_checkout": "Tafadhali ingia ili kuendelea na malipo",
+    "identifier_label": "Jina la mtumiaji au Barua pepe",
+    "identifier_placeholder": "mf. amina au amina@example.com",
+    "password_label": "Nenosiri",
+    "show_password": "Onyesha nenosiri",
+    "hide_password": "Ficha nenosiri",
+    "submit": "Ingia",
+    "submitting": "Inaingia…",
+    "need_account": "Unahitaji akaunti?",
+    "sign_up": "Jisajili",
+    "errors": {
+      "identifier_required": "Jina la mtumiaji au barua pepe yahitajika",
+      "password_required": "Nenosiri linahitajika"
+    }
+  },
+  "museums": {
+    "title": "Makumbusho na Maonyesho",
+    "subtitle": "Gundua matangazo ya makumbusho na maonyesho — bofya Tembelea kujua zaidi.",
+    "none": "Hakuna matangazo ya makumbusho kwa sasa."
+  },
+  "checkout": {
+    "title": "Malipo",
+    "verifying_auth": "Inathibitisha utambulisho...",
+    "empty_cart": "Mkokoteni wako hauna kitu",
+    "continue_shopping": "Endelea kununua",
+    "shipping_information": "Taarifa za usafirishaji",
+    "order_summary": "Muhtasari wa oda"
+  },
+  "about": {
+    "badge": "Kuhusu HangArt",
+    "hero_title": "Kuziwezesha wasanii, kuhamasisha wakusanyaji",
+    "hero_subtitle": "Soko la kimataifa linalounganisha wasanii wenye vipaji na wapenzi wa sanaa.",
+    "values": {
+      "artist_support": {
+        "title": "Msaada kwa wasanii",
+        "desc": "Tunalipa kwa haki na kutoa zana za kukuza taaluma ya ubunifu."
+      },
+      "authentic_art": {
+        "title": "Sanaa halisi",
+        "desc": "Kila kazi ni ya asili na imehakikiwa."
+      },
+      "community_first": {
+        "title": "Jamii kwanza",
+        "desc": "Jamii jumuishi na inayosaidiana."
+      },
+      "global_access": {
+        "title": "Ufikiaji wa kimataifa",
+        "desc": "Kuleta pamoja wasanii na wakusanyaji kote ulimwenguni."
+      }
+    },
+    "mission": {
+      "title": "Dira yetu",
+      "body": "Kufanya sanaa ipatikane, kusaidia taaluma za ubunifu na kukuza jamii yenye uhai.",
+      "cta": "Jiunge nasi ugundue sanaa inayokugusa"
+    },
+    "story": {
+      "title": "Hadithi yetu",
+      "p1": "HangArt ilianza na wazo rahisi.",
+      "p2": "Leo tunawaunga mkono maelfu ya wasanii duniani."
+    },
+    "cta": {
+      "title": "Uko tayari kuchunguza?",
+      "browse": "Vinjari kazi",
+      "contact": "Wasiliana nasi"
+    }
+  }
+  ,
+  "homeGallery": {
+    "title": "Vinjari jumba la sanaa",
+    "subtitle": "Gundua kazi za kipekee kutoka kwa wasanii wenye vipaji duniani",
+    "search": { "placeholder": "Tafuta kwa kichwa, maelezo au jina la msanii..." },
+    "filters": {
+      "category": "Kategoria",
+      "all_categories": "Kategoria zote",
+      "medium": "Aina",
+      "all_mediums": "Aina zote",
+      "sort_by": "Panga kwa",
+      "reset": "Weka upya vichujio"
+    },
+    "sort": {
+      "newest_first": "Mpya kwanza",
+      "oldest_first": "Ya zamani kwanza",
+      "price_high_low": "Bei: Juu hadi Chini",
+      "price_low_high": "Bei: Chini hadi Juu",
+      "title_a_z": "Kichwa: A hadi Z"
+    },
+    "loading": "Inapakia...",
+    "results_count": "Inaonyesha {count} kati ya {total} kazi",
+    "loading_artworks": "Inapakia kazi za sanaa...",
+    "no_results": "Hakuna kazi zilizopatikana kulingana na vichujio vyako.",
+    "clear_filters": "Futa vichujio",
+    "pagination": {
+      "previous": "Iliyotangulia",
+      "next": "Inayofuata",
+      "page_of": "Ukurasa {page} kati ya {pages}"
+    }
+  },
+  "holiday": {
+    "collection_title": "Mkusanyo wa Likizo 2025",
+    "loading": "Inapakia mkusanyo...",
+    "none": "Hakuna kazi za sanaa kwa sasa."
+  },
+  "testimonials": {
+    "items": {
+      "sarah_johnson": {
+        "role": "Mbunifu wa mambo ya ndani",
+        "location": "New York, Marekani",
+        "comment": "Ubora wa kazi ya sanaa umezidi matarajio yangu. Kazi niliyonunua imekuwa kitovu cha sebule yangu. Usafirishaji ulikuwa wa haraka na kifungashio bora."
+      },
+      "michael_chen": {
+        "role": "Mkusanyaji wa sanaa",
+        "location": "London, Uingereza",
+        "comment": "Nimekuwa nikikusanya sanaa kwa zaidi ya miaka 20, na Hangart Gallery ina baadhi ya kazi za kipekee zaidi ambazo nimewahi kuona. Huduma kwa wateja ilikuwa na msaada mkubwa kujibu maswali yangu yote."
+      },
+      "emma_rodriguez": {
+        "role": "Mkadiriaji (Curator)",
+        "location": "Barcelona, Uhispania",
+        "comment": "Kama mkadiriaji wa kitaalamu, ninathamini uhalisia na utofauti wa mkusanyo. Kila kazi ina hadithi, na jukwaa hili hufanya kugundua wasanii wapya kuwa rahisi."
+      },
+      "david_kim": {
+        "location": "Seoul, Korea Kusini",
+        "comment": "Uwekezaji katika sanaa kutoka jumba hili umekuwa mzuri. Sio tu kwamba nazi penda kazi hizi, bali pia thamani yake imeongezeka kwa muda. Napendekeza sana!"
+      },
+      "sophie_martin": {
+        "role": "Mpenzi wa upigaji picha",
+        "location": "Paris, Ufaransa",
+        "comment": "Mkusanyo mzuri wa upigaji picha! Nimepata kazi kamili kwa ofisi yangu ya nyumbani. Mchakato wa malipo ulikuwa rahisi na usafirishaji kwa wakati."
+      },
+      "james_wilson": {
+        "role": "Mjasiriamali wa teknolojia",
+        "location": "San Francisco, Marekani",
+        "comment": "Ninapenda kuwaunga mkono wasanii wanaoibuka kupitia jukwaa hili. Uchaguzi wa kazi ni wa hali ya juu na nimegundua wasanii kadhaa ninaowafuatilia kwa karibu."
+      }
+    }
+  }
 }

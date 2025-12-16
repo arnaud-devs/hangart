@@ -12,6 +12,8 @@ type ToastType = 'success' | 'error';
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, subtotal, clearCart } = useCart();
+  const { useI18n } = require('@/lib/i18nClient');
+  const { t } = useI18n();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -138,7 +140,7 @@ export default function CheckoutPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Verifying authentication...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t('checkout.verifying_auth')}</p>
         </div>
       </div>
     );
@@ -148,12 +150,12 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
+          <h1 className="text-2xl font-bold mb-4">{t('checkout.empty_cart')}</h1>
           <button
             onClick={() => router.push("/")}
             className="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700"
           >
-            Continue Shopping
+            {t('checkout.continue_shopping')}
           </button>
         </div>
       </div>
@@ -163,7 +165,7 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-gray-100">Checkout</h1>
+        <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-gray-100">{t('checkout.title')}</h1>
 
         {/* Toast Notifications */}
         {showToast && toastType === 'success' && (
@@ -187,7 +189,7 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Checkout Form */}
           <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-md p-6 border border-black/5 dark:border-white/10">
-            <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">Shipping Information</h2>
+            <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">{t('checkout.shipping_information')}</h2>
             
             <form onSubmit={handlePlaceOrder} className="space-y-4">
               <div>
@@ -288,7 +290,7 @@ export default function CheckoutPage() {
           </div>
           {/* Order Summary */}
           <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-md p-6 h-fit border border-black/5 dark:border-white/10">
-            <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">Order Summary</h2>
+            <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">{t('checkout.order_summary')}</h2>
 
             <div className="space-y-4 mb-6">
               {items.map((item) => {

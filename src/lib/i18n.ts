@@ -21,11 +21,19 @@ const translations: Record<string, any> = {
 // read the user's preferred locale from the `lang` cookie. Falls back to 'en'.
 export async function getTranslations(locale?: string) {
   let lang = (locale || "").toLowerCase();
+  // Normalize regional codes like fr-FR -> fr
+  if (lang.includes("-")) {
+    lang = lang.split("-")[0];
+  }
 
   if (!lang) {
     try {
       const cobj = await cookies();
-      const c = cobj.get("lang")?.value;
+      let c = cobj.get("lang")?.value;
+      if (c) {
+        c = c.toLowerCase();
+        if (c.includes("-")) c = c.split("-")[0];
+      }
       if (c) lang = c;
     } catch (e) {
       // ignore (cookies only available in server context)

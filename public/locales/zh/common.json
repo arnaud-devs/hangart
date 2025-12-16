@@ -33,5 +33,189 @@
   "testimonials_title": "收藏家评价",
   "testimonials_subtitle": "受全球数千艺术爱好者信赖",
   "prev_artworks": "上一批作品",
-  "next_artworks": "下一批作品"
+  "next_artworks": "下一批作品",
+  "brand.name": "Hangart",
+  "search.placeholder": "搜索艺术品",
+  "nav.home": "首页",
+  "nav.gallery": "画廊",
+  "nav.artists": "艺术家",
+  "nav.contact": "联系",
+  "nav.cart": "购物车",
+  "nav.orders": "订单",
+  "nav.payments": "支付",
+  "nav.refunds": "退款",
+  "nav.help": "帮助",
+  "nav.faq": "常见问题",
+  "nav.shipping": "配送",
+  "nav.terms": "条款",
+  "nav.privacy": "隐私",
+  "nav.navigation": "导航",
+  "nav.buyer": "买家",
+  "nav.help_info": "帮助与信息",
+  "nav.shopping_cart": "购物车",
+  "footer.about": "探索来自全球新兴艺术家的原创艺术。涵盖绘画、摄影、雕塑等精选合集。",
+  "footer.shop": "商店",
+  "footer.customer_service": "客户服务",
+  "footer.newsletter": "订阅",
+  "footer.newsletter_desc": "订阅以获取新艺术品及独家优惠。",
+  "footer.email_placeholder": "你的邮箱",
+  "footer.subscribe": "订阅",
+  "footer.all_artworks": "全部作品",
+  "footer.paintings": "绘画",
+  "footer.photography": "摄影",
+  "footer.sculpture": "雕塑",
+  "footer.featured_artists": "精选艺术家",
+  "footer.collections": "合集",
+  "footer.about_us": "关于我们",
+  "footer.contact": "联系",
+  "footer.shipping_returns": "配送与退货",
+  "footer.faq": "常见问题",
+  "footer.support": "支持",
+  "footer.privacy_policy": "隐私政策",
+  "footer.terms_of_service": "服务条款",
+  "footer.copyright": "© {year} Hangart。保留所有权利。",
+  "footer.copyright_full": "© {year} HangartGallery。保留所有权利。",
+  "gallery": {
+    "title": "画廊",
+    "subtitle": "发现来自世界各地才华艺术家的独特作品"
+  },
+  "login": {
+    "welcome": "欢迎回来，Hangart",
+    "welcome_desc": "登录以管理您的作品、购买和控制台。",
+    "title": "登录",
+    "redirect_checkout": "请登录以继续结账",
+    "identifier_label": "用户名或邮箱",
+    "identifier_placeholder": "如 amina 或 amina@example.com",
+    "password_label": "密码",
+    "show_password": "显示密码",
+    "hide_password": "隐藏密码",
+    "submit": "登录",
+    "submitting": "登录中…",
+    "need_account": "需要账户？",
+    "sign_up": "注册",
+    "errors": {
+      "identifier_required": "需要用户名或邮箱",
+      "password_required": "需要密码"
+    }
+  },
+  "museums": {
+    "title": "博物馆与展览",
+    "subtitle": "探索博物馆促销与展览——点击访问了解更多。",
+    "none": "目前没有博物馆促销。"
+  },
+  "checkout": {
+    "title": "结账",
+    "verifying_auth": "正在验证身份…",
+    "empty_cart": "购物车为空",
+    "continue_shopping": "继续购物",
+    "shipping_information": "配送信息",
+    "order_summary": "订单摘要"
+  },
+  "about": {
+    "badge": "关于 HangArt",
+    "hero_title": "赋能艺术家，启发收藏家",
+    "hero_subtitle": "连接才华艺术家与热爱艺术的收藏家。",
+    "values": {
+      "artist_support": {
+        "title": "支持艺术家",
+        "desc": "公平佣金与工具，助力创作生涯发展。"
+      },
+      "authentic_art": {
+        "title": "原创艺术",
+        "desc": "每件作品均为原创并已核验。"
+      },
+      "community_first": {
+        "title": "社区优先",
+        "desc": "打造包容、互助的艺术社区。"
+      },
+      "global_access": {
+        "title": "全球访问",
+        "desc": "连接全球艺术家与收藏家。"
+      }
+    },
+    "mission": {
+      "title": "我们的使命",
+      "body": "让艺术更易获取，支持创作事业，培育充满活力的社区。",
+      "cta": "加入我们，发现打动你的艺术"
+    },
+    "story": {
+      "title": "我们的故事",
+      "p1": "HangArt 源于一个简单的想法。",
+      "p2": "如今我们支持全球数千名艺术家。"
+    },
+    "cta": {
+      "title": "准备好探索了吗？",
+      "browse": "浏览作品",
+      "contact": "联系我们"
+    }
+  }
+  ,
+  "homeGallery": {
+    "title": "浏览艺术品画廊",
+    "subtitle": "发现来自世界各地才华艺术家的独特作品",
+    "search": { "placeholder": "按标题、描述或艺术家名称搜索..." },
+    "filters": {
+      "category": "类别",
+      "all_categories": "所有类别",
+      "medium": "媒介",
+      "all_mediums": "所有媒介",
+      "sort_by": "排序方式",
+      "reset": "重置筛选"
+    },
+    "sort": {
+      "newest_first": "最新优先",
+      "oldest_first": "最旧优先",
+      "price_high_low": "价格：从高到低",
+      "price_low_high": "价格：从低到高",
+      "title_a_z": "标题：A 到 Z"
+    },
+    "loading": "加载中...",
+    "results_count": "显示 {count}/{total} 件作品",
+    "loading_artworks": "正在加载艺术品...",
+    "no_results": "没有符合筛选条件的艺术品。",
+    "clear_filters": "清除筛选",
+    "pagination": {
+      "previous": "上一页",
+      "next": "下一页",
+      "page_of": "第 {page} 页，共 {pages} 页"
+    }
+  },
+  "holiday": {
+    "collection_title": "2025 假日收藏",
+    "loading": "正在加载合集...",
+    "none": "当前没有可用的艺术品。"
+  },
+  "testimonials": {
+    "items": {
+      "sarah_johnson": {
+        "role": "室内设计师",
+        "location": "美国纽约",
+        "comment": "作品质量超出我的预期。我购买的作品已成为客厅的焦点。物流很快，包装也非常好。"
+      },
+      "michael_chen": {
+        "role": "艺术收藏家",
+        "location": "英国伦敦",
+        "comment": "我收藏艺术超过20年，Hangart 画廊有我见过最独特的一些作品。客户服务非常专业，耐心解答了所有问题。"
+      },
+      "emma_rodriguez": {
+        "role": "策展人",
+        "location": "西班牙巴塞罗那",
+        "comment": "作为专业策展人，我很欣赏这个收藏的真实性与多样性。每件作品都有自己的故事，平台也让发现新艺术家变得更容易。"
+      },
+      "david_kim": {
+        "location": "韩国首尔",
+        "comment": "在这家画廊的艺术投资很棒。我不仅喜欢这些作品，它们的价值也随着时间升值。强烈推荐！"
+      },
+      "sophie_martin": {
+        "role": "摄影爱好者",
+        "location": "法国巴黎",
+        "comment": "精美的摄影作品集！我为家庭办公室找到了完美的一件。结账流程顺畅，配送准时。"
+      },
+      "james_wilson": {
+        "role": "科技企业家",
+        "location": "美国旧金山",
+        "comment": "我喜欢通过这个平台支持新兴艺术家。策展很出色，我也因此关注了多位艺术家的作品。"
+      }
+    }
+  }
 }

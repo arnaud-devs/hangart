@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/authProvider'
 
 type Artist = {
   id: number | string
+  user_id: number
   username?: string
   profile_photo?: string
   specialization?: string
@@ -103,7 +104,7 @@ export default function ArtistsListPage() {
           {items.map(a => (
             <Link
               key={String(a.id)}
-              href={`/artists/${a.id}`}
+              href={`/artists/${a.user_id}`}
               className="block group focus:outline-none focus:ring-2 focus:ring-yellow-600 rounded-2xl transition-transform hover:-translate-y-1 hover:shadow-lg duration-150"
             >
               <div className="rounded-2xl shadow border border-yellow-100 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden flex flex-col h-full group focus-within:ring-2 focus-within:ring-yellow-600 relative">

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from '@/lib/authProvider';
+import { useI18n } from '@/lib/i18nClient';
 import ThemeToggle from "./ThemeToggle";
 import LanguageSwitcher from "./LanguageSwitcher";
 import MobileSearch from "./MobileSearch";
@@ -12,29 +13,31 @@ import UserMenu from "./UserMenu";
 import CartButton from "./CartButton";
 
 export default function Navbar() {
+  const { t } = useI18n();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [helpMenuOpen, setHelpMenuOpen] = useState(false);
   const { user } = useAuth();
   const isBuyer = (user?.role || '').toString().toLowerCase() === 'buyer';
 
   const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/gallery", label: "Gallery" },
-    { href: "/artists", label: "Artists" },
+    { href: "/", label: t('nav.home') },
+    { href: "/gallery", label: t('nav.gallery') },
+    { href: "/artists", label: t('nav.artists') },
+    { href: "/contact", label: t('nav.contact') },
   ];
 
   const buyerLinks = [
-    { href: '/cart', label: 'Cart' },
-    { href: '/orders', label: 'Orders' },
-    { href: '/payments', label: 'Payments' },
-    { href: '/refunds', label: 'Refunds' },
+    { href: '/cart', label: t('nav.cart') },
+    { href: '/orders', label: t('nav.orders') },
+    { href: '/payments', label: t('nav.payments') },
+    { href: '/refunds', label: t('nav.refunds') },
   ];
 
   const helpLinks = [
-    { href: "/faq", label: "FAQ" },
-    { href: "/shipping", label: "Shipping" },
-    { href: "/terms", label: "Terms" },
-    { href: "/privacy", label: "Privacy" },
+    { href: "/faq", label: t('nav.faq') },
+    { href: "/shipping", label: t('nav.shipping') },
+    { href: "/terms", label: t('nav.terms') },
+    { href: "/privacy", label: t('nav.privacy') },
   ];
 
   return (
@@ -49,7 +52,7 @@ export default function Navbar() {
             {/* Left - Logo */}
             <div className="flex items-center gap-8">
               <Link href="/" className="text-2xl md:text-3xl font-serif text-[#3C3C43] dark:text-[#DFDFD6] leading-none">
-                Hangart
+                {t('brand.name')}
               </Link>
 
               {/* Desktop Navigation Links */}
@@ -77,7 +80,7 @@ export default function Navbar() {
                     onBlur={() => setTimeout(() => setHelpMenuOpen(false), 200)}
                     className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-600 transition-colors "
                   >
-                    Help
+                    {t('nav.help')}
                     <ChevronDown className={`w-4 h-4 transition-transform ${helpMenuOpen ? 'rotate-180' : ''}`} />
                   </button>
                   
@@ -104,8 +107,8 @@ export default function Navbar() {
               <div className="w-full">
                 <input
                   type="search"
-                  placeholder="Search for arts product"
-                  className="w-full rounded-full border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-white/5 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                  placeholder={t('search.placeholder')}
+                  className="w-full rounded-full border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                 />
               </div>
             </div>
@@ -187,7 +190,7 @@ export default function Navbar() {
               {/* Main Navigation Links */}
               <div className="mb-4">
                 <div className="px-2 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Navigation
+                  {t('nav.navigation')}
                 </div>
                 {navLinks.map((link) => (
                   <Link
@@ -201,7 +204,7 @@ export default function Navbar() {
                 ))}
                 {isBuyer && (
                   <div className="mt-3">
-                    <div className="px-2 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Buyer</div>
+                    <div className="px-2 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('nav.buyer')}</div>
                     {buyerLinks.map(link => (
                       <Link key={link.href} href={link.href} onClick={() => setMobileMenuOpen(false)} className="block text-base font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-4 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
                         {link.label}
@@ -214,7 +217,7 @@ export default function Navbar() {
               {/* Help Section */}
               <div className="mb-4">
                 <div className="px-2 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Help & Info
+                  {t('nav.help_info')}
                 </div>
                 {helpLinks.map((link) => (
                   <Link
@@ -237,7 +240,7 @@ export default function Navbar() {
                     className="flex items-center gap-3 text-base font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-4 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
                   >
                     <CartButton />
-                    <span>Shopping Cart</span>
+                    <span>{t('nav.shopping_cart')}</span>
                   </Link>
                 </div>
               )}
@@ -250,7 +253,7 @@ export default function Navbar() {
               <LanguageSwitcher />
             </div>
             <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
-              © 2025 Hangart. All rights reserved.
+              {t('footer.copyright', { year: new Date().getFullYear() })}
             </div>
           </div>
         </div>

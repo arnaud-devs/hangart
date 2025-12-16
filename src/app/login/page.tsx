@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import Link from 'next/link'
 import { useAuth } from '@/lib/authProvider'
+import { useI18n } from '@/lib/i18nClient'
 
 type FormValues = {
   identifier: string // username or email
@@ -20,6 +21,7 @@ type FormValues = {
 function LoginContent(){
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { t } = useI18n()
   const redirect = searchParams.get('redirect')
   const [isPending, startTransition] = useTransition()
   const { register, handleSubmit, formState } = useForm<FormValues>()
@@ -75,13 +77,13 @@ function LoginContent(){
         <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg p-8 rounded-2xl shadow-2xl border border-black/5 dark:border-white/10">
           <div className="flex items-center gap-4 mb-6">
             <div>
-              <h1 className="text-2xl font-semibold">Welcome back to Hangart</h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to manage your artworks, purchases and dashboard.</p>
+              <h1 className="text-2xl font-semibold">{t('login.welcome')}</h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('login.welcome_desc')}</p>
             </div>
           </div>
 
           <div className="space-y-4">
-          <h1 className="text-2xl font-semibold mb-4">Sign in</h1>
+          <h1 className="text-2xl font-semibold mb-4">{t('login.title')}</h1>
 
           {showRedirectMessage && (
             <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-600 rounded-md">
@@ -102,28 +104,28 @@ function LoginContent(){
             </div>
 
             <div>
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t('login.password_label')}</Label>
               <div className="relative">
                 <Input id="password" type={showPassword ? 'text' : 'password'} {...register('password', { required: 'Password is required' })} className='border-yellow-600 ' />
                 <button
                   type="button"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? t('login.hide_password') : t('login.show_password')}
                   onClick={() => setShowPassword(v => !v)}
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              {errors.password && <p className="text-sm text-red-600">{String(errors.password.message)}</p>}
+              {errors.password && <p className="text-sm text-red-600">{t('login.errors.password_required')}</p>}
             </div>
 
-            <Button type="submit" className="w-full text-white" disabled={isSubmitting}>
-              {isSubmitting ? 'Signing in…' : 'Sign in'}
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? t('login.submitting') : t('login.submit')}
             </Button>
           </form>
 
           <div className="mt-4 text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Need an account? <Link href={redirect ? `/signup?redirect=${redirect}` : "/signup"} className="text-yellow-600 hover:underline">Sign up</Link></p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('login.need_account')} <Link href={redirect ? `/signup?redirect=${redirect}` : "/signup"} className="text-emerald-600 hover:underline">{t('login.sign_up')}</Link></p>
           </div>
         </div>
       </div>

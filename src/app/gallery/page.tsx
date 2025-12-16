@@ -23,6 +23,7 @@ type ArtworkItem = {
 };
 
 export default function GalleryPage() {
+  const { t } = require('@/lib/i18nClient').useI18n();
   const [artworks, setArtworks] = useState<ArtworkItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -147,9 +148,9 @@ export default function GalleryPage() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Gallery</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{t('gallery.title')}</h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Discover unique artworks from talented artists around the world
+            {t('gallery.subtitle')}
           </p>
         </div>
 

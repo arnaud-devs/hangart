@@ -33,5 +33,189 @@
   "testimonials_title": "Icyo Abakusanya Bacu Bavuga",
   "testimonials_subtitle": "Byizigishwa n'ibihumbi by'abakunzi b'ubuhanzi ku isi",
   "prev_artworks": "Ibihangano byabanjirije",
-  "next_artworks": "Ibihangano bikurikira"
+  "next_artworks": "Ibihangano bikurikira",
+  "brand.name": "Hangart",
+  "search.placeholder": "Shakisha ibihangano",
+  "nav.home": "Ahabanza",
+  "nav.gallery": "Ububiko",
+  "nav.artists": "Abahanzi",
+  "nav.contact": "Twandikire",
+  "nav.cart": "Agatebo",
+  "nav.orders": "Ibyo wisabiye",
+  "nav.payments": "Ubwishyu",
+  "nav.refunds": "Gusubizwa",
+  "nav.help": "Ubufasha",
+  "nav.faq": "Ibibazo",
+  "nav.shipping": "Kohereza",
+  "nav.terms": "Amabwiriza",
+  "nav.privacy": "Bihishe",
+  "nav.navigation": "Ibice",
+  "nav.buyer": "Umuguzi",
+  "nav.help_info": "Ubufasha & Amakuru",
+  "nav.shopping_cart": "Agatebo",
+  "footer.about": "Vumbura ibihangano by'umwimerere by'abahanzi batangiye ku isi. Ibyegeranyo bya resitora, amafoto, igishusho n'ibindi.",
+  "footer.shop": "Ububiko",
+  "footer.customer_service": "Serivisi y'abakiriya",
+  "footer.newsletter": "Ubutumwa bwo kwiyandikisha",
+  "footer.newsletter_desc": "Iyandikishe kugira ngo ubone amakuru n'ibidasanzwe.",
+  "footer.email_placeholder": "Imeli yawe",
+  "footer.subscribe": "Iyandikishe",
+  "footer.all_artworks": "Ibihangano byose",
+  "footer.paintings": "Ishusho",
+  "footer.photography": "Amafoto",
+  "footer.sculpture": "Ibigishusho",
+  "footer.featured_artists": "Abahanzi batoranyijwe",
+  "footer.collections": "Ibyegeranyo",
+  "footer.about_us": "Ibyerekeye twe",
+  "footer.contact": "Twandikire",
+  "footer.shipping_returns": "Kohereza & Gusubiza",
+  "footer.faq": "Ibibazo",
+  "footer.support": "Ubufasha",
+  "footer.privacy_policy": "Politiki y'ibanga",
+  "footer.terms_of_service": "Amasezerano ya serivisi",
+  "footer.copyright": "© {year} Hangart. Uburenganzira bwose burabitswe.",
+  "footer.copyright_full": "© {year} HangartGallery. Uburenganzira bwose burabitswe.",
+  "gallery": {
+    "title": "Ububiko",
+    "subtitle": "Vumbura ibihangano by'udushya by'abahanzi b'abanyempano ku isi"
+  },
+  "login": {
+    "welcome": "Garuka kuri Hangart",
+    "welcome_desc": "Injira kugira ngo uyobore ibihangano byawe, ibyo waguze n'ububiko.",
+    "title": "Kwinjira",
+    "redirect_checkout": "Nylyoha winjire kugira ngo ukomeze ku kugura",
+    "identifier_label": "Izina cyangwa Imeli",
+    "identifier_placeholder": "urugero: amina cyangwa amina@example.com",
+    "password_label": "Ijambobanga",
+    "show_password": "Erekana ijambobanga",
+    "hide_password": "Hisha ijambobanga",
+    "submit": "Injira",
+    "submitting": "Kwinjira…",
+    "need_account": "Ukeneye konti?",
+    "sign_up": "Iyandikishe",
+    "errors": {
+      "identifier_required": "Izina cyangwa imeli birakenewe",
+      "password_required": "Ijambobanga rirakenewe"
+    }
+  },
+  "museums": {
+    "title": "Muzee & Imurikagukora",
+    "subtitle": "Menya ibyamamaza n'imurikagukora — kanda Gusura kugira ngo wige byinshi.",
+    "none": "Nta kwamamaza kwa muze enyine."
+  },
+  "checkout": {
+    "title": "Kwishura",
+    "verifying_auth": "Kugenzura uko wemejwe...",
+    "empty_cart": "Agatebo kawe kabuze ibiri mo",
+    "continue_shopping": "Komeza ugure",
+    "shipping_information": "Amakuru yo kohereza",
+    "order_summary": "Incamake y'ibyo wisabiye"
+  },
+  "about": {
+    "badge": "Ibyerekeye HangArt",
+    "hero_title": "Guteza imbere abahanzi, gushimisha abakusanya",
+    "hero_subtitle": "Isoko rihuza abahanzi b'abanyempano n'abakunzi b'ubuhanzi.",
+    "values": {
+      "artist_support": {
+        "title": "Gufasha abahanzi",
+        "desc": "Dushyigikira abahanzi binyuze mu mafaranga akwiye n'ibikoresho bibafasha gukura."
+      },
+      "authentic_art": {
+        "title": "Ubugeni bw'umwimerere",
+        "desc": "Buri gihangano ni icy'umwimerere kandi cyagenzuwe."
+      },
+      "community_first": {
+        "title": "Umuryango mbere",
+        "desc": "Duteza imbere umuryango uhuza kandi ushigikira."
+      },
+      "global_access": {
+        "title": "Kwigezwaho ku isi",
+        "desc": "Kuzana hamwe abahanzi n'abakunzi ku isi yose."
+      }
+    },
+    "mission": {
+      "title": "Intego zacu",
+      "body": "Kugira ngo ubugeni bube bwegereye buri wese no gushyigikira abahanzi.",
+      "cta": "Jyana natwe kandi uhashakemo ubugeni bugushimisha"
+    },
+    "story": {
+      "title": "Inkomoko yacu",
+      "p1": "HangArt yatangijwe n'abahanzi n'abakunzi b'ubuhanzi n'igitekerezo cyoroshye.",
+      "p2": "Ubu dushyigikira abahanzi ibihumbi ku isi hose."
+    },
+    "cta": {
+      "title": "Witeguye gushakisha?",
+      "browse": "Reba ibihangano",
+      "contact": "Twandikire"
+    }
+  }
+  ,
+  "homeGallery": {
+    "title": "Reba ububiko bw'ibihangano",
+    "subtitle": "Vumbura ibihangano byihariye by'abahanzi b'abanyempano ku isi",
+    "search": { "placeholder": "Shakisha ku izina, isobanuro cyangwa izina ry'umuhanzi..." },
+    "filters": {
+      "category": "Icyiciro",
+      "all_categories": "Ibyiciro byose",
+      "medium": "Ubwoko",
+      "all_mediums": "Ubwoko bwose",
+      "sort_by": "Tondeka ukurikije",
+      "reset": "Siba amasefa"
+    },
+    "sort": {
+      "newest_first": "Bishya mbere",
+      "oldest_first": "Byera mbere",
+      "price_high_low": "Igiciro: Kirekire kugeza gito",
+      "price_low_high": "Igiciro: Gito kugeza kirekire",
+      "title_a_z": "Umutwe: A kugeza Z"
+    },
+    "loading": "Birimo gutangazwa...",
+    "results_count": "Kwerekana {count} muri {total} ibihangano",
+    "loading_artworks": "Birimo gutangazwa ibihangano...",
+    "no_results": "Nta bihangano bihuye n'amasefa yawe.",
+    "clear_filters": "Siba amasefa",
+    "pagination": {
+      "previous": "Ibanjirije",
+      "next": "Ikurikira",
+      "page_of": "Paji {page} muri {pages}"
+    }
+  },
+  "holiday": {
+    "collection_title": "Ibyegeranyo bya Noheri 2025",
+    "loading": "Birimo gutangazwa ibyegeranyo...",
+    "none": "Nta bihangano biharari ubu."
+  },
+  "testimonials": {
+    "items": {
+      "sarah_johnson": {
+        "role": "Umuhanga mu gutunganya ibyumba",
+        "location": "New York, Amerika",
+        "comment": "Ubwiza bw'igihangano bwararenze ibyo nari niteze. Igihangano naguze cyabaye umutima w'inzu yanjye. Kohereza byagenze vuba kandi gupakira kwari ku rwego rwo hejuru."
+      },
+      "michael_chen": {
+        "role": "Umukusanyacy'ubuhanzi",
+        "location": "London, Ubwongereza",
+        "comment": "Maze imyaka irenga 20 nkusanya ubugeni, kandi Hangart Gallery ifite ibice byihariye cyane. Serivisi y'abakiliya yangiriye akamaro mu gusubiza ibibazo byanjye byose."
+      },
+      "emma_rodriguez": {
+        "role": "Umutunganya imurikagurisha (Curator)",
+        "location": "Barcelona, Esipanye",
+        "comment": "Nk'umukozi wabigize umwuga, nishimira ukuri n'itandukanye ry'ibihangano. Buri gihangano gifite inkuru, kandi uru rubuga ryoroshya kumenya abahanzi bashya."
+      },
+      "david_kim": {
+        "location": "Seoul, Koreya y'Epfo",
+        "comment": "Ishoramari mu bihangano by'iri soko ryashobokeye neza. Nkunda ibihangano kandi agaciro kabyo kiyongereye uko igihe gitambuka. Ndabigira inama!"
+      },
+      "sophie_martin": {
+        "role": "Ukunda ifoto",
+        "location": "Paris, Ubufaransa",
+        "comment": "Urutonde rw'amafoto rwiza cyane! Nabonye igihangano gikwiye ku biro byanjye byo mu rugo. Kwishyura byari byoroshye kandi kohereza byageze igihe."
+      },
+      "james_wilson": {
+        "role": "Umushoramari mu ikoranabuhanga",
+        "location": "San Francisco, Amerika",
+        "comment": "Nkunda gushyigikira abahanzi batangiye binyuze kuri uru rubuga. Gutoranya ibihangano ni byiza kandi namenye abahanzi batandukanye nkurikiranira hafi."
+      }
+    }
+  }
 }

@@ -99,8 +99,8 @@ export default function ContactPage() {
         <div className="absolute top-10 right-10 w-72 h-72 bg-white/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-10 left-10 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl"></div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 dark:text-white text-black">
+          <div className="text-center max-w-3xl mx-auto ">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-6">
               <Sparkles className="w-4 h-4" />
               <span className="text-sm font-medium">We'd love to hear from you</span>
@@ -108,7 +108,7 @@ export default function ContactPage() {
             <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
               Get in Touch
             </h1>
-            <p className="text-xl text-white/80 leading-relaxed">
+            <p className="text-xl  leading-relaxed dark:text-white text-black">
               Questions about selling your art? Need help with an order? Just want to say hi? Drop us a line and we'll get back to you soon.
             </p>
           </div>

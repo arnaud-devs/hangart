@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { useI18n } from '@/lib/i18nClient';
 import MuseumAdCard from '@/components/dashboard/MuseumAdCard';
 import sampleMuseumAds from '@/data/sampleMuseumAds';
 
@@ -18,6 +19,7 @@ const STORAGE_KEY = 'museumAds';
 
 export default function Page() {
   const [ads, setAds] = useState<Ad[]>([]);
+  const { t } = useI18n();
 
   useEffect(() => {
     try {
@@ -35,11 +37,11 @@ export default function Page() {
   return (
     <div className="p-6">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-2xl font-bold mb-4">Museums & Exhibitions</h1>
-        <p className="text-sm text-gray-500 mb-6">Discover museum promotions and exhibitions — click Visit to learn more.</p>
+        <h1 className="text-2xl font-bold mb-4">{t('museums.title')}</h1>
+        <p className="text-sm text-gray-500 mb-6">{t('museums.subtitle')}</p>
 
         {ads.length === 0 ? (
-          <div className="text-sm text-gray-500">No current museum promotions.</div>
+          <div className="text-sm text-gray-500">{t('museums.none')}</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {ads.map(a => (

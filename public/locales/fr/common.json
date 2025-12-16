@@ -33,5 +33,189 @@
   "testimonials_title": "Ce que disent nos collectionneurs",
   "testimonials_subtitle": "Approuvé par des milliers d'amateurs d'art dans le monde",
   "prev_artworks": "Œuvres précédentes",
-  "next_artworks": "Œuvres suivantes"
+  "next_artworks": "Œuvres suivantes",
+  "brand.name": "Hangart",
+  "search.placeholder": "Rechercher des œuvres",
+  "nav.home": "Accueil",
+  "nav.gallery": "Galerie",
+  "nav.artists": "Artistes",
+  "nav.contact": "Contact",
+  "nav.cart": "Panier",
+  "nav.orders": "Commandes",
+  "nav.payments": "Paiements",
+  "nav.refunds": "Remboursements",
+  "nav.help": "Aide",
+  "nav.faq": "FAQ",
+  "nav.shipping": "Livraison",
+  "nav.terms": "Conditions",
+  "nav.privacy": "Confidentialité",
+  "nav.navigation": "Navigation",
+  "nav.buyer": "Acheteur",
+  "nav.help_info": "Aide & Infos",
+  "nav.shopping_cart": "Panier",
+  "footer.about": "Découvrez des œuvres originales d'artistes émergents du monde entier. Collections de peinture, photographie, sculpture et plus.",
+  "footer.shop": "Boutique",
+  "footer.customer_service": "Service client",
+  "footer.newsletter": "Newsletter",
+  "footer.newsletter_desc": "Abonnez-vous pour recevoir des nouveautés et des offres exclusives.",
+  "footer.email_placeholder": "Votre email",
+  "footer.subscribe": "S'abonner",
+  "footer.all_artworks": "Toutes les œuvres",
+  "footer.paintings": "Peintures",
+  "footer.photography": "Photographie",
+  "footer.sculpture": "Sculpture",
+  "footer.featured_artists": "Artistes en vedette",
+  "footer.collections": "Collections",
+  "footer.about_us": "À propos",
+  "footer.contact": "Contact",
+  "footer.shipping_returns": "Livraison & Retours",
+  "footer.faq": "FAQ",
+  "footer.support": "Support",
+  "footer.privacy_policy": "Politique de confidentialité",
+  "footer.terms_of_service": "Conditions d'utilisation",
+  "footer.copyright": "© {year} Hangart. Tous droits réservés.",
+  "footer.copyright_full": "© {year} HangartGallery. Tous droits réservés.",
+  "gallery": {
+    "title": "Galerie",
+    "subtitle": "Découvrez des œuvres uniques de talentueux artistes du monde entier"
+  },
+  "login": {
+    "welcome": "Bienvenue à Hangart",
+    "welcome_desc": "Connectez-vous pour gérer vos œuvres, achats et tableau de bord.",
+    "title": "Se connecter",
+    "redirect_checkout": "Veuillez vous connecter pour continuer vers le paiement",
+    "identifier_label": "Nom d'utilisateur ou Email",
+    "identifier_placeholder": "ex. amina ou amina@example.com",
+    "password_label": "Mot de passe",
+    "show_password": "Afficher le mot de passe",
+    "hide_password": "Masquer le mot de passe",
+    "submit": "Se connecter",
+    "submitting": "Connexion…",
+    "need_account": "Besoin d'un compte ?",
+    "sign_up": "S'inscrire",
+    "errors": {
+      "identifier_required": "Le nom d'utilisateur ou l'email est requis",
+      "password_required": "Le mot de passe est requis"
+    }
+  },
+  "museums": {
+    "title": "Musées & Expositions",
+    "subtitle": "Découvrez les promotions et expositions des musées — cliquez sur Visiter pour en savoir plus.",
+    "none": "Aucune promotion de musée en cours."
+  },
+  "checkout": {
+    "title": "Paiement",
+    "verifying_auth": "Vérification de l'authentification...",
+    "empty_cart": "Votre panier est vide",
+    "continue_shopping": "Continuer vos achats",
+    "shipping_information": "Informations de livraison",
+    "order_summary": "Récapitulatif de commande"
+  },
+  "about": {
+    "badge": "À propos de HangArt",
+    "hero_title": "Soutenir les artistes, inspirer les collectionneurs",
+    "hero_subtitle": "Une marketplace mondiale connectant des artistes talentueux à des collectionneurs passionnés.",
+    "values": {
+      "artist_support": {
+        "title": "Soutien aux artistes",
+        "desc": "Nous défendons les artistes avec des commissions équitables et des outils pour développer leur carrière."
+      },
+      "authentic_art": {
+        "title": "Art authentique",
+        "desc": "Chaque pièce est originale et vérifiée."
+      },
+      "community_first": {
+        "title": "Priorité à la communauté",
+        "desc": "Nous favorisons une communauté inclusive et solidaire."
+      },
+      "global_access": {
+        "title": "Accès mondial",
+        "desc": "Rassembler artistes et collectionneurs du monde entier."
+      }
+    },
+    "mission": {
+      "title": "Notre mission",
+      "body": "Rendre l'art accessible, soutenir les carrières créatives et encourager une communauté vibrante.",
+      "cta": "Rejoignez-nous et découvrez l'art qui vous émeut"
+    },
+    "story": {
+      "title": "Notre histoire",
+      "p1": "Fondé par des artistes et des passionnés d'art, HangArt a commencé avec une idée simple.",
+      "p2": "Aujourd'hui, nous soutenons des milliers d'artistes à travers le monde."
+    },
+    "cta": {
+      "title": "Prêt à explorer ?",
+      "browse": "Parcourir les œuvres",
+      "contact": "Nous contacter"
+    }
+  }
+  ,
+  "homeGallery": {
+    "title": "Parcourir la galerie d'œuvres",
+    "subtitle": "Découvrez des œuvres uniques d'artistes talentueux du monde entier",
+    "search": { "placeholder": "Rechercher par titre, description ou nom d'artiste..." },
+    "filters": {
+      "category": "Catégorie",
+      "all_categories": "Toutes les catégories",
+      "medium": "Technique",
+      "all_mediums": "Toutes les techniques",
+      "sort_by": "Trier par",
+      "reset": "Réinitialiser les filtres"
+    },
+    "sort": {
+      "newest_first": "Plus récents",
+      "oldest_first": "Plus anciens",
+      "price_high_low": "Prix : décroissant",
+      "price_low_high": "Prix : croissant",
+      "title_a_z": "Titre : A à Z"
+    },
+    "loading": "Chargement...",
+    "results_count": "Affichage de {count} sur {total} œuvres",
+    "loading_artworks": "Chargement des œuvres...",
+    "no_results": "Aucune œuvre ne correspond à vos filtres.",
+    "clear_filters": "Effacer les filtres",
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "page_of": "Page {page} sur {pages}"
+    }
+  },
+  "holiday": {
+    "collection_title": "Collection Fêtes 2025",
+    "loading": "Chargement de la collection...",
+    "none": "Aucune œuvre disponible pour le moment."
+  },
+  "testimonials": {
+    "items": {
+      "sarah_johnson": {
+        "role": "Architecte d'intérieur",
+        "location": "New York, États-Unis",
+        "comment": "La qualité de l'œuvre a dépassé mes attentes. La pièce que j'ai achetée est devenue le point central de mon salon. L'expédition a été rapide et l'emballage excellent."
+      },
+      "michael_chen": {
+        "role": "Collectionneur d'art",
+        "location": "Londres, Royaume-Uni",
+        "comment": "Je collectionne l'art depuis plus de 20 ans, et Hangart Gallery propose certaines des pièces les plus uniques que j'ai vues. Le service client a été extrêmement utile et a répondu à toutes mes questions."
+      },
+      "emma_rodriguez": {
+        "role": "Curatrice",
+        "location": "Barcelone, Espagne",
+        "comment": "En tant que curatrice professionnelle, j'apprécie l'authenticité et la diversité de la collection. Chaque pièce raconte une histoire et la plateforme facilite la découverte de nouveaux artistes."
+      },
+      "david_kim": {
+        "location": "Séoul, Corée du Sud",
+        "comment": "Investir dans l'art auprès de cette galerie a été formidable. J'aime les pièces et leur valeur a augmenté avec le temps. Je recommande vivement !"
+      },
+      "sophie_martin": {
+        "role": "Passionnée de photographie",
+        "location": "Paris, France",
+        "comment": "Magnifique collection de photographies ! J'ai trouvé la pièce parfaite pour mon bureau. Le processus de paiement était fluide et la livraison ponctuelle."
+      },
+      "james_wilson": {
+        "role": "Entrepreneur tech",
+        "location": "San Francisco, États-Unis",
+        "comment": "J'aime soutenir les artistes émergents via cette plateforme. La curation est excellente et j'ai découvert plusieurs artistes dont je suis désormais le travail de près."
+      }
+    }
+  }
 }

@@ -87,7 +87,9 @@ interface OrdersResponse {
 
   // ...existing code...
 
+import { useI18n } from '@/lib/i18nClient';
 export default function OrdersPage() {
+  const { t } = useI18n();
     const statusColors: Record<string, { bg: string; text: string; badge: string }> = {
       pending_payment: { bg: "bg-yellow-50 dark:bg-yellow-900/20", text: "text-yellow-700 dark:text-yellow-200", badge: "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200" },
       paid: { bg: "bg-green-50 dark:bg-green-900/20", text: "text-green-700 dark:text-green-200", badge: "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200" },
@@ -301,8 +303,8 @@ export default function OrdersPage() {
       <div className="">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Orders Management</h1>
-          <p className="text-gray-600 dark:text-gray-400">Track and manage all customer orders</p>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{t('dashboard.orders.title')}</h1>
+          <p className="text-gray-600 dark:text-gray-400">{t('dashboard.orders.subtitle')}</p>
         </div>
 
         {/* Main Card */}
@@ -312,7 +314,7 @@ export default function OrdersPage() {
             <div className="p-4 rounded-lg bg-white dark:bg-white/5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Total Orders</p>
+                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">{t('dashboard.orders.total')}</p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalCount}</p>
                 </div>
                 <Package className="w-8 h-8 text-blue-500 opacity-20" />
@@ -322,7 +324,7 @@ export default function OrdersPage() {
             <div className="p-4 rounded-lg bg-white dark:bg-white/5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Orders Value</p>
+                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">{t('dashboard.orders.value')}</p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">
                     ${orders.reduce((sum, order) => sum + parseFloat(order.total_amount), 0).toFixed(2)}
                   </p>
@@ -334,7 +336,7 @@ export default function OrdersPage() {
             <div className="p-4 rounded-lg bg-white dark:bg-white/5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Paid Orders</p>
+                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">{t('dashboard.orders.paid')}</p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">{orders.filter(o => o.status === 'paid').length}</p>
                 </div>
                 <DollarSign className="w-8 h-8 text-green-500 opacity-20" />
@@ -344,7 +346,7 @@ export default function OrdersPage() {
             <div className="p-4 rounded-lg bg-white dark:bg-white/5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Pending Orders</p>
+                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">{t('dashboard.orders.pending')}</p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">{orders.filter(o => o.status === 'pending_payment').length}</p>
                 </div>
                 <Package className="w-8 h-8 text-yellow-500 opacity-20" />
@@ -477,7 +479,7 @@ export default function OrdersPage() {
                     <tr>
                       <td colSpan={7} className="px-6 py-12 text-center">
                         <Package className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                        <p className="text-gray-600 dark:text-gray-400">No orders found</p>
+                        <p className="text-gray-600 dark:text-gray-400">{t('dashboard.orders.none')}</p>
                       </td>
                     </tr>
                   ) : (
@@ -556,7 +558,7 @@ export default function OrdersPage() {
               <span className="font-semibold">
                 {Math.min(page * pageSize, totalCount)}
               </span>{" "}
-              of <span className="font-semibold">{totalCount}</span> orders
+              {t('dashboard.orders.pagination_of')} <span className="font-semibold">{totalCount}</span> {t('dashboard.orders.pagination_orders')}
             </div>
             <div className="flex gap-2">
               <button

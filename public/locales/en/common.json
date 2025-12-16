@@ -33,5 +33,200 @@
   "testimonials_title": "What Our Collectors Say",
   "testimonials_subtitle": "Trusted by thousands of art lovers worldwide",
   "prev_artworks": "Previous artworks",
-  "next_artworks": "Next artworks"
+  "next_artworks": "Next artworks",
+  "brand.name": "Hangart",
+  "search.placeholder": "Search artworks",
+  "nav.home": "Home",
+  "nav.gallery": "Gallery",
+  "nav.artists": "Artists",
+  "nav.contact": "Contact",
+  "nav.cart": "Cart",
+  "nav.orders": "Orders",
+  "nav.payments": "Payments",
+  "nav.refunds": "Refunds",
+  "nav.help": "Help",
+  "nav.faq": "FAQ",
+  "nav.shipping": "Shipping",
+  "nav.terms": "Terms",
+  "nav.privacy": "Privacy",
+  "nav.navigation": "Navigation",
+  "nav.buyer": "Buyer",
+  "nav.help_info": "Help & Info",
+  "nav.shopping_cart": "Shopping Cart",
+  "footer.about": "Discover original art from emerging global artists. Curated collections of paintings, photography, sculpture and more.",
+  "footer.shop": "Shop",
+  "footer.customer_service": "Customer Service",
+  "footer.newsletter": "Newsletter",
+  "footer.newsletter_desc": "Subscribe to get updates on new artworks and exclusive offers.",
+  "footer.email_placeholder": "Your email",
+  "footer.subscribe": "Subscribe",
+  "footer.all_artworks": "All Artworks",
+  "footer.paintings": "Paintings",
+  "footer.photography": "Photography",
+  "footer.sculpture": "Sculpture",
+  "footer.featured_artists": "Featured Artists",
+  "footer.collections": "Collections",
+  "footer.about_us": "About Us",
+  "footer.contact": "Contact",
+  "footer.shipping_returns": "Shipping & Returns",
+  "footer.faq": "FAQ",
+  "footer.support": "Support",
+  "footer.privacy_policy": "Privacy Policy",
+  "footer.terms_of_service": "Terms of Service",
+  "footer.copyright": "© {year} Hangart. All rights reserved.",
+  "footer.copyright_full": "© {year} HangartGallery. All rights reserved.",
+    "dashboard.orders.title": "Orders Management",
+    "dashboard.orders.subtitle": "Track and manage all customer orders",
+    "dashboard.orders.total": "Total Orders",
+    "dashboard.orders.value": "Orders Value",
+    "dashboard.orders.paid": "Paid Orders",
+    "dashboard.orders.pending": "Pending Orders",
+    "dashboard.orders.loading": "Loading orders...",
+    "dashboard.orders.none": "No orders found",
+    "dashboard.orders.pagination_of": "of",
+    "dashboard.orders.pagination_orders": "orders"
+,
+  "gallery": {
+    "title": "Gallery",
+    "subtitle": "Discover unique artworks from talented artists around the world"
+  },
+  "login": {
+    "welcome": "Welcome back to Hangart",
+    "welcome_desc": "Sign in to manage your artworks, purchases and dashboard.",
+    "title": "Sign in",
+    "redirect_checkout": "Please log in to continue to checkout",
+    "identifier_label": "Username or Email",
+    "identifier_placeholder": "e.g. amina or amina@example.com",
+    "password_label": "Password",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "need_account": "Need an account?",
+    "sign_up": "Sign up",
+    "errors": {
+      "identifier_required": "Username or email is required",
+      "password_required": "Password is required"
+    }
+  },
+  "museums": {
+    "title": "Museums & Exhibitions",
+    "subtitle": "Discover museum promotions and exhibitions — click Visit to learn more.",
+    "none": "No current museum promotions."
+  },
+  "checkout": {
+    "title": "Checkout",
+    "verifying_auth": "Verifying authentication...",
+    "empty_cart": "Your cart is empty",
+    "continue_shopping": "Continue Shopping",
+    "shipping_information": "Shipping Information",
+    "order_summary": "Order Summary"
+  },
+  "about": {
+    "badge": "About HangArt",
+    "hero_title": "Empowering artists, inspiring collectors",
+    "hero_subtitle": "A global marketplace connecting talented artists with passionate collectors. We believe in the power of original art to transform spaces and lives.",
+    "values": {
+      "artist_support": {
+        "title": "Artist Support",
+        "desc": "We champion artists by providing fair commissions and tools to grow their creative careers."
+      },
+      "authentic_art": {
+        "title": "Authentic Art",
+        "desc": "Every piece is original and verified, ensuring you get genuine artwork directly from creators."
+      },
+      "community_first": {
+        "title": "Community First",
+        "desc": "We foster a supportive, inclusive community where artists and collectors connect and thrive."
+      },
+      "global_access": {
+        "title": "Global Access",
+        "desc": "Bringing together artists and collectors from around the world in one accessible platform."
+      }
+    },
+    "mission": {
+      "title": "Our Mission",
+      "body": "To make art accessible, support creative careers, and foster a vibrant, supportive art community. Whether you're a seasoned collector or just starting your journey, HangArt is your home for inspiration and connection.",
+      "cta": "Join us and discover the art that moves you"
+    },
+    "story": {
+      "title": "Our Story",
+      "p1": "Founded by artists and art lovers, HangArt began with a simple idea: make it easier for artists to share their work with the world and for collectors to discover unique pieces.",
+      "p2": "Today, we're proud to support thousands of artists worldwide, helping them turn their passion into sustainable careers while bringing beautiful, original art into homes and spaces everywhere."
+    },
+    "cta": {
+      "title": "Ready to explore?",
+      "browse": "Browse Artwork",
+      "contact": "Contact Us"
+    }
+  }
+  ,
+  "homeGallery": {
+    "title": "Browse Artworks Gallery",
+    "subtitle": "Discover unique artworks from talented artists around the world",
+    "search": { "placeholder": "Search by title, description, or artist name..." },
+    "filters": {
+      "category": "Category",
+      "all_categories": "All Categories",
+      "medium": "Medium",
+      "all_mediums": "All Mediums",
+      "sort_by": "Sort By",
+      "reset": "Reset Filters"
+    },
+    "sort": {
+      "newest_first": "Newest First",
+      "oldest_first": "Oldest First",
+      "price_high_low": "Price: High to Low",
+      "price_low_high": "Price: Low to High",
+      "title_a_z": "Title: A to Z"
+    },
+    "loading": "Loading...",
+    "results_count": "Showing {count} of {total} artworks",
+    "loading_artworks": "Loading artworks...",
+    "no_results": "No artworks found matching your filters.",
+    "clear_filters": "Clear Filters",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page_of": "Page {page} of {pages}"
+    }
+  },
+  "holiday": {
+    "collection_title": "Holiday 2025 Collection",
+    "loading": "Loading collection...",
+    "none": "No artworks available at the moment."
+  },
+  "testimonials": {
+    "items": {
+      "sarah_johnson": {
+        "role": "Interior Designer",
+        "location": "New York, USA",
+        "comment": "The quality of the artwork exceeded my expectations. The piece I purchased has become the centerpiece of my living room. The shipping was fast and the packaging was excellent."
+      },
+      "michael_chen": {
+        "role": "Art Collector",
+        "location": "London, UK",
+        "comment": "I've been collecting art for over 20 years, and Hangart Gallery has some of the most unique pieces I've seen. The customer service team was incredibly helpful in answering all my questions."
+      },
+      "emma_rodriguez": {
+        "role": "Curator",
+        "location": "Barcelona, Spain",
+        "comment": "As a professional curator, I appreciate the authenticity and diversity of the collection. Every piece tells a story, and the platform makes discovering new artists so easy."
+      },
+      "david_kim": {
+        "location": "Seoul, South Korea",
+        "comment": "The investment in art from this gallery has been wonderful. Not only do I love the pieces, but the value has appreciated over time. Highly recommend!"
+      },
+      "sophie_martin": {
+        "role": "Photography Enthusiast",
+        "location": "Paris, France",
+        "comment": "Beautiful photography collection! I found the perfect piece for my home office. The checkout process was seamless and delivery was on time."
+      },
+      "james_wilson": {
+        "role": "Tech Entrepreneur",
+        "location": "San Francisco, USA",
+        "comment": "Love supporting emerging artists through this platform. The curation is top-notch and I've discovered several artists whose work I now follow closely."
+      }
+    }
+  }
 }

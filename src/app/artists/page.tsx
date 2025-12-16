@@ -2,9 +2,12 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
+import { get } from '@/lib/appClient'
+import { useAuth } from '@/lib/authProvider'
 
 type Artist = {
   id: number | string
+  user_id: number
   username?: string
   profile_photo?: string
   specialization?: string
@@ -16,6 +19,7 @@ type Artist = {
 }
 
 export default function ArtistsListPage() {
+  const { user, loading: authLoading } = useAuth();
   const [q, setQ] = useState('')
   const [country, setCountry] = useState('')
   const [specialization, setSpecialization] = useState('')
@@ -37,25 +41,25 @@ export default function ArtistsListPage() {
 
   async function fetchArtists(targetPage?: number) {
     try {
-      setLoading(true); setError(null)
-      const qp = new URLSearchParams(queryString)
-      qp.set('page', String(targetPage ?? page))
-      const res = await fetch(`/api/artists${qp.toString() ? `?${qp.toString()}` : ''}`)
-      const data = await res.json()
-      if (!res.ok || data?.ok === false) {
-        throw new Error(data?.message || 'Failed to load artists')
-      }
+      setLoading(true); setError(null);
+      const params: Record<string, any> = {};
+      if (q) params.q = q;
+      if (country) params.country = country;
+      if (specialization) params.specialization = specialization;
+      params.page = targetPage ?? page;
+      // Use the real API endpoint and pass token via appClient
+      const data = await get('/artists/', params);
       // Only show verified artists
-      const results: Artist[] = (Array.isArray(data?.results) ? data.results : []).filter((a: Artist) => a.verified_by_admin)
-      setItems(results)
-      setCount(Number(data?.count ?? results.length ?? 0))
-      setNext(data?.next ?? null)
-      setPrevious(data?.previous ?? null)
-      setPage(Number(targetPage ?? page))
+      const results: Artist[] = (Array.isArray(data?.results) ? data.results : []).filter((a: Artist) => a.verified_by_admin);
+      setItems(results);
+      setCount(Number(data?.count ?? results.length ?? 0));
+      setNext(data?.next ?? null);
+      setPrevious(data?.previous ?? null);
+      setPage(Number(targetPage ?? page));
     } catch (e: any) {
-      setError(String(e?.message ?? e))
+      setError(String(e?.message ?? e));
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -98,33 +102,50 @@ export default function ArtistsListPage() {
         {/* Card Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {items.map(a => (
-            <Link key={String(a.id)} href={`/artists/${a.id}`} className="block group focus:outline-none focus:ring-2 focus:ring-yellow-600 rounded-2xl transition-shadow">
-              <div className="rounded-2xl shadow-lg hover:shadow-2xl transition-shadow bg-white dark:bg-gray-800 border border-yellow-100 dark:border-gray-700 overflow-hidden flex flex-col h-full group focus-within:ring-2 focus-within:ring-yellow-600">
-                <div className="h-48 bg-gray-100 dark:bg-gray-700 flex items-center justify-center relative">
+            <Link
+              key={String(a.id)}
+              href={`/artists/${a.user_id}`}
+              className="block group focus:outline-none focus:ring-2 focus:ring-yellow-600 rounded-2xl transition-transform hover:-translate-y-1 hover:shadow-lg duration-150"
+            >
+              <div className="rounded-2xl shadow border border-yellow-100 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden flex flex-col h-full group focus-within:ring-2 focus-within:ring-yellow-600 relative">
+                <div className="h-40 flex items-center justify-center relative bg-gray-50 dark:bg-gray-800">
                   {a.profile_photo ? (
-                    <img src={a.profile_photo} alt={a.username || 'Artist'} className="w-full h-48 object-cover object-center transition-transform group-hover:scale-105 duration-200" />
+                    <img
+                      src={a.profile_photo}
+                      alt={a.username || 'Artist'}
+                      className="w-20 h-20 object-cover object-center rounded-full border-2 border-yellow-200 dark:border-gray-700 bg-white"
+                    />
                   ) : (
-                    <div className="w-full h-48 flex items-center justify-center text-lg text-gray-400 font-semibold">No photo</div>
+                    <div className="w-20 h-20 flex items-center justify-center rounded-full bg-yellow-100 dark:bg-gray-700 text-2xl text-yellow-700 dark:text-gray-300 font-bold">
+                      {a.username ? a.username.charAt(0).toUpperCase() : 'A'}
+                    </div>
                   )}
                   {a.verified_by_admin && (
-                    <span className="absolute top-2 right-2 bg-yellow-600 text-white text-xs px-3 py-1 rounded-full font-bold shadow-lg tracking-wide">Verified</span>
+                    <span className="absolute top-3 right-3 bg-yellow-600 text-white text-xs px-2 py-0.5 rounded font-bold shadow tracking-wide z-10">Verified</span>
                   )}
                 </div>
-                <div className="p-5 flex-1 flex flex-col">
-                  <div className="font-extrabold text-lg text-gray-900 dark:text-gray-100 truncate mb-1 flex items-center gap-2">
+                <div className="p-4 flex-1 flex flex-col">
+                  <div className="font-bold text-base text-gray-900 dark:text-gray-100 truncate mb-1 flex items-center gap-2">
                     {a.username || `Artist #${a.id}`}
                   </div>
-                  <div className="text-xs text-yellow-600 font-semibold mb-1 truncate uppercase tracking-wide">{a.specialization || '—'}</div>
-                  {a.experience_years && (
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{a.experience_years} years experience</div>
+                  <div className="text-xs text-yellow-700 dark:text-yellow-300 font-medium mb-1 truncate uppercase tracking-wide">
+                    {a.specialization || <span className="opacity-60">Specialization unknown</span>}
+                  </div>
+                  {a.experience_years ? (
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 flex items-center gap-1">
+                      <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-1"></span>
+                      {a.experience_years} yrs experience
+                    </div>
+                  ) : (
+                    <div className="text-xs text-gray-400 mb-1">—</div>
                   )}
                   {a.bio && (
-                    <div className="text-xs text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">{a.bio}</div>
+                    <div className="text-xs text-gray-700 dark:text-gray-300 mb-2 line-clamp-2">{a.bio}</div>
                   )}
                   <div className="mt-auto flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                    <span>{a.city || '—'}</span>
+                    <span>{a.city || <span className="opacity-60">City</span>}</span>
                     {a.city && a.country && <span>•</span>}
-                    <span>{a.country || ''}</span>
+                    <span>{a.country || <span className="opacity-60">Country</span>}</span>
                   </div>
                 </div>
               </div>

@@ -102,13 +102,11 @@ export async function patchBuyerProfile(payload: Record<string, any>) {
   return data;
 }
 
+import { get } from './appClient';
+
 export async function getPublicArtistProfile(userId: string) {
-  const res = await fetch(`/api/profiles/artist/${encodeURIComponent(userId)}/`, { method: 'GET' });
-  const data = await res.json();
-  if (!res.ok || data?.ok === false) {
-    throw new Error(data?.message || 'Fetch public artist profile failed');
-  }
-  return data;
+  // Use the real API endpoint, not the local proxy
+  return get(`/profiles/artist/${encodeURIComponent(userId)}/`);
 }
 
 export async function logout() {

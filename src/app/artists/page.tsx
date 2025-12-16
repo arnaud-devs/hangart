@@ -69,7 +69,7 @@ export default function ArtistsListPage() {
   }, [])
 
   return (
-    <main className="min-h-[70vh] px-2 py-8 bg-gradient-to-br from-yellow-50 via-white to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <main className="min-h-[70vh]  bg-[#f7f7f8] dark:bg-black p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-2">
@@ -87,11 +87,11 @@ export default function ArtistsListPage() {
         </div>
 
         {/* Search/Filter Bar */}
-        <div className="bg-white/90 dark:bg-gray-800/90 border border-yellow-100 dark:border-gray-700 rounded-xl p-4 mb-6 shadow-sm">
+        <div className="bg-white/90 dark:bg-white/5 border border-yellow-100 dark:border-white/10 rounded-xl p-4 mb-6 shadow-sm">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name or bio" className="p-2 border border-yellow-200 focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 rounded bg-white dark:bg-gray-700 transition" />
-            <input value={country} onChange={e => setCountry(e.target.value)} placeholder="Country" className="p-2 border border-yellow-200 focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 rounded bg-white dark:bg-gray-700 transition" />
-            <input value={specialization} onChange={e => setSpecialization(e.target.value)} placeholder="Specialization" className="p-2 border border-yellow-200 focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 rounded bg-white dark:bg-gray-700 transition" />
+            <input value={q} onChange={e => setQ(e.target.value)} placeholder="Search by name or bio" className="p-2 border border-gray-200 focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 rounded bg-white dark:bg-white/5 transition" />
+            <input value={country} onChange={e => setCountry(e.target.value)} placeholder="Country" className="p-2 border border-gray-200 focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 rounded bg-white dark:bg-white/5 transition" />
+            <input value={specialization} onChange={e => setSpecialization(e.target.value)} placeholder="Specialization" className="p-2 border border-gray-200 focus:border-yellow-600 focus:ring-2 focus:ring-yellow-600 rounded bg-white dark:bg-white/5 transition" />
             <button onClick={() => fetchArtists(1)} className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded shadow transition">Search</button>
           </div>
         </div>
@@ -107,7 +107,7 @@ export default function ArtistsListPage() {
               href={`/artists/${a.user_id}`}
               className="block group focus:outline-none focus:ring-2 focus:ring-yellow-600 rounded-2xl transition-transform hover:-translate-y-1 hover:shadow-lg duration-150"
             >
-              <div className="rounded-2xl shadow border border-yellow-100 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden flex flex-col h-full group focus-within:ring-2 focus-within:ring-yellow-600 relative">
+              <div className="rounded-2xl shadow border border-yellow-100 dark:border-white/10 bg-white dark:bg-white/5 overflow-hidden flex flex-col h-full group focus-within:ring-2 focus-within:ring-yellow-600 relative">
                 <div className="h-40 flex items-center justify-center relative bg-gray-50 dark:bg-gray-800">
                   {a.profile_photo ? (
                     <img

@@ -13,7 +13,7 @@ export default function CartPage() {
   const [updating, setUpdating] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-[#f7f7f8] dark:bg-black">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {error && (
           <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
@@ -23,7 +23,7 @@ export default function CartPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Cart Section */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 sm:p-8">
+            <div className="bg-white dark:bg-white/5 rounded-lg shadow-sm p-6 sm:p-8">
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">
                 Cart
               </h1>
@@ -194,7 +194,7 @@ export default function CartPage() {
 
           {/* Sidebar - Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 space-y-6">
+            <div className="bg-white dark:bg-white/5 rounded-lg shadow-sm p-6 space-y-6">
               {!isEmpty && (
                 <>
                   {/* Order Summary */}

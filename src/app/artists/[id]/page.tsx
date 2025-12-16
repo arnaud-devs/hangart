@@ -69,20 +69,20 @@ export default function ArtistPublicPage() {
   }, [artistId]);
 
   return (
-    <main className="min-h-[70vh] px-4 py-8 w-full">
+    <main className="min-h-[70vh] px-4 py-8 w-full bg-[#f7f7f8] dark:bg-black">
       <div className="w-full mx-auto">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Artist Profile</h1>
-          <Link href="/gallery" className="text-sm text-emerald-600">Back to Gallery</Link>
+          <Link href="/gallery" className="text-sm text-yellow-600">Back to Gallery</Link>
         </div>
 
         {loading && <div className="text-sm text-gray-600">Loading…</div>}
         {error && <div className="text-sm text-red-600">{error}</div>}
 
         {profile && (
-          <section className="w-ful mx-auto bg-white dark:bg-gray-900 border border-yellow-100 dark:border-gray-800 rounded-2xl shadow p-8 flex flex-col items-center">
+          <section className="w-full mx-auto dark:border-gray-800 rounded-2xl p-8 flex flex-col items-center bg-[#f7f7f8] dark:bg-black">
             <div className="flex flex-col md:flex-row w-full gap-8 items-center md:items-start">
-              <div className="flex flex-col items-center md:items-start md:w-1/3">
+              <div className="flex flex-col justify-center items-center md:items-start md:w-1/5">
                 {profile.profile_photo ? (
                   <img src={profile.profile_photo} alt={profile.username || 'Artist'} className="w-32 h-32 rounded-full object-cover border-2 border-yellow-300 dark:border-yellow-700 shadow" />
                 ) : (
@@ -91,7 +91,7 @@ export default function ArtistPublicPage() {
                   </div>
                 )}
               </div>
-              <div className="flex-1 flex flex-col items-center md:items-start">
+              <div className="flex-1 flex flex-col justify-center items-center md:items-start ">
                 <h2 className="text-2xl font-extrabold text-gray-900 dark:text-gray-100 text-center md:text-left">{profile.username || `Artist #${profile.user_id ?? ''}`}</h2>
                 {profile.verified_by_admin && (
                   <span className="mt-2 bg-yellow-600 text-white text-xs px-4 py-1 rounded-full font-bold tracking-wide">Verified</span>

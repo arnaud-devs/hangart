@@ -12,6 +12,8 @@ export type IntentAction =
   | { type: 'orderStatus'; status: string }
   | { type: 'paymentStatus'; status: string }
   | { type: 'productInfo'; infoType: string; productTitle: string }
+  | { type: 'clearFilter'; filterType?: string }
+  | { type: 'clearAllFilters' }
   | { type: 'unknown' };
 
 // Example static mapping for simple navigation
@@ -212,6 +214,18 @@ const staticIntentMap: Record<string, IntentAction> = {
   'display all available artworks': { type: 'route', path: '/gallery' },
   'can you show me what art is available': { type: 'route', path: '/gallery' },
   'i\'d like to see what\'s in your art store': { type: 'route', path: '/gallery' },
+
+  // Clear filters
+  'clear filters': { type: 'clearAllFilters' },
+  'clear all filters': { type: 'clearAllFilters' },
+  'reset filters': { type: 'clearAllFilters' },
+  'remove filters': { type: 'clearAllFilters' },
+  'show all': { type: 'clearAllFilters' },
+  'show everything': { type: 'clearAllFilters' },
+  'clear category filter': { type: 'clearFilter', filterType: 'category' },
+  'clear medium filter': { type: 'clearFilter', filterType: 'medium' },
+  'clear artist filter': { type: 'clearFilter', filterType: 'artist' },
+  'clear price filter': { type: 'clearFilter', filterType: 'price' },
 };
 
 // Helper for dynamic intent extraction
@@ -221,13 +235,16 @@ export function parseIntent(transcript: string): IntentAction {
   // Check static mappings first
   if (staticIntentMap[lower]) return staticIntentMap[lower];
 
+
   // Dynamic: Product details (view product page)
-  const productDetailMatch = lower.match(/(?:i want|show me|i'd like to see|can you show|display|view|let me see|open|take me to|i'm interested in|show details for|view details of|show details|go to|browse|preview|see|i want to view|show me more about|display information for) (.+)/);
+  // Covers: I want productTitle, Show me productTitle, ...
+  const productDetailMatch = lower.match(/(?:i want(?: to)?|show me|i'd like to see|can you show|display|view|let me see|open|take me to|i'm interested in|show details for|view details of|show details|go to|browse|preview|see|i want to view|show me more about|display information for|show|view|display|preview|see|browse) (.+)/);
   if (productDetailMatch) {
     const productTitle = productDetailMatch[1]
       .replace(/details?( of| for)?/i, '')
       .replace(/information for/i, '')
       .replace(/more about/i, '')
+      .replace(/product|artwork|piece|item|details?/i, '')
       .trim();
     if (productTitle && productTitle !== 'it' && productTitle !== 'this') {
       return { type: 'productDetail', productTitle };
@@ -235,24 +252,28 @@ export function parseIntent(transcript: string): IntentAction {
   }
 
   // Dynamic: Product information queries (price, description, owner)
-  const productInfoMatch = lower.match(/(?:what is the price for|how much is|description for|the owner of|tell me about|what is|describe|who owns) (.+)/);
+  // Covers: what is the price for artworkTitle, how much is artworkTitle, description for artworkTitle, the owner of artworkTitle, tell me about artworkTitle
+  const productInfoMatch = lower.match(/(?:what is the price for|how much is|description for|the owner of|tell me about|what is|describe|who owns|price of|cost of|owner of|who is the owner of|give me details for|give me the description for|give me the price for) (.+)/);
   if (productInfoMatch) {
     const productTitle = productInfoMatch[1].trim();
     let infoType = 'general';
-    
-    if (lower.includes('price') || lower.includes('how much')) infoType = 'price';
-    else if (lower.includes('description') || lower.includes('describe') || lower.includes('tell me about')) infoType = 'description';
+    if (lower.includes('price') || lower.includes('how much') || lower.includes('cost')) infoType = 'price';
+    else if (lower.includes('description') || lower.includes('describe') || lower.includes('tell me about') || lower.includes('details')) infoType = 'description';
     else if (lower.includes('owner') || lower.includes('who owns')) infoType = 'owner';
-    
     return { type: 'productInfo', infoType, productTitle };
   }
 
   // Dynamic: Add to cart
-  const addToCartMatch = lower.match(/(?:add|buy|put|i want) (.+) (?:to cart|in my cart|in cart)/);
+  // Covers: add it to cart, buy this, buy this to cart, add productTitle to cart, I want this in my cart, put it in my cart, put productName in my cart
+  const addToCartMatch = lower.match(/(?:add|buy|put|i want(?: to)?|buy this|add this|put this|i want this|add it|buy it|put it|i want it) ?(.+)? (?:to cart|in my cart|in cart)?/);
   if (addToCartMatch) {
-    return { type: 'addToCart', productTitle: addToCartMatch[1].trim() };
+    const productTitle = addToCartMatch[1]?.trim();
+    if (productTitle && productTitle !== 'it' && productTitle !== 'this') {
+      return { type: 'addToCart', productTitle };
+    }
+    return { type: 'addToCart' };
   }
-  // Add "it" or "this" to cart
+  // Add "it" or "this" to cart (no product name)
   if (lower.match(/add (it|this) to cart/i) || lower.match(/buy (it|this)/i) || 
       lower.match(/put (it|this) in my cart/i) || lower.match(/i want (it|this) in my cart/i)) {
     return { type: 'addToCart' }; // productTitle will be handled by UI context
@@ -270,32 +291,151 @@ export function parseIntent(transcript: string): IntentAction {
     return { type: 'artistDetail', artistUsername };
   }
 
-  // Dynamic: Filter (gallery)
-  const filterMatch = lower.match(/filter by (category|medium|artist|price|prices) (.+)/);
-  if (filterMatch) {
-    let filterType = filterMatch[1];
-    let value = filterMatch[2].trim();
-    
-    // Handle price ranges
-    if (filterType === 'price' || filterType === 'prices') {
-      if (value.includes('under $100')) value = 'under-100';
-      else if (value.includes('$100 - $500')) value = '100-500';
-      else if (value.includes('$500 - $1,000')) value = '500-1000';
-      else if (value.includes('$1,000 - $5,000')) value = '1000-5000';
-      else if (value.includes('$5,000')) value = '5000+';
+  // Dynamic: Filter (gallery) - Comprehensive patterns
+  const filterPatterns = [
+    /filter by (category|medium|artist|price|prices) (.+)/i,
+    /show me (category|medium|artist|price|prices) (.+)/i,
+    /only show (category|medium|artist|price|prices) (.+)/i,
+    /display (category|medium|artist|price|prices) (.+)/i,
+    /view (category|medium|artist|price|prices) (.+)/i,
+    /i want to see (category|medium|artist|price|prices) (.+)/i,
+    /show artworks by (category|medium|artist|price|prices) (.+)/i,
+    /filter (category|medium|artist|price|prices) to (.+)/i,
+    /set (category|medium|artist|price|prices) to (.+)/i,
+    /(category|medium|artist|price|prices): (.+)/i,
+    /(category|medium|artist|price|prices) is (.+)/i,
+    /with (category|medium|artist|price|prices) (.+)/i,
+  ];
+
+  for (const pattern of filterPatterns) {
+    const filterMatch = lower.match(pattern);
+    if (filterMatch) {
+      let filterType = filterMatch[1];
+      let value = filterMatch[2].trim();
+      
+      // Handle price ranges with various formats
+      if (filterType === 'price' || filterType === 'prices') {
+        if (value.includes('under $100') || value.includes('under 100') || value.includes('less than $100') || value.includes('less than 100')) {
+          value = 'under-100';
+        } else if (value.includes('$100 - $500') || value.includes('100 to 500') || value.includes('100-500') || value.includes('100 500')) {
+          value = '100-500';
+        } else if (value.includes('$500 - $1,000') || value.includes('500 to 1000') || value.includes('500-1000') || value.includes('500 1000') || value.includes('$500 - $1000')) {
+          value = '500-1000';
+        } else if (value.includes('$1,000 - $5,000') || value.includes('1000 to 5000') || value.includes('1000-5000') || value.includes('1000 5000') || value.includes('$1000 - $5000')) {
+          value = '1000-5000';
+        } else if (value.includes('$5,000') || value.includes('5000+') || value.includes('over 5000') || value.includes('more than 5000')) {
+          value = '5000+';
+        } else if (value.includes('affordable') || value.includes('cheap') || value.includes('low price')) {
+          value = 'under-100';
+        } else if (value.includes('mid range') || value.includes('medium price')) {
+          value = '100-500';
+        } else if (value.includes('expensive') || value.includes('high end') || value.includes('premium')) {
+          value = '5000+';
+        }
+      }
+      
+      // Handle category aliases and capitalize first letter
+      if (filterType === 'category') {
+        if (value.includes('painting') || value.includes('paintings')) value = 'painting';
+        else if (value.includes('sculpture') || value.includes('sculptures')) value = 'sculpture';
+        else if (value.includes('photography') || value.includes('photos') || value.includes('photograph')) value = 'photography';
+        else if (value.includes('digital') || value.includes('digital art')) value = 'digital';
+        else if (value.includes('drawing') || value.includes('drawings') || value.includes('sketch')) value = 'drawing';
+        else if (value.includes('print') || value.includes('prints')) value = 'print';
+        // Capitalize first letter for category
+        value = value.charAt(0).toUpperCase() + value.slice(1);
+      }
+
+      // Handle medium aliases and capitalize first letter
+      if (filterType === 'medium') {
+        if (value.includes('oil') || value.includes('oil paint')) value = 'oil';
+        else if (value.includes('acrylic') || value.includes('acrylic paint')) value = 'acrylic';
+        else if (value.includes('watercolor') || value.includes('water colour')) value = 'watercolor';
+        else if (value.includes('charcoal') || value.includes('charcoal drawing')) value = 'charcoal';
+        else if (value.includes('pencil') || value.includes('graphite')) value = 'pencil';
+        else if (value.includes('ink') || value.includes('pen and ink')) value = 'ink';
+        else if (value.includes('mixed media') || value.includes('mixed')) value = 'mixed-media';
+        else if (value.includes('digital') || value.includes('digital file')) value = 'digital';
+        // Capitalize first letter for medium
+        value = value.charAt(0).toUpperCase() + value.slice(1);
+      }
+
+      return { type: 'filter', filterType, value };
     }
-    
-    return { type: 'filter', filterType, value };
+  }
+
+  // Direct filter commands (without "filter by" prefix)
+  const directFilterPatterns = [
+    /show me (.+) artworks/i,
+    /show (.+) art/i,
+    /display (.+) pieces/i,
+    /view (.+) collection/i,
+    /i want to see (.+)/i,
+  ];
+
+  for (const pattern of directFilterPatterns) {
+    const match = lower.match(pattern);
+    if (match) {
+      const query = match[1].trim();
+      
+      // Check if it's a category
+      const categories = ['painting', 'sculpture', 'photography', 'digital', 'drawing', 'print'];
+      for (const category of categories) {
+        if (query.includes(category)) {
+          return { type: 'filter', filterType: 'category', value: category };
+        }
+      }
+      
+      // Check if it's a price range
+      if (query.includes('under $100') || query.includes('cheap') || query.includes('affordable')) {
+        return { type: 'filter', filterType: 'price', value: 'under-100' };
+      } else if (query.includes('$100 - $500') || query.includes('mid range')) {
+        return { type: 'filter', filterType: 'price', value: '100-500' };
+      } else if (query.includes('$500 - $1,000')) {
+        return { type: 'filter', filterType: 'price', value: '500-1000' };
+      } else if (query.includes('$1,000 - $5,000')) {
+        return { type: 'filter', filterType: 'price', value: '1000-5000' };
+      } else if (query.includes('$5,000') || query.includes('expensive') || query.includes('premium')) {
+        return { type: 'filter', filterType: 'price', value: '5000+' };
+      }
+    }
   }
 
   // Dynamic: Sort (gallery)
-  if (lower.includes('sort by') || lower.includes('sort the')) {
-    if (lower.includes('older')) return { type: 'sort', sortType: 'older' };
-    if (lower.includes('newer')) return { type: 'sort', sortType: 'newer' };
-    if (lower.includes('price high to low')) return { type: 'sort', sortType: 'price-desc' };
-    if (lower.includes('price low to high')) return { type: 'sort', sortType: 'price-asc' };
-    if (lower.includes('title a-z')) return { type: 'sort', sortType: 'title-asc' };
-    if (lower.includes('title z-a')) return { type: 'sort', sortType: 'title-desc' };
+  const sortPatterns = [
+    /sort by (.+)/i,
+    /sort the (.+)/i,
+    /order by (.+)/i,
+    /arrange by (.+)/i,
+    /show me (.+) first/i,
+    /display (.+) first/i,
+    /organize by (.+)/i,
+  ];
+
+  for (const pattern of sortPatterns) {
+    const sortMatch = lower.match(pattern);
+    if (sortMatch) {
+      const sortQuery = sortMatch[1].toLowerCase();
+      
+      if (sortQuery.includes('older') || sortQuery.includes('oldest') || sortQuery.includes('date asc')) {
+        return { type: 'sort', sortType: 'older' };
+      }
+      if (sortQuery.includes('newer') || sortQuery.includes('newest') || sortQuery.includes('latest') || sortQuery.includes('date desc')) {
+        return { type: 'sort', sortType: 'newer' };
+      }
+      if (sortQuery.includes('price high to low') || sortQuery.includes('price descending') || sortQuery.includes('expensive first') || sortQuery.includes('highest price')) {
+        return { type: 'sort', sortType: 'price-desc' };
+      }
+      if (sortQuery.includes('price low to high') || sortQuery.includes('price ascending') || sortQuery.includes('cheap first') || sortQuery.includes('lowest price')) {
+        return { type: 'sort', sortType: 'price-asc' };
+      }
+      if (sortQuery.includes('title a-z') || sortQuery.includes('alphabetical') || sortQuery.includes('name a to z')) {
+        return { type: 'sort', sortType: 'title-asc' };
+      }
+      if (sortQuery.includes('title z-a') || sortQuery.includes('reverse alphabetical') || sortQuery.includes('name z to a')) {
+        return { type: 'sort', sortType: 'title-desc' };
+      }
+    }
   }
 
   // Dynamic: Search
@@ -315,7 +455,9 @@ export function parseIntent(transcript: string): IntentAction {
     /filter orders by (pending payment|confirmed|processing|shipped|paid|delivered)/i,
     /only show (pending payment|confirmed|processing|shipped|paid|delivered) orders/i,
     /view orders with status (pending payment|confirmed|processing|shipped|paid|delivered)/i,
-    /show orders that are (shipped or processing)/i
+    /show orders that are (shipped or processing)/i,
+    /(pending payment|confirmed|processing|shipped|paid|delivered) only/i,
+    /orders with status (pending payment|confirmed|processing|shipped|paid|delivered)/i,
   ];
 
   for (const pattern of orderStatusPatterns) {
@@ -335,7 +477,12 @@ export function parseIntent(transcript: string): IntentAction {
     /(pending|successful|refunded|canceled|failed|all) payments?/i,
     /show (pending|successful|refunded|canceled|failed|all) payments/i,
     /view (pending|successful|refunded|canceled|failed|all) payments/i,
-    /only show (pending|successful|refunded|canceled|failed|all) payments/i
+    /only show (pending|successful|refunded|canceled|failed|all) payments/i,
+    /display (pending|successful|refunded|canceled|failed|all) payments/i,
+    /i want to see (pending|successful|refunded|canceled|failed|all) payments/i,
+    /filter payments by (pending|successful|refunded|canceled|failed|all)/i,
+    /payments with status (pending|successful|refunded|canceled|failed|all)/i,
+    /(pending|successful|refunded|canceled|failed|all) only/i,
   ];
 
   for (const pattern of paymentStatusPatterns) {
@@ -345,6 +492,31 @@ export function parseIntent(transcript: string): IntentAction {
     }
   }
 
+  // Clear filters dynamically
+  if (lower.match(/clear (category|medium|artist|price) (filter|filters)?/i)) {
+    const clearMatch = lower.match(/clear (category|medium|artist|price)/i);
+    if (clearMatch) {
+      return { type: 'clearFilter', filterType: clearMatch[1] };
+    }
+  }
+
   // Fallback
   return { type: 'unknown' };
+}
+
+// Helper function to normalize filter values (optional, can be used in your components)
+export function normalizeFilterValue(filterType: string, value: string): string {
+  switch (filterType) {
+    case 'price':
+      if (value.includes('under')) return 'under-100';
+      if (value.includes('100-500') || value.includes('100 to 500')) return '100-500';
+      if (value.includes('500-1000') || value.includes('500 to 1000')) return '500-1000';
+      if (value.includes('1000-5000') || value.includes('1000 to 5000')) return '1000-5000';
+      if (value.includes('5000+') || value.includes('over 5000')) return '5000+';
+      return value;
+    case 'category':
+      return value.toLowerCase().replace(/\s+/g, '-');
+    default:
+      return value;
+  }
 }

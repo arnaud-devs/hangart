@@ -214,6 +214,8 @@ import type {
   OrderCreatePayload,
 } from './types/api';
 
+export type { OrderDTO };
+
 export async function listArtworks(params?: Record<string, any>): Promise<ArtworkListItem[] | Paginated<ArtworkListItem>> {
   return get('/artworks/', params) as Promise<ArtworkListItem[] | Paginated<ArtworkListItem>>;
 }
@@ -572,6 +574,117 @@ export async function momoWebhook(payload: any): Promise<any> {
   return post('/payments/momo-webhook/', payload);
 }
 
+
+// ==================== REFUND FUNCTIONS ====================
+
+export interface RefundRequestPayload {
+  order: number; // Order ID
+  reason: 'damaged' | 'wrong_item' | 'not_as_described' | 'changed_mind' | 'other';
+  description: string;
+}
+
+export interface RefundOrderDetails {
+  id: number;
+  order_number: string;
+  buyer_name: string;
+  status: string;
+  total_amount: string;
+  created_at: string;
+  items_count: number;
+}
+
+export interface RefundBuyerDetails {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+}
+
+export interface RefundRequestDTO {
+  id: number;
+  order: RefundOrderDetails;
+  buyer: RefundBuyerDetails;
+  reason: string;
+  description: string;
+  status: 'pending' | 'approved' | 'rejected' | 'processed';
+  admin_response: string | null;
+  reviewed_by_name: string | null;
+  refund_amount: string;
+  created_at: string;
+  updated_at: string;
+  reviewed_at: string | null;
+}
+
+export interface RefundReviewPayload {
+  status: 'approved' | 'rejected' | 'processed';
+  admin_response: string;
+}
+
+export interface PaginatedRefundResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: RefundRequestDTO[];
+}
+ 
+/**
+ * Create a refund request (Buyer)
+ * POST /api/refund-requests/
+ */
+export async function createRefundRequest(payload: RefundRequestPayload): Promise<RefundRequestDTO> {
+  console.log('Sending refund request to API:', payload);
+  // Make sure to pass the payload as the second argument
+  return post('/refund-requests/', payload) as Promise<RefundRequestDTO>;
+}
+
+/**
+ * List refund requests with filters
+ * GET /api/refund-requests/
+ * Buyers see only their own, admins see all
+ */
+export async function listRefundRequests(params?: {
+  status?: 'pending' | 'approved' | 'rejected' | 'processed';
+  reason?: string;
+  ordering?: string;
+}): Promise<PaginatedRefundResponse> {
+  return get('/refund-requests/', params) as Promise<PaginatedRefundResponse>;
+}
+
+/**
+ * Get refund request details
+ * GET /api/refund-requests/{id}/
+ */
+export async function getRefundRequest(id: number): Promise<RefundRequestDTO> {
+  return get(`/refund-requests/${id}/`) as Promise<RefundRequestDTO>;
+}
+
+/**
+ * Review refund request (Admin only)
+ * PATCH /api/refund-requests/{id}/review/
+ */
+export async function reviewRefundRequest(id: number, payload: RefundReviewPayload): Promise<RefundRequestDTO> {
+  // PATCH /api/refund-requests/{id}/review/
+  return patch(`/refund-requests/${id}/review/`, payload) as Promise<RefundRequestDTO>;
+}
+
+/**
+ * Get buyer's refund requests
+ * GET /api/refund-requests/my-refund-requests/
+ * Can return either an array or a paginated object
+ */
+export async function getMyRefundRequests(): Promise<PaginatedRefundResponse | RefundRequestDTO[]> {
+  return get('/refund-requests/my-refund-requests/') as Promise<PaginatedRefundResponse | RefundRequestDTO[]>;
+}
+
+/**
+ * Get pending refund requests (Admin only)
+ * GET /api/refund-requests/pending/
+ * Can return either an array or a paginated object
+ */
+export async function getPendingRefundRequests(): Promise<PaginatedRefundResponse | RefundRequestDTO[]> {
+  return get('/refund-requests/pending/') as Promise<PaginatedRefundResponse | RefundRequestDTO[]>;
+}
+
 // Payments (add these to your imports above if needed)
 // ...existing code...
 
@@ -641,4 +754,11 @@ const appClient = {
   getArtistProfile,
   updateArtistProfile,
   getPublicArtistProfile,
+    // === REFUND FUNCTIONS ===
+  createRefundRequest,
+  listRefundRequests,
+  getRefundRequest,
+  reviewRefundRequest,
+  getMyRefundRequests,
+  getPendingRefundRequests,
 };

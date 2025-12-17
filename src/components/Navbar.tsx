@@ -31,6 +31,7 @@ export default function Navbar() {
     { href: '/orders', label: t('nav.orders') },
     { href: '/payments', label: t('nav.payments') },
     { href: '/refunds', label: t('nav.refunds') }, // Refunds link added here
+    {href: '/refunds/request', label: t('nav.request_refund')}, // Request Refund link added here
   ];
 
   const helpLinks = [

@@ -88,6 +88,7 @@ interface OrdersResponse {
   // ...existing code...
 
 import { useI18n } from '@/lib/i18nClient';
+import Link from "next/link";
 export default function OrdersPage() {
   const { t } = useI18n();
     const statusColors: Record<string, { bg: string; text: string; badge: string }> = {
@@ -557,16 +558,17 @@ export default function OrdersPage() {
                           </td>
                           <td className="px-6 py-4 text-center">
                             <div className="flex items-center justify-center gap-2">
-                              <button
+                              {/* <button
                                 onClick={() => {
                                   setSelectedOrder(order);
                                   setShowDetails(true);
                                 }}
                                 className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors"
-                              >
+                              > */}
+                                <Link href={`/dashboard/orders/${order.id}`}                                 className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors">
                                 <Eye className="w-4 h-4" />
                                 View
-                              </button>
+                                </Link>
                               <button
                                 onClick={() => openUpdateModal(order)}
                                 className="inline-flex items-center gap-2 px-3 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"

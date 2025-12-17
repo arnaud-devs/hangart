@@ -199,29 +199,33 @@ function RequestRefundPageInner() {
   const RefundStatusBadge = ({ refund }: { refund: RefundRequestDTO }) => {
     const statusConfig = {
       pending: { 
-        color: 'bg-amber-50 text-amber-800 border-amber-200',
+        color: 'bg-amber-100 dark:bg-white/10 text-amber-800 dark:text-amber-400 border-amber-200 dark:border-white/20',
         icon: <FiClock className="w-3 h-3 mr-1" />,
         label: "Under Review"
       },
       approved: { 
-        color: 'bg-blue-50 text-blue-800 border-blue-200',
+        color: 'bg-blue-100 dark:bg-white/10 text-blue-800 dark:text-blue-400 border-blue-200 dark:border-white/20',
         icon: <FiThumbsUp className="w-3 h-3 mr-1" />,
         label: "Approved"
       },
       rejected: { 
-        color: 'bg-red-50 text-red-800 border-red-200',
+        color: 'bg-red-100 dark:bg-white/10 text-red-800 dark:text-red-400 border-red-200 dark:border-white/20',
         icon: <FiX className="w-3 h-3 mr-1" />,
         label: "Declined"
       },
       processed: { 
-        color: 'bg-green-50 text-green-800 border-green-200',
+        color: 'bg-green-100 dark:bg-white/10 text-green-800 dark:text-green-400 border-green-200 dark:border-white/20',
         icon: <FiCheckCircle className="w-3 h-3 mr-1" />,
         label: "Completed"
       },
     };
     
     const config = statusConfig[refund.status as keyof typeof statusConfig] || 
-                  { color: 'bg-gray-50 text-gray-800 border-gray-200', icon: null, label: refund.status };
+                  { 
+                    color: 'bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-400 border-gray-200 dark:border-white/20', 
+                    icon: null, 
+                    label: refund.status 
+                  };
     
     return (
       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${config.color}`}>
@@ -243,13 +247,13 @@ function RequestRefundPageInner() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 py-6 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Login Required</h2>
-          <p className="text-gray-600 mb-6">Please log in to request a refund</p>
+      <div className="min-h-screen bg-[#f7f7f8] dark:bg-black py-6 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white dark:bg-white/5 rounded-lg shadow-lg p-8 text-center">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Login Required</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">Please log in to request a refund</p>
           <button 
             onClick={() => router.push('/login?redirect=/refunds/request')}
-            className="bg-[#634bc1] text-white px-6 py-3 rounded-lg hover:bg-[#5340a0] transition-colors"
+            className="bg-[#634bc1] hover:bg-[#5340a0] text-white px-6 py-3 rounded-lg transition-colors"
           >
             Go to Login
           </button>
@@ -262,13 +266,13 @@ function RequestRefundPageInner() {
   const isBuyer = (user?.role || '').toString().toLowerCase() === 'buyer';
   if (!isBuyer) {
     return (
-      <div className="min-h-screen bg-gray-50 py-6 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Access Denied</h2>
-          <p className="text-gray-600 mb-6">Only buyers can request refunds</p>
+      <div className="min-h-screen bg-[#f7f7f8] dark:bg-black py-6 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white dark:bg-white/5 rounded-lg shadow-lg p-8 text-center">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Access Denied</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">Only buyers can request refunds</p>
           <button 
             onClick={() => router.push('/')}
-            className="bg-[#634bc1] text-white px-6 py-3 rounded-lg hover:bg-[#5340a0] transition-colors"
+            className="bg-[#634bc1] hover:bg-[#5340a0] text-white px-6 py-3 rounded-lg transition-colors"
           >
             Go to Home
           </button>
@@ -279,10 +283,10 @@ function RequestRefundPageInner() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-6 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-500">Loading your orders...</p>
+      <div className="min-h-screen bg-[#f7f7f8] dark:bg-black py-6 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white dark:bg-white/5 rounded-lg shadow-lg p-8 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+          <p className="text-gray-500 dark:text-gray-400">Loading your orders...</p>
         </div>
       </div>
     );
@@ -291,21 +295,21 @@ function RequestRefundPageInner() {
   const eligibleOrders = orders.filter(order => isOrderEligibleForRefund(order));
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 py-6">
+    <div className="min-h-screen w-full bg-[#f7f7f8] dark:bg-black py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <button 
             onClick={() => router.back()}
-            className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4"
+            className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-4"
           >
             <FiArrowLeft className="w-4 h-4" />
             <span>Back</span>
           </button>
-          <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
             Request a Refund
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             Select an order and provide details for your refund request
           </p>
         </div>
@@ -313,9 +317,9 @@ function RequestRefundPageInner() {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-8">
           {/* Left Column - Order Selection */}
           <div>
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <FiPackage className="w-5 h-5 mr-2 text-blue-600" />
+            <div className="bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                <FiPackage className="w-5 h-5 mr-2 text-emerald-600 dark:text-emerald-400" />
                 Select Order for Refund
               </h2>
               <div className="space-y-3">
@@ -332,39 +336,39 @@ function RequestRefundPageInner() {
                       className={`w-full text-left p-4 rounded-lg border transition-all duration-200 ${
                         selectedOrder?.id === order.id
                           ? hasRefundRequest
-                            ? 'border-amber-300 bg-amber-50 shadow-sm'
-                            : 'border-blue-500 bg-blue-50 shadow-sm'
+                            ? 'border-amber-300 dark:border-white/20 bg-amber-50 dark:bg-white/10 shadow-sm'
+                            : 'border-emerald-500 dark:border-emerald-400 bg-emerald-50 dark:bg-white/10 shadow-sm'
                           : hasRefundRequest
-                          ? 'border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-gray-100'
+                          ? 'border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-100 dark:hover:bg-white/10'
                           : canRequestRefund
-                          ? 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
-                          : 'border-gray-200 bg-gray-100 opacity-60 cursor-not-allowed'
+                          ? 'border-gray-200 dark:border-white/10 hover:border-emerald-300 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-white/10'
+                          : 'border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 opacity-60 cursor-not-allowed'
                       } ${!canRequestRefund ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                       disabled={!canRequestRefund}
                     >
-                      <div className="font-medium text-gray-900 flex items-center justify-between">
+                      <div className="font-medium text-gray-900 dark:text-white flex items-center justify-between">
                         <span>Order #{order.order_number}</span>
                         {hasRefundRequest && (
-                          <FiInfo className="w-4 h-4 text-amber-500" />
+                          <FiInfo className="w-4 h-4 text-amber-500 dark:text-amber-400" />
                         )}
                       </div>
-                      <div className="text-sm text-gray-600 mt-1">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         {order.created_at ? new Date(order.created_at).toLocaleDateString() : ''}
                       </div>
-                      <div className="text-sm font-semibold text-gray-900 mt-2">
+                      <div className="text-sm font-semibold text-gray-900 dark:text-white mt-2">
                         ${typeof order.total_amount === 'number' ? 
                           order.total_amount.toFixed(2) : 
                           parseFloat(order.total_amount || '0').toFixed(2)}
                       </div>
                       <div className="text-xs flex items-center mt-1">
-                        <div className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
+                        <div className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 dark:bg-white/10 text-green-800 dark:text-green-400">
                           {order.status || 'Unknown'}
                         </div>
                       </div>
                       {hasRefundRequest && (
                         <div className="mt-2">
                           <RefundStatusBadge refund={existingRefund!} />
-                          <div className="text-xs text-gray-500 mt-1">
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             Requested on {existingRefund && existingRefund.created_at ? 
                               new Date(String(existingRefund.created_at)).toLocaleDateString() : ''}
                           </div>
@@ -375,18 +379,18 @@ function RequestRefundPageInner() {
                 })}
                 {eligibleOrders.length === 0 && orders.length > 0 && (
                   <div className="text-center py-8">
-                    <FiShoppingBag className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                    <p className="text-gray-500 text-sm">No eligible orders available for refund</p>
-                    <p className="text-gray-400 text-xs mt-1">
+                    <FiShoppingBag className="mx-auto h-8 w-8 text-gray-400 dark:text-gray-500 mb-2" />
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">No eligible orders available for refund</p>
+                    <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">
                       Only paid, completed, or delivered orders can be refunded
                     </p>
                     <div className="mt-4 text-sm">
-                      <p className="text-gray-500 mb-2">You have {orders.length} order(s):</p>
+                      <p className="text-gray-500 dark:text-gray-400 mb-2">You have {orders.length} order(s):</p>
                       <div className="space-y-2 max-h-40 overflow-y-auto">
                         {orders.slice(0, 5).map(order => (
-                          <div key={order.id} className="flex justify-between items-center text-xs bg-gray-50 p-2 rounded">
-                            <span>#{order.order_number}</span>
-                            <span className={`px-2 py-1 rounded ${order.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                          <div key={order.id} className="flex justify-between items-center text-xs bg-gray-50 dark:bg-white/5 p-2 rounded">
+                            <span className="text-gray-700 dark:text-gray-300">#{order.order_number}</span>
+                            <span className={`px-2 py-1 rounded ${order.status === 'paid' ? 'bg-green-100 dark:bg-white/10 text-green-800 dark:text-green-400' : 'bg-gray-100 dark:bg-white/10 text-gray-800 dark:text-gray-400'}`}>
                               {order.status}
                             </span>
                           </div>
@@ -395,7 +399,7 @@ function RequestRefundPageInner() {
                     </div>
                     <button
                       onClick={() => router.push('/orders')}
-                      className="mt-4 text-sm text-blue-600 hover:text-blue-800"
+                      className="mt-4 text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300"
                     >
                       View all orders
                     </button>
@@ -403,14 +407,14 @@ function RequestRefundPageInner() {
                 )}
                 {orders.length === 0 && (
                   <div className="text-center py-8">
-                    <FiShoppingBag className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                    <p className="text-gray-500 text-sm">No orders found</p>
-                    <p className="text-gray-400 text-xs mt-1">
+                    <FiShoppingBag className="mx-auto h-8 w-8 text-gray-400 dark:text-gray-500 mb-2" />
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">No orders found</p>
+                    <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">
                       You haven't placed any orders yet
                     </p>
                     <button
                       onClick={() => router.push('/gallery')}
-                      className="mt-4 text-sm text-blue-600 hover:text-blue-800"
+                      className="mt-4 text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300"
                     >
                       Browse artwork
                     </button>
@@ -431,34 +435,34 @@ function RequestRefundPageInner() {
 
                 if (hasRefundRequest && !canRequestNewRefund) {
                   return (
-                    <div className="bg-white rounded-lg border border-gray-200 p-6">
+                    <div className="bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 p-6">
                       {/* Header with friendly message */}
                       <div className="text-center mb-8">
-                        <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <FiRefreshCw className="w-8 h-8 text-amber-600" />
+                        <div className="w-16 h-16 bg-amber-100 dark:bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <FiRefreshCw className="w-8 h-8 text-amber-600 dark:text-amber-400" />
                         </div>
-                        <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
                           Refund Already Requested
                         </h2>
-                        <p className="text-gray-600 text-lg">
+                        <p className="text-gray-600 dark:text-gray-400 text-lg">
                           You already have an active refund request for this order
                         </p>
                       </div>
 
                       {/* Current Status Card */}
-                      <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-6 mb-6 shadow-sm">
+                      <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-white/10 dark:to-white/5 border border-amber-200 dark:border-white/20 rounded-xl p-6 mb-6 shadow-sm">
                         <div className="flex items-start space-x-4">
                           <div className="flex-shrink-0">
-                            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center border border-amber-200">
-                              {existingRefund.status === 'pending' && <FiClock className="w-6 h-6 text-amber-600" />}
-                              {existingRefund.status === 'approved' && <FiThumbsUp className="w-6 h-6 text-blue-600" />}
-                              {existingRefund.status === 'rejected' && <FiX className="w-6 h-6 text-red-600" />}
-                              {existingRefund.status === 'processed' && <FiCheckCircle className="w-6 h-6 text-green-600" />}
+                            <div className="w-12 h-12 bg-white dark:bg-black rounded-full flex items-center justify-center border border-amber-200 dark:border-white/20">
+                              {existingRefund.status === 'pending' && <FiClock className="w-6 h-6 text-amber-600 dark:text-amber-400" />}
+                              {existingRefund.status === 'approved' && <FiThumbsUp className="w-6 h-6 text-blue-600 dark:text-blue-400" />}
+                              {existingRefund.status === 'rejected' && <FiX className="w-6 h-6 text-red-600 dark:text-red-400" />}
+                              {existingRefund.status === 'processed' && <FiCheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />}
                             </div>
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center space-x-3 mb-3">
-                              <h3 className="text-xl font-semibold text-gray-900">
+                              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                                 {existingRefund.status === 'pending' && "Under Review"}
                                 {existingRefund.status === 'approved' && "Approved"}
                                 {existingRefund.status === 'rejected' && "Declined"}
@@ -466,13 +470,13 @@ function RequestRefundPageInner() {
                               </h3>
                               <RefundStatusBadge refund={existingRefund} />
                             </div>
-                            <p className="text-gray-700 text-lg leading-relaxed mb-4">
+                            <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-4">
                               {getRefundStatusMessage(existingRefund)}
                             </p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                              <div className="bg-white/50 rounded-lg p-3">
-                                <div className="font-medium text-gray-900 mb-1">Requested Amount</div>
-                                <div className="text-2xl font-bold text-gray-900">${typeof existingRefund.refund_amount === 'number' ? 
+                              <div className="bg-white/50 dark:bg-white/5 rounded-lg p-3">
+                                <div className="font-medium text-gray-900 dark:text-white mb-1">Requested Amount</div>
+                                <div className="text-2xl font-bold text-gray-900 dark:text-white">${typeof existingRefund.refund_amount === 'number' ? 
                                   existingRefund.refund_amount.toFixed(2) : 
                                   (typeof existingRefund.refund_amount === 'string' ? 
                                     (() => {
@@ -483,20 +487,20 @@ function RequestRefundPageInner() {
                                   )
                                 }</div>
                               </div>
-                              <div className="bg-white/50 rounded-lg p-3">
-                                <div className="font-medium text-gray-900 mb-1">Request Date</div>
-                                <div className="text-lg text-gray-700">{existingRefund.created_at ? 
+                              <div className="bg-white/50 dark:bg-white/5 rounded-lg p-3">
+                                <div className="font-medium text-gray-900 dark:text-white mb-1">Request Date</div>
+                                <div className="text-lg text-gray-700 dark:text-gray-300">{existingRefund.created_at ? 
                                   new Date(String(existingRefund.created_at)).toLocaleDateString() : ''}
                                 </div>
                               </div>
                             </div>
                             {existingRefund.admin_response && (
-                              <div className="mt-4 p-4 bg-white rounded-lg border border-blue-200">
+                              <div className="mt-4 p-4 bg-white dark:bg-white/5 rounded-lg border border-blue-200 dark:border-white/20">
                                 <div className="flex items-center space-x-2 mb-2">
-                                  <FiInfo className="w-4 h-4 text-blue-600" />
-                                  <div className="font-medium text-blue-900">Admin Message</div>
+                                  <FiInfo className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                                  <div className="font-medium text-blue-900 dark:text-blue-300">Admin Message</div>
                                 </div>
-                                <p className="text-blue-800 leading-relaxed">
+                                <p className="text-blue-800 dark:text-blue-300 leading-relaxed">
                                   {existingRefund.admin_response}
                                 </p>
                               </div>
@@ -506,20 +510,20 @@ function RequestRefundPageInner() {
                       </div>
 
                       {/* Order Summary */}
-                      <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                        <h3 className="font-semibold text-gray-900 mb-4 text-lg">Order Details</h3>
+                      <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-6 mb-6">
+                        <h3 className="font-semibold text-gray-900 dark:text-white mb-4 text-lg">Order Details</h3>
                         <div className="space-y-3">
-                          <div className="flex justify-between items-center pb-3 border-b border-gray-200">
-                            <span className="text-gray-600 font-medium">Order Number</span>
-                            <span className="font-mono text-gray-900">#{selectedOrder.order_number}</span>
+                          <div className="flex justify-between items-center pb-3 border-b border-gray-200 dark:border-white/10">
+                            <span className="text-gray-600 dark:text-gray-400 font-medium">Order Number</span>
+                            <span className="font-mono text-gray-900 dark:text-white">#{selectedOrder.order_number}</span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-600">Status</span>
-                            <span className="font-medium text-green-600">{selectedOrder.status}</span>
+                            <span className="text-gray-600 dark:text-gray-400">Status</span>
+                            <span className="font-medium text-green-600 dark:text-green-400">{selectedOrder.status}</span>
                           </div>
-                          <div className="flex justify-between items-center pt-3 border-t border-gray-200">
-                            <span className="text-lg font-semibold text-gray-900">Total</span>
-                            <span className="text-xl font-bold text-gray-900">${typeof selectedOrder.total_amount === 'number' ? 
+                          <div className="flex justify-between items-center pt-3 border-t border-gray-200 dark:border-white/10">
+                            <span className="text-lg font-semibold text-gray-900 dark:text-white">Total</span>
+                            <span className="text-xl font-bold text-gray-900 dark:text-white">${typeof selectedOrder.total_amount === 'number' ? 
                               selectedOrder.total_amount.toFixed(2) : 
                               (() => {
                                 const parsed = parseFloat(selectedOrder.total_amount || '0');
@@ -534,14 +538,14 @@ function RequestRefundPageInner() {
                       <div className="flex flex-col sm:flex-row gap-4">
                         <button
                           onClick={() => router.push('/refunds')}
-                          className="flex-1 py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center shadow-sm hover:shadow-md"
+                          className="flex-1 py-4 px-6 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600/80 dark:hover:bg-emerald-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center shadow-sm hover:shadow-md"
                         >
                           <FiFileText className="w-5 h-5 mr-3" />
                           View All Refunds
                         </button>
                         <button
                           onClick={() => setSelectedOrder(null)}
-                          className="flex-1 py-4 px-6 border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md"
+                          className="flex-1 py-4 px-6 border-2 border-gray-300 dark:border-white/10 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-all duration-200 shadow-sm hover:shadow-md"
                         >
                           Choose Different Order
                         </button>
@@ -552,30 +556,30 @@ function RequestRefundPageInner() {
 
                 // Show refund form if no existing refund or can request new one
                 return (
-                  <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-6">
-                    <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-                      <FiFileText className="w-5 h-5 mr-2 text-blue-600" />
+                  <form onSubmit={handleSubmit} className="bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 p-6">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+                      <FiFileText className="w-5 h-5 mr-2 text-emerald-600 dark:text-emerald-400" />
                       Request Refund for Order #{selectedOrder.order_number}
                     </h2>
 
                     {/* Order Summary */}
-                    <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                      <h3 className="font-medium text-gray-900 mb-3">Order Summary</h3>
+                    <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-4 mb-6">
+                      <h3 className="font-medium text-gray-900 dark:text-white mb-3">Order Summary</h3>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span>Order Status</span>
-                          <span className="font-medium text-green-600">
+                          <span className="text-gray-600 dark:text-gray-400">Order Status</span>
+                          <span className="font-medium text-green-600 dark:text-green-400">
                             {selectedOrder.status || 'Unknown'}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Order Date</span>
-                          <span>{selectedOrder.created_at ? new Date(selectedOrder.created_at).toLocaleDateString() : ''}</span>
+                          <span className="text-gray-600 dark:text-gray-400">Order Date</span>
+                          <span className="text-gray-900 dark:text-white">{selectedOrder.created_at ? new Date(selectedOrder.created_at).toLocaleDateString() : ''}</span>
                         </div>
-                        <div className="border-t border-gray-200 pt-2 mt-2">
+                        <div className="border-t border-gray-200 dark:border-white/10 pt-2 mt-2">
                           <div className="flex justify-between font-semibold">
-                            <span>Total Amount</span>
-                            <span>${typeof selectedOrder.total_amount === 'number' ? 
+                            <span className="text-gray-900 dark:text-white">Total Amount</span>
+                            <span className="text-gray-900 dark:text-white">${typeof selectedOrder.total_amount === 'number' ? 
                               selectedOrder.total_amount.toFixed(2) : 
                               parseFloat(selectedOrder.total_amount || '0').toFixed(2)}
                             </span>
@@ -586,18 +590,18 @@ function RequestRefundPageInner() {
 
                     {/* Refund Reason */}
                     <div className="mb-6">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Refund Reason *
                       </label>
                       <select
                         value={reason}
                         onChange={(e) => setReason(e.target.value)}
-                        className="block w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="block w-full py-3 px-3 border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-500 focus:border-emerald-500 dark:focus:border-emerald-500"
                         required
                       >
-                        <option value="">Select a reason</option>
+                        <option value="" className="text-gray-500 dark:text-gray-400">Select a reason</option>
                         {refundReasons.map((reasonOption) => (
-                          <option key={reasonOption.value} value={reasonOption.value}>
+                          <option key={reasonOption.value} value={reasonOption.value} className="text-gray-900 dark:text-white bg-white dark:bg-black">
                             {reasonOption.label}
                           </option>
                         ))}
@@ -606,14 +610,14 @@ function RequestRefundPageInner() {
 
                     {/* Additional Description */}
                     <div className="mb-6">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Description *
                       </label>
                       <textarea
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         rows={4}
-                        className="block w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="block w-full py-3 px-3 border border-gray-300 dark:border-white/10 bg-white dark:bg-white/5 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-500 focus:border-emerald-500 dark:focus:border-emerald-500"
                         placeholder="Please provide details about why you're requesting a refund..."
                         required
                       />
@@ -624,14 +628,14 @@ function RequestRefundPageInner() {
                       <button
                         type="button"
                         onClick={() => setSelectedOrder(null)}
-                        className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                        className="flex-1 py-3 px-4 border border-gray-300 dark:border-white/10 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
                         disabled={submitting}
-                        className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
+                        className="flex-1 py-3 px-4 bg-yellow-600 hover:bg-emerald-700 dark:bg-yellow dark:hover:bg-emerald-700 disabled:bg-emerald-400 dark:disabled:bg-emerald-900 text-white font-medium rounded-lg transition-colors flex items-center justify-center"
                       >
                         {submitting ? (
                           <>
@@ -647,12 +651,12 @@ function RequestRefundPageInner() {
                 );
               })()
             ) : (
-              <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-                <FiAlertCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <div className="bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 p-8 text-center">
+                <FiAlertCircle className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
                   {eligibleOrders.length === 0 ? 'No Eligible Orders' : 'Select an Order'}
                 </h3>
-                <p className="text-gray-600 mb-4">
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
                   {eligibleOrders.length === 0 
                     ? orders.length === 0
                       ? "You don't have any orders yet"
@@ -663,7 +667,7 @@ function RequestRefundPageInner() {
                   <div className="mt-4">
                     <button
                       onClick={() => router.push('/orders')}
-                      className="text-sm text-blue-600 hover:text-blue-800"
+                      className="text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300"
                     >
                       View all orders
                     </button>
@@ -680,7 +684,14 @@ function RequestRefundPageInner() {
 
 export default function RequestRefundPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div><p className="text-gray-500">Loading refund request page...</p></div>}>
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#f7f7f8] dark:bg-black flex items-center justify-center">
+        <div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+          <p className="text-gray-500 dark:text-gray-400">Loading refund request page...</p>
+        </div>
+      </div>
+    }>
       <RequestRefundPageInner />
     </Suspense>
   );

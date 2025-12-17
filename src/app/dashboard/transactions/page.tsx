@@ -233,23 +233,17 @@ export default function Page() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Revenue Trend Chart */}
+        {/* Revenue Trend Chart (Vertical BarChart) */}
         <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 border border-gray-100 dark:border-gray-800">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Revenue Trend</h3>
           <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={chartData} margin={{ top: 10, right: 24, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.7}/>
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0.1}/>
-                </linearGradient>
-              </defs>
+            <BarChart data={chartData} margin={{ top: 10, right: 24, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="2 4" stroke="#e5e7eb" vertical={false} />
               <XAxis dataKey="month" stroke="#9ca3af" tick={{ fontSize: 13, fontWeight: 500 }} axisLine={false} tickLine={false} />
               <YAxis stroke="#9ca3af" tick={{ fontSize: 13, fontWeight: 500 }} axisLine={false} tickLine={false} width={60} tickFormatter={v => `$${v}`}/>
               <Tooltip contentStyle={{ background: '#18181b', border: 'none', borderRadius: 8, color: '#fff', fontSize: 14, fontWeight: 500 }} labelStyle={{ color: '#a3a3a3' }} formatter={v => [`$${Number(v).toLocaleString()}`, 'Revenue']} />
-              <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" activeDot={{ r: 6, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }} />
-            </AreaChart>
+              <Bar dataKey="revenue" fill="#10b981" radius={[8, 8, 0, 0]} barSize={32} />
+            </BarChart>
           </ResponsiveContainer>
         </div>
 

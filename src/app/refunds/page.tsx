@@ -247,8 +247,8 @@ export default function MyRefundsPage() {
               </p>
             </div>
             <Link
-              href="/shop/refunds/request"
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+              href="/refunds/request"
+              className="flex items-center space-x-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors"
             >
               <FiPlus className="w-4 h-4" />
               <span>Request Refund</span>
@@ -267,7 +267,7 @@ export default function MyRefundsPage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search by order number, reason..."
-                className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-sm"
               />
               {query && (
                 <button 
@@ -376,7 +376,7 @@ export default function MyRefundsPage() {
 
               {/* Expanded Details */}
               {openId === refund.id && (
-                <div className="bg-white border-t-4 border-blue-500">
+                <div className="bg-white border-t-4 border-yellow-600">
                   <div className="p-6">
                     <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                       {/* Refund Details - Wider Column */}

@@ -44,6 +44,7 @@
   "nav.orders": "订单",
   "nav.payments": "支付",
   "nav.refunds": "退款",
+  "nav.request_refund": "请求退款",
   "nav.help": "帮助",
   "nav.faq": "常见问题",
   "nav.shipping": "配送",

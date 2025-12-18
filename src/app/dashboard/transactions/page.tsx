@@ -188,9 +188,9 @@ export default function Page() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-[#f7f7f8] dark:bg-black">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Transactions</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Transactions</h1>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Track all your sales and earnings</p>
       </div>
 
@@ -234,8 +234,8 @@ export default function Page() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Revenue Trend Chart (Vertical BarChart) */}
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 border border-gray-100 dark:border-gray-800">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Revenue Trend</h3>
+        <div className="bg-white dark:bg-white/5 rounded-xl shadow p-6 border border-gray-100 dark:border-white/10">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Revenue Trend</h3>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={chartData} margin={{ top: 10, right: 24, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="2 4" stroke="#e5e7eb" vertical={false} />
@@ -248,9 +248,9 @@ export default function Page() {
         </div>
 
         {/* Price Range Distribution (Pie Chart) */}
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 border border-gray-100 dark:border-gray-800">
+        <div className="bg-white dark:bg-white/5 rounded-xl shadow p-6 border border-gray-100 dark:border-white/10">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Price Range Distribution</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Price Range Distribution</h3>
             <PieChartIcon className="w-5 h-5 text-gray-400" />
           </div>
           <ResponsiveContainer width="100%" height={280}>
@@ -284,9 +284,9 @@ export default function Page() {
         </div>
 
         {/* Sold Artworks by Month (Bar Chart) */}
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 border border-gray-100 dark:border-gray-800">
+        <div className="bg-white dark:bg-white/5 rounded-xl shadow p-6 border border-gray-100 dark:border-white/10">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Sold Artworks by Month</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Sold Artworks by Month</h3>
             <BarChartIcon className="w-5 h-5 text-gray-400" />
           </div>
           <ResponsiveContainer width="100%" height={280}>
@@ -301,9 +301,9 @@ export default function Page() {
         </div>
 
         {/* Status Distribution (Bar Chart - Horizontal) */}
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 border border-gray-100 dark:border-gray-800">
+        <div className="bg-white dark:bg-white/5 rounded-xl shadow p-6 border border-gray-100 dark:border-white/10">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Artworks Status Distribution</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Artworks Status Distribution</h3>
             <PieChartIcon className="w-5 h-5 text-gray-400" />
           </div>
           <ResponsiveContainer width="100%" height={280}>
@@ -352,11 +352,11 @@ export default function Page() {
       </div>
 
       {/* Artworks Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
+      <div className="bg-white dark:bg-white/5 rounded-lg shadow-sm overflow-hidden border border-gray-200 dark:border-white/10">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700" aria-label="Sold Artworks table">
+          <table className="min-w-full divide-y divide-gray-100 dark:divide-white/10" aria-label="Sold Artworks table">
             <caption className="sr-only">List of your sold artworks</caption>
-            <thead className="bg-gray-50 dark:bg-gray-900">
+            <thead className="bg-gray-50 dark:bg-white/5">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Artwork ID</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Date</th>
@@ -367,25 +367,25 @@ export default function Page() {
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
+            <tbody className="bg-white dark:bg-transparent divide-y divide-gray-100 dark:divide-white/10">
               {soldArtworks.length === 0 && (
                 <tr><td colSpan={7} className="px-6 py-6 text-center text-gray-500 dark:text-gray-400">No sold artworks found.</td></tr>
               )}
               {soldArtworks.map(art => (
-                <tr key={art.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                <tr key={art.id} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300 font-mono">{art.id}</td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{new Date(art.created_at).toLocaleDateString()}</td>
                   <td className="px-6 py-4 flex items-center gap-3">
                     <img src={art.main_image || '/arts/art1.jpg'} alt={art.title} className="w-12 h-8 object-cover rounded" />
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-gray-100">{art.title}</div>
+                      <div className="font-medium text-gray-900 dark:text-white">{art.title}</div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-900 dark:text-gray-100">{art.artist_name}</td>
-                  <td className="px-6 py-4 text-right font-semibold text-gray-900 dark:text-gray-100">${parseFloat(art.price).toFixed(2)}</td>
+                  <td className="px-6 py-4 text-gray-900 dark:text-white">{art.artist_name}</td>
+                  <td className="px-6 py-4 text-right font-semibold text-gray-900 dark:text-white">${parseFloat(art.price).toFixed(2)}</td>
                   <td className="px-6 py-4"><StatusBadge status={art.status} /></td>
                   <td className="px-6 py-4 text-right">
-                    <button aria-label="View artwork" onClick={() => setViewArtwork(art)} className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"><Eye className="w-4 h-4 text-gray-600 dark:text-gray-400"/></button>
+                    <button aria-label="View artwork" onClick={() => setViewArtwork(art)} className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"><Eye className="w-4 h-4 text-gray-600 dark:text-gray-400"/></button>
                   </td>
                 </tr>
               ))}

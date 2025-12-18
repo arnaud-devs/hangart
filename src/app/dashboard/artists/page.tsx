@@ -58,18 +58,20 @@ export default function ArtistsPage() {
 
   const loadCounts = async () => {
     try {
-      const [verifiedRes, pendingRes] = await Promise.all([
-        artistService.listArtists({ verified_by_admin: true }),
-        artistService.listArtists({ verified_by_admin: false }),
-      ]);
-
-      const verifiedCount =
-        verifiedRes.count ?? verifiedRes.results?.length ?? verifiedRes.length ?? 0;
-      const pendingCount =
-        pendingRes.count ?? pendingRes.results?.length ?? pendingRes.length ?? 0;
+      // Get all artists (unfiltered)
+      const totalRes = await artistService.listArtists();
+      const totalCount = totalRes.count ?? totalRes.results?.length ?? totalRes.length ?? 0;
+      // Count verified from the results array (current page only)
+      const verifiedCount = Array.isArray(totalRes.results)
+        ? totalRes.results.filter((a: Artist) => a.verified_by_admin === true).length
+        : 0;
+      // Count pending from the results array (current page only)
+      const pendingCount = Array.isArray(totalRes.results)
+        ? totalRes.results.filter((a: Artist) => a.verified_by_admin === false).length
+        : 0;
 
       setCounts({
-        total: verifiedCount + pendingCount,
+        total: totalCount,
         verified: verifiedCount,
         pending: pendingCount,
       });
@@ -121,11 +123,12 @@ export default function ArtistsPage() {
   const totalPages = Math.max(1, Math.ceil((totalCount || artists.length || 1) / currentPageSize));
 
   // Calculate stats
+  // Always use counts from API for real values, no multiplication for total/verified
   const stats = {
-    total: counts.total || totalCount || artists.length,
-    verified: counts.verified || artists.filter(a => a.verified_by_admin).length,
-    pending: counts.pending || artists.filter(a => !a.verified_by_admin).length,
-    newThisMonth: Math.floor((counts.total || totalCount || artists.length) * 0.15), // Mock trend
+    total: counts.total, // real total from API
+    verified: counts.verified, // real verified from API
+    pending: counts.pending, // real pending from API
+    newThisMonth: 0, // Set to 0 or replace with real value if available from API
   };
 
   const columns = [

@@ -20,7 +20,6 @@ export default function Navbar() {
   const isBuyer = (user?.role || '').toString().toLowerCase() === 'buyer';
 
   const navLinks = [
-    { href: "/", label: t('nav.home') },
     { href: "/gallery", label: t('nav.gallery') },
     { href: "/artists", label: t('nav.artists') },
     { href: "/contact", label: t('nav.contact') },

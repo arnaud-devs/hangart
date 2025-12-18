@@ -326,7 +326,7 @@ export default function OrdersPage() {
         {/* Main Card */}
         <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg overflow-hidden">
           {/* Stats Section */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-6 border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
             <div className="p-4 rounded-lg bg-white dark:bg-white/5">
               <div className="flex items-center justify-between">
                 <div>
@@ -384,7 +384,7 @@ export default function OrdersPage() {
           </div>
 
           {/* Filters Section */}
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5">
+          <div className="p-6 border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
             <div className="flex flex-col gap-4">
               {/* Search Bar */}
               <div className="relative">
@@ -520,7 +520,7 @@ export default function OrdersPage() {
                       return (
                         <tr
                           key={order.id}
-                          className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
+                          className="border-b border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                         >
                           <td className="px-6 py-4">
                             <span className="font-semibold text-gray-900 dark:text-white">{order.order_number}</span>
@@ -621,7 +621,7 @@ export default function OrdersPage() {
         {/* Update Status Modal */}
         {showUpdateModal && selectedOrder && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full p-6">
+            <div className="bg-white dark:bg-black border border-gray-200 dark:border-white/10 rounded-2xl shadow-xl max-w-md w-full p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Update Order Status</h2>
                 <button
@@ -643,7 +643,7 @@ export default function OrdersPage() {
                   <select
                     value={updateFormData.status}
                     onChange={(e) => setUpdateFormData({ ...updateFormData, status: e.target.value })}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-blackgray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   >
                     <option value="">Select Status</option>
                     <option value="pending">Pending</option>
@@ -680,7 +680,7 @@ export default function OrdersPage() {
                 <div className="flex gap-3 pt-4">
                   <button
                     onClick={() => setShowUpdateModal(false)}
-                    className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    className="flex-1 px-4 py-2 border border-gray-300 dark:border-white/10 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                   >
                     Cancel
                   </button>

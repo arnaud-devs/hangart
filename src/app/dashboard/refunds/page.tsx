@@ -204,18 +204,18 @@ export default function AdminRefundsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-[#f7f7f8] dark:bg-black p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Refund Requests</h1>
-              <p className="text-gray-600 mt-1">Manage and review customer refund requests</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Refund Requests</h1>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">Manage and review customer refund requests</p>
             </div>
             <button
               onClick={loadRefunds}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 text-gray-700 dark:text-gray-300 transition-colors"
             >
               <FiRefreshCw className="w-4 h-4" />
               Refresh
@@ -224,89 +224,89 @@ export default function AdminRefundsPage() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+            <div className="bg-white dark:bg-white/5 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-white/10">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Total Requests</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Total Requests</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.total}</p>
                 </div>
-                <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <FiDollarSign className="w-5 h-5 text-gray-600" />
+                <div className="w-10 h-10 bg-gray-100 dark:bg-white/10 rounded-lg flex items-center justify-center">
+                  <FiDollarSign className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+            <div className="bg-white dark:bg-white/5 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-white/10">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Pending</p>
-                  <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Pending</p>
+                  <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-500">{stats.pending}</p>
                 </div>
-                <div className="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center">
-                  <FiClock className="w-5 h-5 text-yellow-600" />
+                <div className="w-10 h-10 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+                  <FiClock className="w-5 h-5 text-yellow-600 dark:text-yellow-500" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+            <div className="bg-white dark:bg-white/5 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-white/10">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Approved</p>
-                  <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Approved</p>
+                  <p className="text-2xl font-bold text-green-600 dark:text-green-500">{stats.approved}</p>
                 </div>
-                <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                  <FiCheckCircle className="w-5 h-5 text-green-600" />
+                <div className="w-10 h-10 bg-green-50 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                  <FiCheckCircle className="w-5 h-5 text-green-600 dark:text-green-500" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+            <div className="bg-white dark:bg-white/5 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-white/10">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Rejected</p>
-                  <p className="text-2xl font-bold text-red-600">{stats.rejected}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Rejected</p>
+                  <p className="text-2xl font-bold text-red-600 dark:text-red-500">{stats.rejected}</p>
                 </div>
-                <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
-                  <FiXCircle className="w-5 h-5 text-red-600" />
+                <div className="w-10 h-10 bg-red-50 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
+                  <FiXCircle className="w-5 h-5 text-red-600 dark:text-red-500" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+            <div className="bg-white dark:bg-white/5 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-white/10">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Processed</p>
-                  <p className="text-2xl font-bold text-blue-600">{stats.processed}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Processed</p>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-500">{stats.processed}</p>
                 </div>
-                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                  <FiCheckCircle className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <FiCheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-500" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+            <div className="bg-white dark:bg-white/5 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-white/10">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-500">Total Amount</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Total Amount</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                     {formatCurrency(stats.totalAmount.toString())}
                   </p>
                 </div>
-                <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
-                  <FiDollarSign className="w-5 h-5 text-purple-600" />
+                <div className="w-10 h-10 bg-purple-50 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                  <FiDollarSign className="w-5 h-5 text-purple-600 dark:text-purple-500" />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Filters */}
-          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-6">
+          <div className="bg-white dark:bg-white/5 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-white/10 mb-6">
             <div className="flex flex-col lg:flex-row gap-4">
               {/* Status Filters */}
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <FiFilter className="w-4 h-4 text-gray-500" />
-                  <label className="text-sm font-medium text-gray-700">Filter by Status</label>
+                  <FiFilter className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Filter by Status</label>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {STATUS_FILTERS.map(filter => (
@@ -331,8 +331,8 @@ export default function AdminRefundsPage() {
               {/* Search */}
               <div className="lg:w-80">
                 <div className="flex items-center gap-2 mb-2">
-                  <FiSearch className="w-4 h-4 text-gray-500" />
-                  <label className="text-sm font-medium text-gray-700">Search</label>
+                  <FiSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Search</label>
                 </div>
                 <div className="relative">
                   <input
@@ -340,7 +340,7 @@ export default function AdminRefundsPage() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search by order number, buyer name..."
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600 focus:outline-none"
+                    className="w-full pl-10 pr-4 py-2 bg-white dark:bg-black border border-gray-300 dark:border-white/10 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-600 focus:border-yellow-600 focus:outline-none"
                   />
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 </div>
@@ -350,38 +350,38 @@ export default function AdminRefundsPage() {
         </div>
 
         {/* Refunds Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-white/5 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-white/10">
+              <thead className="bg-gray-50 dark:bg-white/5">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Order Details
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Buyer & Reason
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Amount
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-transparent divide-y divide-gray-200 dark:divide-white/10">
                 {loading ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center justify-center">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600"></div>
-                        <p className="mt-2 text-gray-500">Loading refund requests...</p>
+                        <p className="mt-2 text-gray-500 dark:text-gray-400">Loading refund requests...</p>
                       </div>
                     </td>
                   </tr>
@@ -389,11 +389,11 @@ export default function AdminRefundsPage() {
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center justify-center">
-                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <div className="w-16 h-16 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mb-4">
                           <FiDollarSign className="w-8 h-8 text-gray-400" />
                         </div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-1">No refund requests found</h3>
-                        <p className="text-gray-500">
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">No refund requests found</h3>
+                        <p className="text-gray-500 dark:text-gray-400">
                           {filterStatus !== 'all' 
                             ? `No ${filterStatus} refund requests`
                             : search
@@ -408,12 +408,12 @@ export default function AdminRefundsPage() {
                     const isExpanded = expandedRefunds.includes(refund.id);
                     return (
                       <React.Fragment key={refund.id}>
-                        <tr className="hover:bg-gray-50 transition-colors">
+                        <tr className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                               <button
                                 onClick={() => toggleExpand(refund.id)}
-                                className="text-gray-400 hover:text-gray-600"
+                                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                               >
                                 {isExpanded ? (
                                   <FiChevronUp className="w-5 h-5" />
@@ -422,10 +422,10 @@ export default function AdminRefundsPage() {
                                 )}
                               </button>
                               <div>
-                                <div className="font-medium text-gray-900">
+                                <div className="font-medium text-gray-900 dark:text-white">
                                   {refund.order_number}
                                 </div>
-                                <div className="text-xs text-gray-500">
+                                <div className="text-xs text-gray-500 dark:text-gray-400">
                                   ID: {refund.id}
                                 </div>
                               </div>
@@ -433,28 +433,28 @@ export default function AdminRefundsPage() {
                           </td>
                           <td className="px-6 py-4">
                             <div>
-                              <div className="font-medium text-gray-900">
+                              <div className="font-medium text-gray-900 dark:text-white">
                                 {refund.buyer_name}
                               </div>
-                              <div className="text-sm text-gray-600 capitalize">
+                              <div className="text-sm text-gray-600 dark:text-gray-300 capitalize">
                                 {refund.reason.replace('_', ' ')}
                               </div>
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="font-bold text-gray-900">
+                            <div className="font-bold text-gray-900 dark:text-white">
                               {formatCurrency(refund.refund_amount)}
                             </div>
                           </td>
                           <td className="px-6 py-4">
                             <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium capitalize ${
                               refund.status === 'pending' 
-                                ? 'bg-yellow-100 text-yellow-800' 
+                                ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' 
                                 : refund.status === 'approved'
-                                ? 'bg-green-100 text-green-800'
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                                 : refund.status === 'rejected'
-                                ? 'bg-red-100 text-red-800'
-                                : 'bg-blue-100 text-blue-800'
+                                ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
                             }`}>
                               {refund.status === 'pending' && <FiClock className="w-3 h-3" />}
                               {refund.status === 'approved' && <FiCheckCircle className="w-3 h-3" />}
@@ -463,13 +463,13 @@ export default function AdminRefundsPage() {
                               {refund.status}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             {formatDate(refund.created_at)}
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
                               <Link href={`/dashboard/refunds/${refund.id}`}
-                                className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                                className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
                               >
                                 <FiEye className="w-3 h-3" />
                                 View
@@ -491,28 +491,28 @@ export default function AdminRefundsPage() {
                           </td>
                         </tr>
                         {isExpanded && (
-                          <tr className="bg-gray-50">
+                          <tr className="bg-gray-50 dark:bg-white/5">
                             <td colSpan={6} className="px-6 py-4">
                               <div className="pl-8 border-l-2 border-yellow-600">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                   <div>
-                                    <h4 className="text-sm font-medium text-gray-700 mb-1">Order Details</h4>
-                                    <p className="text-sm text-gray-600">
+                                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Order Details</h4>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">
                                       Order: {refund.order_number}
                                     </p>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">
                                       Refund ID: {refund.id}
                                     </p>
                                   </div>
                                   <div>
-                                    <h4 className="text-sm font-medium text-gray-700 mb-1">Refund Reason</h4>
-                                    <p className="text-sm text-gray-600 capitalize">
+                                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Refund Reason</h4>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 capitalize">
                                       {refund.reason.replace('_', ' ')}
                                     </p>
                                   </div>
                                   <div>
-                                    <h4 className="text-sm font-medium text-gray-700 mb-1">Timeline</h4>
-                                    <p className="text-sm text-gray-600">
+                                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Timeline</h4>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">
                                       Requested: {formatDate(refund.created_at)}
                                     </p>
                                   </div>
@@ -531,9 +531,9 @@ export default function AdminRefundsPage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="px-6 py-4 border-t border-gray-200">
+            <div className="px-6 py-4 border-t border-gray-200 dark:border-white/10">
               <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-700">
+                <div className="text-sm text-gray-700 dark:text-gray-300">
                   Showing <span className="font-medium">{(page - 1) * 10 + 1}</span> to{' '}
                   <span className="font-medium">{Math.min(page * 10, stats.total)}</span> of{' '}
                   <span className="font-medium">{stats.total}</span> refunds
@@ -542,7 +542,7 @@ export default function AdminRefundsPage() {
                   <button
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                    className="px-3 py-1.5 border border-gray-300 dark:border-white/10 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300"
                   >
                     Previous
                   </button>
@@ -566,7 +566,7 @@ export default function AdminRefundsPage() {
                           className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium ${
                             page === pageNum
                               ? 'bg-yellow-600 text-white'
-                              : 'text-gray-700 hover:bg-gray-100'
+                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
                           }`}
                         >
                           {pageNum}
@@ -577,7 +577,7 @@ export default function AdminRefundsPage() {
                   <button
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
-                    className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                    className="px-3 py-1.5 border border-gray-300 dark:border-white/10 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300"
                   >
                     Next
                   </button>

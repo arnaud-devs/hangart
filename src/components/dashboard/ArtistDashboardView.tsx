@@ -105,9 +105,9 @@ export default function ArtistDashboardView({ user }: { user: any }) {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-700 mb-8 p-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Artist Dashboard</h1>
+    <div className="space-y-6 bg-[#f7f7f8] dark:bg-black">
+      <div className="sticky top-0 z-40 bg-white/80 dark:bg-black/80 backdrop-blur-lg border-b border-gray-200 dark:border-white/10 mb-8 p-6">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Artist Dashboard</h1>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Welcome back, {user?.first_name}! Manage your artworks and track your success.</p>
       </div>
 
@@ -128,13 +128,13 @@ export default function ArtistDashboardView({ user }: { user: any }) {
         </div>
 
         {/* Your Artworks */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-white/5 rounded-lg shadow-sm p-6 border border-gray-200 dark:border-white/10">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Your Artworks</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Your Artworks</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {artworks.map((artwork: any) => (
-              <div key={artwork.id} className="group relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow">
+              <div key={artwork.id} className="group relative rounded-lg overflow-hidden border border-gray-200 dark:border-white/10 hover:shadow-lg transition-shadow">
                 <img
                   src={artwork.main_image || '/placeholder.jpg'}
                   alt={artwork.title}

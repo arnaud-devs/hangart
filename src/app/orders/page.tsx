@@ -482,16 +482,6 @@ export default function OrdersPage() {
                         <div className="bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 p-5">
                           <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Quick Actions</h3>
                           <div className="space-y-2">
-                            <button className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-medium rounded-lg transition-colors text-sm">
-                              <Download className="w-4 h-4" />
-                              <span>Download Invoice</span>
-                            </button>
-                            {order.status.toLowerCase() === 'delivered' && (
-                              <button className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors text-sm">
-                                <CreditCard className="w-4 h-4" />
-                                <span>Download Receipt</span>
-                              </button>
-                            )}
                             {order.status.toLowerCase() === 'pending_payment' && (
                               <button
                                 className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm"

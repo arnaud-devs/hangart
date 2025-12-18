@@ -56,14 +56,17 @@ export default function AdminDashboardView() {
   }, []);
 
   const loadDashboardData = async () => {
+
     try {
       setLoading(true);
-      const [artworks, artists, buyers, orders, paymentsData] = await Promise.all([
+      const [artworks, artists, buyers, orders, paymentsData, refundsData] = await Promise.all([
         artworkService.listArtworks(),
         adminService.getUsers({ role: 'artist' }),
         listAdminBuyers(),
         listOrders(),
         listPayments(),
+        // Fetch all refunds (admins see all)
+        import('@/lib/appClient').then(m => m.listRefundRequests({})),
       ]);
 
       const artworksList = (artworks as any).results || [];
@@ -71,11 +74,16 @@ export default function AdminDashboardView() {
       const buyersList = Array.isArray(buyers) ? buyers : (buyers as any).results || [];
       const ordersList = Array.isArray(orders) ? orders : (orders as any).results || [];
       const paymentsList = (paymentsData as any).results || [];
+      const refundsList = (refundsData as any).results || [];
 
       // Inventory value: sum of all artwork prices
       const inventoryValue = artworksList.reduce((sum: number, a: any) => sum + (Number(a.price) || 0), 0);
       // Total payments: sum of all payment amounts (regardless of status)
       const totalPayments = paymentsList.reduce((sum: number, p: any) => sum + (Number(p.amount) || 0), 0);
+      // Total refunds: sum of all refund amounts with status 'approved'
+      const totalRefunds = refundsList
+        .filter((r: any) => r.status === 'approved')
+        .reduce((sum: number, r: any) => sum + (parseFloat(r.refund_amount) || 0), 0);
 
       const dashboardStats: DashboardStats = {
         total_artworks: (artworks as any).count || artworksList.length || 0,
@@ -85,7 +93,7 @@ export default function AdminDashboardView() {
         total_revenue: totalPayments, // Now sum of all payments
         // Match /approvals: count artworks with status 'submitted' or 'pending'
         pending_approvals: artworksList.filter((a: any) => a.status === 'submitted' || a.status === 'pending').length || 0,
-        total_refunds: 0,
+        total_refunds: totalRefunds,
         pending_payments: paymentsList.filter((p: any) => p.status === 'pending').length || 0,
         completed_payments: paymentsList.filter((p: any) => p.status === 'successful').length || 0,
         recent_artworks: artworksList.slice(0, 5),

@@ -33,24 +33,24 @@ export default function ArtistDashboardView({ user }: { user: any }) {
       const myArtworksResponse = await artistService.getMyArtworks();
       const artworksList = (myArtworksResponse as any).results || myArtworksResponse || [];
 
-      const totalViews = artworksList.reduce((sum: number, a: any) => sum + (Number(a.views) || 0), 0);
-      const totalLikes = artworksList.reduce((sum: number, a: any) => sum + (Number(a.likes) || 0), 0);
       const totalRevenue = artworksList.reduce((sum: number, a: any) => sum + (Number(a.price) || 0), 0);
+      const soldArtworks = artworksList.filter((a: any) => a.status === 'sold');
+      const totalSoldRevenue = soldArtworks.reduce((sum: number, a: any) => sum + (Number(a.price) || 0), 0);
 
       setStats({
         total_artworks: artworksList.length,
-        total_views: totalViews,
-        total_likes: totalLikes,
         total_revenue: totalRevenue,
         approved_artworks: artworksList.filter((a: any) => a.status === 'approved').length,
         pending_artworks: artworksList.filter((a: any) => a.status === 'pending').length,
+        sold_artworks: soldArtworks.length,
+        sold_revenue: totalSoldRevenue,
       });
 
       setArtworks(artworksList.slice(0, 6));
-    } catch (error) {
+    } catch (error) { 
       console.error('Error loading artist dashboard:', error);
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
@@ -72,23 +72,7 @@ export default function ArtistDashboardView({ user }: { user: any }) {
       trend: { value: 5, isPositive: true }
     },
     {
-      title: "Total Views",
-      value: stats?.total_views || 0,
-      icon: Eye,
-      color: "green",
-      description: "Profile views",
-      trend: { value: 12, isPositive: true }
-    },
-    {
-      title: "Total Likes",
-      value: stats?.total_likes || 0,
-      icon: Heart,
-      color: "red",
-      description: "Community engagement",
-      trend: { value: 8, isPositive: true }
-    },
-    {
-      title: "Total Revenue",
+      title: "Inventory Value",
       value: `$${(stats?.total_revenue || 0).toLocaleString()}`,
       icon: DollarSign,
       color: "emerald",
@@ -102,6 +86,14 @@ export default function ArtistDashboardView({ user }: { user: any }) {
       color: "green",
       description: "Published pieces",
       trend: { value: 3, isPositive: true }
+    },
+    {
+      title: "Total Revenue",
+      value: `$${(stats?.sold_revenue || 0).toLocaleString()}`,
+      icon: Heart,
+      color: "red",
+      description: "Total price of sold pieces",
+      trend: { value: 8, isPositive: true }
     },
     {
       title: "Pending Review",
@@ -121,7 +113,7 @@ export default function ArtistDashboardView({ user }: { user: any }) {
 
       <div className="p-6 space-y-6">
         {/* Stats Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {statsCards.map((card, index) => (
             <StatsCard
               key={index}

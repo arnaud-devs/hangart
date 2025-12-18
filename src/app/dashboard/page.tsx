@@ -5,7 +5,6 @@ import React from 'react';
 import { useAuth } from '@/lib/authProvider';
 import AdminDashboardView from '@/components/dashboard/AdminDashboardView';
 import ArtistDashboardView from '@/components/dashboard/ArtistDashboardView';
-import BuyerDashboardView from '@/components/dashboard/BuyerDashboardView';
 
 export default function DashboardIndex() {
   const { user } = useAuth();
@@ -27,10 +26,6 @@ export default function DashboardIndex() {
 
   if (user.role === 'artist') {
     return <ArtistDashboardView user={user} />;
-  }
-
-  if (user.role === 'buyer') {
-    return <BuyerDashboardView user={user} />;
   }
 
   // Default fallback

@@ -88,6 +88,7 @@ interface OrdersResponse {
   // ...existing code...
 
 import { useI18n } from '@/lib/i18nClient';
+import Link from "next/link";
 export default function OrdersPage() {
   const { t } = useI18n();
     const statusColors: Record<string, { bg: string; text: string; badge: string }> = {
@@ -165,11 +166,11 @@ export default function OrdersPage() {
       if (status) params.status = status;
 
       const response = await listOrders(params);
-      
+
       // Handle both array and paginated responses
       let ordersData: Order[] = [];
       let count = 0;
-      
+
       if (Array.isArray(response)) {
         ordersData = response.map(order => ({
           id: order.id,
@@ -177,6 +178,7 @@ export default function OrdersPage() {
           order_number: order.order_number,
           status: order.status as any,
           total_amount: order.total_amount?.toString() || '0',
+          commission: undefined, // will fetch below
           created_at: order.created_at || '',
           items_count: order.items?.length || 0,
         }));
@@ -189,13 +191,27 @@ export default function OrdersPage() {
           order_number: order.order_number,
           status: order.status as any,
           total_amount: order.total_amount?.toString() || '0',
+          commission: undefined, // will fetch below
           created_at: order.created_at || '',
           items_count: order.items_count || order.items?.length || 0,
         }));
         count = response.count || 0;
       }
-      
-      setOrders(ordersData);
+
+      // Fetch commission for each order in parallel
+      const { getOrder } = await import('@/lib/appClient');
+      const ordersWithCommission = await Promise.all(
+        ordersData.map(async (order) => {
+          try {
+            const details = await getOrder(order.id);
+            return { ...order, commission: (details as any)?.commission?.toString() || '0' };
+          } catch {
+            return { ...order, commission: '0' };
+          }
+        })
+      );
+
+      setOrders(ordersWithCommission);
       setTotalCount(count);
     } catch (error: any) {
       showToast("error", "Error", error.response?.data?.message || error.message || "Failed to load orders");
@@ -310,7 +326,7 @@ export default function OrdersPage() {
         {/* Main Card */}
         <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg overflow-hidden">
           {/* Stats Section */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-white/5">
             <div className="p-4 rounded-lg bg-white dark:bg-white/5">
               <div className="flex items-center justify-between">
                 <div>
@@ -353,7 +369,18 @@ export default function OrdersPage() {
               </div>
             </div>
 
-            {/* Removed 'This Page' and 'Page' cards as requested */}
+            {/* Commissions Card */}
+            <div className="p-4 rounded-lg bg-white dark:bg-white/5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-gray-600 dark:text-gray-400 mb-1">Commissions</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    ${orders.filter(o => o.status === 'paid').reduce((sum, order) => sum + (parseFloat(order.commission || '0')), 0).toFixed(2)}
+                  </p>
+                </div>
+                <DollarSign className="w-8 h-8 text-purple-500 opacity-20" />
+              </div>
+            </div>
           </div>
 
           {/* Filters Section */}
@@ -393,6 +420,7 @@ export default function OrdersPage() {
                     <option value="refunded">Refunded</option>
                   </select>
                 </div>
+                {/*
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
                     <Filter className="w-4 h-4" />
@@ -409,6 +437,7 @@ export default function OrdersPage() {
                     <option value="wallet">Wallet</option>
                   </select>
                 </div>
+                */}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
@@ -464,6 +493,9 @@ export default function OrdersPage() {
                       Amount
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+                      Commission
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
                       Items
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
@@ -509,6 +541,9 @@ export default function OrdersPage() {
                             <span className="font-semibold text-yellow-600 dark:text-yellow-400">${order.total_amount}</span>
                           </td>
                           <td className="px-6 py-4">
+                            <span className="font-semibold text-purple-600 dark:text-purple-400">${order.commission || '0.00'}</span>
+                          </td>
+                          <td className="px-6 py-4">
                             <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded">
                               <Package className="w-3 h-3" />
                               {order.items_count}
@@ -523,16 +558,17 @@ export default function OrdersPage() {
                           </td>
                           <td className="px-6 py-4 text-center">
                             <div className="flex items-center justify-center gap-2">
-                              <button
+                              {/* <button
                                 onClick={() => {
                                   setSelectedOrder(order);
                                   setShowDetails(true);
                                 }}
                                 className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors"
-                              >
+                              > */}
+                                <Link href={`/dashboard/orders/${order.id}`}                                 className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition-colors">
                                 <Eye className="w-4 h-4" />
                                 View
-                              </button>
+                                </Link>
                               <button
                                 onClick={() => openUpdateModal(order)}
                                 className="inline-flex items-center gap-2 px-3 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"

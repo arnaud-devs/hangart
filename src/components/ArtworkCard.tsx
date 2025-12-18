@@ -55,7 +55,7 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
           </h4>
           <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{artwork.artist || "Unknown"}</p>
           {artwork.price ? (
-            <p className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">{artwork.price}</p>
+            <p className="mt-2 text-sm font-medium text-yellow-600 dark:text-gray-100">{artwork.price} $</p>
           ) : null}
         </div>
       </Link>

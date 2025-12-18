@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, ChevronUp, SlidersHorizontal, Heart, Loader, Search } from "lucide-react";
 import { listArtworks } from "@/lib/appClient";
+import { useRouter } from 'next/navigation';
+import VoiceRecognitionDynamic from './VoiceRecognitionDynamic';
 
 type FilterOption = {
   id: string;
@@ -24,6 +26,7 @@ type ArtworkItem = {
 
 export default function GalleryPage() {
   const { t } = require('@/lib/i18nClient').useI18n();
+  const router = useRouter();
   const [artworks, setArtworks] = useState<ArtworkItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -56,6 +59,91 @@ export default function GalleryPage() {
     price: true,
   });
 
+  // Handler for voice filter intent with useCallback to prevent recreation
+const handleVoiceFilter = useCallback((filterType: string, value: string) => {
+  console.log('[GalleryPage] handleVoiceFilter CALLED!', { filterType, value });
+  
+  // Reset to page 1 for new filters
+  setPage(1);
+  
+  switch (filterType) {
+    case "category": {
+      // Capitalize first letter to match category ids
+      const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
+      console.log('[GalleryPage] Setting category to:', capitalized, '(original:', value, ')');
+      setSelectedCategory(capitalized);
+      break;
+    }
+      
+    case "medium":
+      console.log('[GalleryPage] Setting medium to:', value);
+      setSelectedMedium([value]);
+      break;
+      
+    case "artist":
+      console.log('[GalleryPage] Setting artist to:', value);
+      setSelectedArtist(value);
+      break;
+      
+    case "price":
+      console.log('[GalleryPage] Setting price range to:', value);
+      // Map voice price values to UI price range ids
+      let priceId = "all";
+      const priceValue = value.toLowerCase();
+      
+      if (priceValue === 'under-100') priceId = '0-100';
+      else if (priceValue === '100-500') priceId = '100-500';
+      else if (priceValue === '500-1000') priceId = '500-1000';
+      else if (priceValue === '1000-5000') priceId = '1000-5000';
+      else if (priceValue === '5000+') priceId = '5000+';
+      else if (priceValue.includes('under')) priceId = '0-100';
+      else if (priceValue.includes('100-500') || priceValue.includes('100 to 500')) priceId = '100-500';
+      else if (priceValue.includes('500-1000') || priceValue.includes('500 to 1000')) priceId = '500-1000';
+      else if (priceValue.includes('1000-5000') || priceValue.includes('1000 to 5000')) priceId = '1000-5000';
+      else if (priceValue.includes('5000+') || priceValue.includes('over')) priceId = '5000+';
+      
+      console.log('[GalleryPage] Mapped price:', value, '->', priceId);
+      setSelectedPriceRange(priceId);
+      break;
+      
+    default:
+      console.warn('[GalleryPage] Unknown filter type:', filterType);
+  }
+}, []);
+
+  // Handler for clearing filters via voice
+  const handleClearFilters = useCallback((filterType?: string) => {
+    console.log('[Voice Clear] Clearing filters:', filterType || 'all');
+    
+    if (!filterType) {
+      // Clear all filters
+      setSelectedCategory("all");
+      setSelectedMedium([]);
+      setSelectedArtist("all");
+      setSelectedPriceRange("all");
+      setSearchQuery("");
+      setSortBy("-created_at");
+      setPage(1);
+    } else {
+      // Clear specific filter
+      switch (filterType) {
+        case "category":
+          setSelectedCategory("all");
+          break;
+        case "medium":
+          setSelectedMedium([]);
+          break;
+        case "artist":
+          setSelectedArtist("all");
+          break;
+        case "price":
+          setSelectedPriceRange("all");
+          break;
+      }
+    }
+    setPage(1);
+  }, []);
+
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
@@ -79,7 +167,7 @@ export default function GalleryPage() {
         };
 
         if (selectedCategory !== "all") params.category = selectedCategory;
-        if (selectedMedium.length > 0) params.medium = selectedMedium[0]; // API accepts single medium
+        if (selectedMedium.length > 0) params.medium = selectedMedium[0];
         if (searchQuery.trim()) params.search = searchQuery.trim();
 
         const response = await listArtworks(params);
@@ -117,9 +205,9 @@ export default function GalleryPage() {
       }
     };
 
-
     fetchArtworks();
   }, [page, selectedCategory, selectedMedium, sortBy, searchQuery]);
+
 
   // Client-side artist & price filtering
   const filteredArtworks = artworks.filter((artwork) => {
@@ -140,11 +228,30 @@ export default function GalleryPage() {
     return true;
   });
 
+  // Debug: Log filteredArtworks after a voice filter is applied
+  useEffect(() => {
+    // Only log when a filter changes (not on every render)
+    console.log('[GalleryPage] Filtered artworks after filter change:', {
+      selectedCategory,
+      selectedMedium,
+      selectedArtist,
+      selectedPriceRange,
+      filteredArtworks
+    });
+  }, [selectedCategory, selectedMedium, selectedArtist, selectedPriceRange, filteredArtworks]);
+
   const activeFiltersCount = (selectedCategory !== "all" ? 1 : 0) + selectedMedium.length + (selectedArtist !== "all" ? 1 : 0) + (selectedPriceRange !== "all" ? 1 : 0) + (searchQuery ? 1 : 0);
   const totalPages = Math.ceil(totalCount / 20);
 
+  console.log('[GalleryPage] handleVoiceFilter function:', handleVoiceFilter);
+  console.log('[GalleryPage] handleClearFilters function:', handleClearFilters);
   return (
     <div className="min-h-screen bg-[#f7f7f8] dark:bg-black py-8">
+      {/* Voice recognition floating button for filter intent */}
+      <VoiceRecognitionDynamic
+        onFilterIntent={handleVoiceFilter}
+        onClearFilters={handleClearFilters}
+      />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">

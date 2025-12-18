@@ -510,7 +510,7 @@ export default function PaymentPage({ orderId }: PaymentPageProps) {
           title: 'Order Required',
           description: 'No order specified for payment'
         });
-        router.push('orders');
+        router.push('/orders');
         return;
       }
 
@@ -521,12 +521,7 @@ export default function PaymentPage({ orderId }: PaymentPageProps) {
 
         // Check if order is already paid
         if (orderData.status === 'paid' || orderData.status === 'COMPLETED') {
-          toast({
-            type: 'info',
-            title: 'Already Paid',
-            description: 'This order has already been paid'
-          });
-          router.push(`/orders/${orderId}`);
+          setPaymentSuccess(true);
           return;
         }
 
@@ -537,7 +532,7 @@ export default function PaymentPage({ orderId }: PaymentPageProps) {
             title: 'Invalid Order Status',
             description: 'This order cannot be paid at this time'
           });
-          router.push(`/orders/${orderId}`);
+          router.push('/orders');
           return;
         }
 
@@ -565,13 +560,14 @@ export default function PaymentPage({ orderId }: PaymentPageProps) {
 
   const handlePaymentSuccess = () => {
     setPaymentSuccess(true);
-    setTimeout(() => {
-      router.push(`/orders/${orderId}`);
-    }, 2000);
   };
 
-  const handleContinueShopping = () => {
-    router.push('/orders');
+  const handleViewPayments = () => {
+    router.push('/payments');
+  };
+
+  const handleBackToHome = () => {
+    router.push('/');
   };
 
   if (!user) {
@@ -609,7 +605,7 @@ export default function PaymentPage({ orderId }: PaymentPageProps) {
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Order Not Found</h2>
           <p className="text-gray-600 mb-6">The order you're trying to pay for doesn't exist</p>
           <button 
-            onClick={() => router.push('/shop/orders')}
+            onClick={() => router.push('/orders')}
             className="bg-[#634bc1] text-white px-6 py-3 rounded-lg hover:bg-[#5340a0] transition-colors"
           >
             View Orders
@@ -621,21 +617,98 @@ export default function PaymentPage({ orderId }: PaymentPageProps) {
 
   if (paymentSuccess) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-green-500 text-white rounded-lg shadow-lg p-8 text-center">
-          <div className="w-16 h-16 bg-green-400 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4">
+        <div className="max-w-md w-full bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-lg p-8 text-center border border-black/5 dark:border-white/10">
+          <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-12 h-12 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2l4-4m5 2a9 9 0 11-18 0a9 9 0 0118 0z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold mb-2">Payment Successful!</h2>
-          <p className="text-green-100 mb-6">Your payment has been processed and your order has been updated</p>
-          <button 
-            onClick={handleContinueShopping}
-            className="bg-white text-green-600 px-6 py-3 rounded-lg hover:bg-green-50 transition-colors font-medium"
-          >
-            View Your Orders
-          </button>
+          <h1 className="text-3xl font-bold mb-3 text-gray-900 dark:text-gray-100">Payment Successful!</h1>
+          <div className="mb-6 p-5 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-xl border border-green-200 dark:border-green-800">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <div className="w-12 h-12 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-md">
+                {selectedMethod === 'stripe' && (
+                  <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                )}
+                {selectedMethod === 'paypal' && (
+                  <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xs">PP</div>
+                )}
+                {selectedMethod === 'momo' && (
+                  <div className="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xs">MM</div>
+                )}
+              </div>
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Paid with</p>
+                <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                  {selectedMethod === 'stripe' && 'Credit/Debit Card'}
+                  {selectedMethod === 'paypal' && 'PayPal'}
+                  {selectedMethod === 'momo' && 'Mobile Money (MTN)'}
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="text-left">
+                <p className="text-xs text-gray-500 dark:text-gray-400">Order Number</p>
+                <p className="font-semibold text-gray-900 dark:text-gray-100">{order.orderNumber}</p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-gray-500 dark:text-gray-400">Amount Paid</p>
+                <p className="font-bold text-green-600 dark:text-green-400">
+                  ${Number(order.total_amount).toFixed(2)} {order.currency || 'USD'}
+                </p>
+              </div>
+            </div>
+          </div>
+          <p className="text-gray-600 dark:text-gray-400 mb-8">
+            Thank you for your payment! Your order is now confirmed and will be processed shortly.
+            {selectedMethod === 'momo' && ' You will receive a payment confirmation message on your phone.'}
+          </p>
+          <div className="space-y-3">
+            <button
+              onClick={handleViewPayments}
+              className="w-full px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              View Payment History
+            </button>
+            <button
+              onClick={handleBackToHome}
+              className="w-full px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              Back to Home
+            </button>
+          </div>
+          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              A confirmation email has been sent to your registered email address.
+              Need help? Contact us at{' '}
+              <a href="mailto:support@hangart.com" className="text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300 underline">
+                support@hangart.com
+              </a>
+            </p>
+            <div className="mt-4 flex items-center justify-center gap-4">
+              <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span className="text-xs">Secure Payment</span>
+              </div>
+              <div className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+                <span className="text-xs">Order Protected</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

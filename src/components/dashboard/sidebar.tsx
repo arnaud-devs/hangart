@@ -1,9 +1,10 @@
 "use client";
 
-import { Home, Image, Users, Calendar, BarChart3, Settings, X, LogOut, User, ChevronDown, ChevronRight, CreditCard, CheckCircle, UploadCloud, Folder, Package } from "lucide-react";
+import { Home, Image, Users, Calendar, BarChart3, Settings, X, LogOut, User, ChevronDown, ChevronRight, CreditCard, CheckCircle, UploadCloud, Folder, Package, RotateCcwIcon } from "lucide-react";
 import { FiUser, FiHeart, FiTrendingUp } from "react-icons/fi";
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -33,12 +34,11 @@ const sidebarItemsByRole: Record<string, SidebarItem[]> = {
     { icon: Home, label: "Dashboard", href: "/dashboard" },
     { icon: Users, label: "Artists", href: "/dashboard/artists" },
     { icon: Users, label: "Buyers", href: "/dashboard/buyers" },
-    { icon: Users, label: "Users", href: "/dashboard/users" },
     { icon: Image, label: "Artworks", href: "/dashboard/artworks" },
     { icon: Package, label: "Orders", href: "/dashboard/orders" },
     { icon: CreditCard, label: "Payments", href: "/dashboard/payments" },
+    { icon: RotateCcwIcon, label: "Refunds", href: "/dashboard/refunds" },
     { icon: CheckCircle, label: "Approvals", href: "/dashboard/approvals" },
-    { icon: Folder, label: "Museums", href: "/dashboard/museums" },
     { icon: Settings, label: "Settings", href: "/dashboard/settings" },
     { icon: User, label: "Profile", href: "/dashboard/profile" },
   ],
@@ -49,19 +49,19 @@ const sidebarItemsByRole: Record<string, SidebarItem[]> = {
     { icon: Settings, label: "Settings", href: "/dashboard/settings" },
     { icon: User, label: "Profile", href: "/dashboard/profile" },
   ],
-  BUYER: [
-    { icon: Home, label: "Dashboard", href: "/dashboard" },
-    { icon: Image, label: "Browse Artworks", href: "/dashboard/artworks" },
-    { icon: FiHeart as any, label: "Wishlist", href: "/dashboard/wishlist" },
-    { icon: CreditCard, label: "Orders", href: "/dashboard/orders" },
-    { icon: User, label: "Profile", href: "/dashboard/profile" },
-  ],
-  MUSEUM: [
-    { icon: Home, label: "Dashboard", href: "/dashboard" },
-    { icon: Folder, label: "Collections", href: "/dashboard/collections" },
-    { icon: Image, label: "Request Works", href: "/dashboard/requests" },
-    { icon: User, label: "Profile", href: "/dashboard/profile" },
-  ],
+  // BUYER: [
+  //   { icon: Home, label: "Dashboard", href: "/dashboard" },
+  //   { icon: Image, label: "Browse Artworks", href: "/dashboard/artworks" },
+  //   { icon: FiHeart as any, label: "Wishlist", href: "/dashboard/wishlist" },
+  //   { icon: CreditCard, label: "Orders", href: "/dashboard/orders" },
+  //   { icon: User, label: "Profile", href: "/dashboard/profile" },
+  // ],
+  // MUSEUM: [
+  //   { icon: Home, label: "Dashboard", href: "/dashboard" },
+  //   { icon: Folder, label: "Collections", href: "/dashboard/collections" },
+  //   { icon: Image, label: "Request Works", href: "/dashboard/requests" },
+  //   { icon: User, label: "Profile", href: "/dashboard/profile" },
+  // ],
 };
 
 export const Sidebar = ({ 
@@ -227,7 +227,9 @@ export const Sidebar = ({
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-100 dark:border-white/5  from-emerald-50 to-teal-50 dark:bg-black">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 via-yellow-600 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Link href="/">
                 <Image className="w-6 h-6 text-white" />
+                </Link>
               </div>
               <div>
                 <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">

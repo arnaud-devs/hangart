@@ -30,7 +30,8 @@ export default function Navbar() {
     { href: '/cart', label: t('nav.cart') },
     { href: '/orders', label: t('nav.orders') },
     { href: '/payments', label: t('nav.payments') },
-    { href: '/refunds', label: t('nav.refunds') },
+    { href: '/refunds', label: t('nav.refunds') }, // Refunds link added here
+    {href: '/refunds/request', label: t('nav.request_refund')}, // Request Refund link added here
   ];
 
   const helpLinks = [
@@ -42,11 +43,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Grab auth user to conditionally show buyer-only links */}
-      {/* Note: useAuth is client-only, Navbar is client component */}
-      {/* eslint-disable-next-line react-hooks/rules-of-hooks */}
-      {null}
-      <nav className="sticky top-0 z-50 w-full border-b border-gray-200/50  dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-sm">
+      <nav className="sticky top-0 z-50 w-full border-b border-gray-200/50 dark:border-white/10 bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-4">
             {/* Left - Logo */}
@@ -69,16 +66,21 @@ export default function Navbar() {
 
                 {/* Buyer-only links (visible only when a buyer is logged in) */}
                 {isBuyer && buyerLinks.map(link => (
-                  <Link key={link.href} href={link.href} className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                  <Link 
+                    key={link.href} 
+                    href={link.href} 
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                  >
                     {link.label}
                   </Link>
                 ))}
+                
                 {/* Help Dropdown */}
                 <div className="relative">
                   <button
                     onClick={() => setHelpMenuOpen(!helpMenuOpen)}
                     onBlur={() => setTimeout(() => setHelpMenuOpen(false), 200)}
-                    className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-600 transition-colors "
+                    className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-600 transition-colors"
                   >
                     {t('nav.help')}
                     <ChevronDown className={`w-4 h-4 transition-transform ${helpMenuOpen ? 'rotate-180' : ''}`} />
@@ -173,7 +175,7 @@ export default function Navbar() {
               onClick={() => setMobileMenuOpen(false)}
               className="text-2xl font-serif text-[#3C3C43] dark:text-[#DFDFD6]"
             >
-              Hangart
+              {t('brand.name')}
             </Link>
             <button
               onClick={() => setMobileMenuOpen(false)}
@@ -202,11 +204,20 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
+                
+                {/* Buyer-only links (Mobile) */}
                 {isBuyer && (
                   <div className="mt-3">
-                    <div className="px-2 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('nav.buyer')}</div>
+                    <div className="px-2 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      {t('nav.buyer')}
+                    </div>
                     {buyerLinks.map(link => (
-                      <Link key={link.href} href={link.href} onClick={() => setMobileMenuOpen(false)} className="block text-base font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-4 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
+                      <Link 
+                        key={link.href} 
+                        href={link.href} 
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-base font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-600 dark:hover:text-emerald-400 px-4 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+                      >
                         {link.label}
                       </Link>
                     ))}

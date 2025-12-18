@@ -198,8 +198,8 @@ export default function ProfilePage() {
         <div className="bg-white dark:bg-white/5 rounded-2xl shadow-lg overflow-hidden">
           {/* User Header Section */}
           {user && (
-            <div className=" from-yellow-600 to-yellow-700 px-8 py-6 dark:bg-white/5">
-              <div className="flex items-center justify-between ">
+            <div className="from-yellow-600 to-yellow-700 px-8 py-6 dark:bg-white/5">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center border-3 border-white">
                     {profileInfo?.profile_photo ? (
@@ -220,25 +220,25 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </div>
-                {(activeTab === "general" || activeTab === "profile") && !isEditMode && (
-                  <button
-                    onClick={enterEditMode}
-                    className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg flex items-center gap-2 transition-colors"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                    Edit
-                  </button>
-                )}
-                {isEditMode && (activeTab === "general" || activeTab === "profile") && (
-                  <div className="flex gap-2">
+                {/* Edit/Cancel button inside card header */}
+                {(activeTab === "general" || activeTab === "profile") && (
+                  !isEditMode ? (
+                    <button
+                      onClick={enterEditMode}
+                      className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg flex items-center gap-2 transition-colors"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                      Edit
+                    </button>
+                  ) : (
                     <button
                       onClick={exitEditMode}
-                      className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg flex items-center gap-2 transition-colors"
+                      className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg flex items-center gap-2 transition-colors"
                     >
                       <XClose className="w-4 h-4" />
                       Cancel
                     </button>
-                  </div>
+                  )
                 )}
               </div>
             </div>

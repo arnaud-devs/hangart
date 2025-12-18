@@ -236,10 +236,10 @@ export default function RefundDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading refund details...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading refund details...</p>
         </div>
       </div>
     );
@@ -247,13 +247,13 @@ export default function RefundDetailPage() {
 
   if (!refund) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-gray-200 dark:bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <FiXCircle className="w-8 h-8 text-gray-400" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Refund not found</h3>
-          <p className="text-gray-600 mb-4">The refund request you're looking for doesn't exist.</p>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Refund not found</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">The refund request you're looking for doesn't exist.</p>
           <Link
             href="/dashboard/refunds"
             className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors"
@@ -267,7 +267,7 @@ export default function RefundDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-black p-4 md:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -275,13 +275,13 @@ export default function RefundDetailPage() {
             <div className="flex items-center gap-4">
               <Link
                 href="/dashboard/refunds"
-                className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
               >
                 <FiArrowLeft className="w-5 h-5" />
                 <span>Back to Refunds</span>
               </Link>
-              <div className="hidden sm:block w-px h-6 bg-gray-300"></div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+              <div className="hidden sm:block w-px h-6 bg-gray-300 dark:bg-gray-700"></div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
                 Refund Request #{refund.id}
               </h1>
             </div>
@@ -293,7 +293,7 @@ export default function RefundDetailPage() {
               </span>
               <button
                 onClick={loadRefundDetails}
-                className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
+                className="inline-flex items-center gap-2 px-3 py-2 bg-white dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 text-gray-700 dark:text-gray-300 transition-colors"
               >
                 <FiRefreshCw className="w-4 h-4" />
                 Refresh
@@ -303,38 +303,38 @@ export default function RefundDetailPage() {
 
           {/* Status Banner */}
           <div className={`rounded-xl p-4 mb-8 ${
-            refund.status === 'pending' ? 'bg-yellow-50 border border-yellow-200' :
-            refund.status === 'approved' ? 'bg-green-50 border border-green-200' :
-            refund.status === 'rejected' ? 'bg-red-50 border border-red-200' :
-            'bg-blue-50 border border-blue-200'
+            refund.status === 'pending' ? 'bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-900/20' :
+            refund.status === 'approved' ? 'bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-900/20' :
+            refund.status === 'rejected' ? 'bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/20' :
+            'bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-900/20'
           }`}>
             <div className="flex items-start gap-4">
               <div className={`p-3 rounded-lg ${
-                refund.status === 'pending' ? 'bg-yellow-100' :
-                refund.status === 'approved' ? 'bg-green-100' :
-                refund.status === 'rejected' ? 'bg-red-100' :
-                'bg-blue-100'
+                refund.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400' :
+                refund.status === 'approved' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' :
+                refund.status === 'rejected' ? 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400' :
+                'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400'
               }`}>
                 {getStatusIcon(refund.status)}
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 mb-1">
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
                   {refund.status === 'pending' && 'Awaiting Review'}
                   {refund.status === 'approved' && 'Refund Approved'}
                   {refund.status === 'rejected' && 'Refund Rejected'}
                   {refund.status === 'processed' && 'Refund Processed'}
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-gray-600 dark:text-gray-300 text-sm">
                   {refund.status === 'pending' && 'This refund request is waiting for your review and decision.'}
                   {refund.status === 'approved' && 'This refund has been approved and is ready for processing.'}
                   {refund.status === 'rejected' && 'This refund request has been declined.'}
                   {refund.status === 'processed' && 'This refund has been completed and processed.'}
                 </p>
                 {refund.admin_response && (
-                  <div className="mt-3 p-3 bg-white rounded-lg border">
-                    <p className="text-sm text-gray-700">{refund.admin_response}</p>
+                  <div className="mt-3 p-3 bg-white dark:bg-black/20 rounded-lg border dark:border-white/10">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">{refund.admin_response}</p>
                     {refund.reviewed_by_name && (
-                      <p className="text-xs text-gray-500 mt-1">— Reviewed by {refund.reviewed_by_name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">— Reviewed by {refund.reviewed_by_name}</p>
                     )}
                   </div>
                 )}
@@ -360,8 +360,8 @@ export default function RefundDetailPage() {
           {/* Left Column - Order & Buyer Info */}
           <div className="lg:col-span-2 space-y-6">
             {/* Refund Details Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="bg-white dark:bg-white/5 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <FiFileText className="w-5 h-5 text-yellow-600" />
                 Refund Details
               </h2>
@@ -369,38 +369,38 @@ export default function RefundDetailPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-500 mb-1">Reason for Refund</label>
-                    <p className="text-gray-900 font-medium">{getReasonLabel(refund.reason)}</p>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Reason for Refund</label>
+                    <p className="text-gray-900 dark:text-white font-medium">{getReasonLabel(refund.reason)}</p>
                   </div>
                   
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-500 mb-1">Description</label>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <p className="text-gray-700 whitespace-pre-wrap">{refund.description}</p>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Description</label>
+                    <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-4">
+                      <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{refund.description}</p>
                     </div>
                   </div>
                 </div>
                 
                 <div>
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-500 mb-1">Requested Amount</label>
-                    <p className="text-2xl font-bold text-gray-900">{formatCurrency(refund.refund_amount)}</p>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Requested Amount</label>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(refund.refund_amount)}</p>
                   </div>
                   
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-500 mb-1">Requested Date</label>
-                    <p className="text-gray-900">{formatDate(refund.created_at)}</p>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Requested Date</label>
+                    <p className="text-gray-900 dark:text-white">{formatDate(refund.created_at)}</p>
                   </div>
                   
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-500 mb-1">Last Updated</label>
-                    <p className="text-gray-900">{formatDate(refund.updated_at)}</p>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Last Updated</label>
+                    <p className="text-gray-900 dark:text-white">{formatDate(refund.updated_at)}</p>
                   </div>
                   
                   {refund.reviewed_at && (
                     <div className="mb-4">
-                      <label className="block text-sm font-medium text-gray-500 mb-1">Reviewed Date</label>
-                      <p className="text-gray-900">{formatDate(refund.reviewed_at)}</p>
+                      <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Reviewed Date</label>
+                      <p className="text-gray-900 dark:text-white">{formatDate(refund.reviewed_at)}</p>
                     </div>
                   )}
                 </div>
@@ -408,8 +408,8 @@ export default function RefundDetailPage() {
             </div>
 
             {/* Order Details Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="bg-white dark:bg-white/5 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <FiShoppingBag className="w-5 h-5 text-yellow-600" />
                 Order Details
               </h2>
@@ -417,42 +417,42 @@ export default function RefundDetailPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-500 mb-1">Order Number</label>
-                    <p className="text-gray-900 font-medium font-mono">{refund.order_details.order_number}</p>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Order Number</label>
+                    <p className="text-gray-900 dark:text-white font-medium font-mono">{refund.order_details.order_number}</p>
                   </div>
                   
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-500 mb-1">Order Status</label>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Order Status</label>
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
                       refund.order_details.status === 'paid' 
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                        : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
                     }`}>
                       {refund.order_details.status}
                     </span>
                   </div>
                   
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-500 mb-1">Order Total</label>
-                    <p className="text-gray-900">{formatCurrency(refund.order_details.total_amount)}</p>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Order Total</label>
+                    <p className="text-gray-900 dark:text-white">{formatCurrency(refund.order_details.total_amount)}</p>
                   </div>
                 </div>
                 
                 <div>
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-500 mb-1">Order Date</label>
-                    <p className="text-gray-900">{formatDate(refund.order_details.created_at)}</p>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Order Date</label>
+                    <p className="text-gray-900 dark:text-white">{formatDate(refund.order_details.created_at)}</p>
                   </div>
                   
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-500 mb-1">Items Count</label>
-                    <p className="text-gray-900">{refund.order_details.items_count} item(s)</p>
+                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Items Count</label>
+                    <p className="text-gray-900 dark:text-white">{refund.order_details.items_count} item(s)</p>
                   </div>
                   
                   <div className="mt-6">
                     <Link
                       href={`/dashboard/orders/${refund.order}`}
-                      className="inline-flex items-center gap-2 text-yellow-600 hover:text-yellow-700 font-medium"
+                      className="inline-flex items-center gap-2 text-yellow-600 dark:text-yellow-500 hover:text-yellow-700 dark:hover:text-yellow-400 font-medium"
                     >
                       View Order Details
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -468,8 +468,8 @@ export default function RefundDetailPage() {
           {/* Right Column - Buyer Info & Actions */}
           <div className="space-y-6">
             {/* Buyer Info Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <div className="bg-white dark:bg-white/5 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <FiUser className="w-5 h-5 text-yellow-600" />
                 Buyer Information
               </h2>
@@ -484,32 +484,32 @@ export default function RefundDetailPage() {
                         className="w-12 h-12 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                        <FiUser className="w-6 h-6 text-yellow-600" />
+                      <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
+                        <FiUser className="w-6 h-6 text-yellow-600 dark:text-yellow-500" />
                       </div>
                     )}
                     <div>
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-gray-900 dark:text-white">
                         {refund.buyer.first_name} {refund.buyer.last_name}
                       </h3>
-                      <p className="text-sm text-gray-600">@{refund.buyer.username}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">@{refund.buyer.username}</p>
                     </div>
                   </div>
                 </div>
                 
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3 text-gray-700">
+                  <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
                     <FiMail className="w-4 h-4 text-gray-400" />
                     <span>{refund.buyer.email}</span>
                   </div>
                   
-                  <div className="flex items-center gap-3 text-gray-700">
+                  <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300">
                     <FiPhone className="w-4 h-4 text-gray-400" />
                     <span>{refund.buyer.phone}</span>
                   </div>
                   
                   {refund.buyer.buyer_profile?.address && (
-                    <div className="flex items-start gap-3 text-gray-700">
+                    <div className="flex items-start gap-3 text-gray-700 dark:text-gray-300">
                       <FiMapPin className="w-4 h-4 text-gray-400 mt-0.5" />
                       <div>
                         <p>{refund.buyer.buyer_profile.address}</p>
@@ -521,10 +521,10 @@ export default function RefundDetailPage() {
                   )}
                 </div>
                 
-                <div className="pt-4 border-t border-gray-200">
+                <div className="pt-4 border-t border-gray-200 dark:border-white/10">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">Member since</span>
-                    <span className="text-sm text-gray-900">
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Member since</span>
+                    <span className="text-sm text-gray-900 dark:text-white">
                       {formatDate(refund.buyer.join_date)}
                     </span>
                   </div>
@@ -533,8 +533,8 @@ export default function RefundDetailPage() {
             </div>
 
             {/* Quick Actions Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+            <div className="bg-white dark:bg-white/5 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
               
               <div className="space-y-3">
                 <button
@@ -547,7 +547,7 @@ export default function RefundDetailPage() {
                 
                 <button
                   onClick={() => router.push(`/dashboard/orders/${refund.order}`)}
-                  className="w-full py-3 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center gap-2"
+                  className="w-full py-3 px-4 border border-gray-300 dark:border-white/10 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors font-medium flex items-center justify-center gap-2"
                 >
                   <FiPackage className="w-4 h-4" />
                   View Order Details
@@ -555,7 +555,7 @@ export default function RefundDetailPage() {
                 
                 <Link
                   href={`/dashboard/users/${refund.buyer.id}`}
-                  className="block w-full py-3 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center gap-2"
+                  className="block w-full py-3 px-4 border border-gray-300 dark:border-white/10 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors font-medium flex items-center justify-center gap-2"
                 >
                   <FiUser className="w-4 h-4" />
                   View Buyer Profile
@@ -564,15 +564,15 @@ export default function RefundDetailPage() {
             </div>
 
             {/* Timeline Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Timeline</h2>
+            <div className="bg-white dark:bg-white/5 rounded-xl shadow-sm border border-gray-200 dark:border-white/10 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Timeline</h2>
               
               <div className="space-y-4">
                 <div className="flex gap-3">
                   <div className="w-2 h-2 bg-yellow-600 rounded-full mt-2"></div>
                   <div>
-                    <p className="font-medium text-gray-900">Refund Requested</p>
-                    <p className="text-sm text-gray-500">{formatDate(refund.created_at)}</p>
+                    <p className="font-medium text-gray-900 dark:text-white">Refund Requested</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{formatDate(refund.created_at)}</p>
                   </div>
                 </div>
                 
@@ -580,10 +580,10 @@ export default function RefundDetailPage() {
                   <div className="flex gap-3">
                     <div className="w-2 h-2 bg-green-600 rounded-full mt-2"></div>
                     <div>
-                      <p className="font-medium text-gray-900">Refund {refund.status.charAt(0).toUpperCase() + refund.status.slice(1)}</p>
-                      <p className="text-sm text-gray-500">{formatDate(refund.reviewed_at)}</p>
+                      <p className="font-medium text-gray-900 dark:text-white">Refund {refund.status.charAt(0).toUpperCase() + refund.status.slice(1)}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{formatDate(refund.reviewed_at)}</p>
                       {refund.reviewed_by_name && (
-                        <p className="text-sm text-gray-500">By {refund.reviewed_by_name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">By {refund.reviewed_by_name}</p>
                       )}
                     </div>
                   </div>

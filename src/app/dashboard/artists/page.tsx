@@ -58,17 +58,24 @@ export default function ArtistsPage() {
 
   const loadCounts = async () => {
     try {
-      // Get all artists (unfiltered)
-      const totalRes = await artistService.listArtists();
-      const totalCount = totalRes.count ?? totalRes.results?.length ?? totalRes.length ?? 0;
-      // Count verified from the results array (current page only)
-      const verifiedCount = Array.isArray(totalRes.results)
-        ? totalRes.results.filter((a: Artist) => a.verified_by_admin === true).length
-        : 0;
-      // Count pending from the results array (current page only)
-      const pendingCount = Array.isArray(totalRes.results)
-        ? totalRes.results.filter((a: Artist) => a.verified_by_admin === false).length
-        : 0;
+      // Fetch all artists from all pages
+      let allArtists: Artist[] = [];
+      let nextUrl: string | null = null;
+      let firstPage = await artistService.listArtists();
+      allArtists = firstPage.results ? [...firstPage.results] : [];
+      nextUrl = firstPage.next;
+      // Fetch subsequent pages if any
+      while (nextUrl) {
+        // Remove base URL if present (for relative API call)
+        const url = nextUrl.replace('https://hangart.pythonanywhere.com/api', '');
+        const page = await artistService.listArtists({ page: url.split('page=')[1] });
+        if (page.results) allArtists = allArtists.concat(page.results);
+        nextUrl = page.next;
+      }
+
+      const totalCount = allArtists.length;
+      const verifiedCount = allArtists.filter((a: Artist) => a.verified_by_admin === true).length;
+      const pendingCount = allArtists.filter((a: Artist) => a.verified_by_admin === false).length;
 
       setCounts({
         total: totalCount,

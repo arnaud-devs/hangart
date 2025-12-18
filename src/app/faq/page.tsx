@@ -140,7 +140,7 @@ export default function FaqPage() {
   });
 
   return (
-    <div className="min-h-screen w-full bg-white dark:bg-gray-900">
+    <div className="min-h-screen w-full bg-[#f7f7f8] dark:bg-black">
       {/* Header */}
       <div className="max-w-6xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
@@ -166,7 +166,7 @@ export default function FaqPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search for answers..."
-                className="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
+                className="w-full pl-12 pr-4 py-3 bg-white dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
               />
             </div>
           </div>
@@ -180,7 +180,7 @@ export default function FaqPage() {
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                   selectedCategory === category.id
                     ? "bg-yellow-600 text-white"
-                    : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    : "bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
                 }`}
               >
                 {category.icon}
@@ -217,7 +217,7 @@ export default function FaqPage() {
                 {filteredFaqs.map((faq, index) => (
                   <div
                     key={index}
-                    className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden transition-all hover:border-yellow-300 dark:hover:border-yellow-600"
+                    className="border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden transition-all hover:border-yellow-300 dark:hover:border-yellow-600"
                   >
                     <button
                       onClick={() => toggleFaq(faq.question)}
@@ -263,7 +263,7 @@ export default function FaqPage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Stats */}
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
+            <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-6">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-4">FAQ Stats</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -300,7 +300,7 @@ export default function FaqPage() {
             </div>
 
             {/* Quick Tips */}
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6">
+            <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl p-6">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Quick tips</h3>
               <ul className="space-y-3 text-sm">
                 <li className="flex items-start gap-2">
@@ -333,7 +333,7 @@ export default function FaqPage() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-16 bg-gray-50 dark:bg-gray-800 rounded-xl p-8 text-center">
+        <div className="mt-16 bg-gray-50 dark:bg-white/5 rounded-xl p-8 text-center">
           <CheckCircle className="w-12 h-12 text-yellow-600 dark:text-yellow-400 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
             Ready to explore?

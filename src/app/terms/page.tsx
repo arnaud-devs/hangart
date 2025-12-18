@@ -209,9 +209,9 @@ export default function TermsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-[#f7f7f8] dark:bg-black">
       {/* Simple Header */}
-      <div className="border-b border-gray-200 dark:border-gray-800">
+      <div className="border-b border-gray-200 dark:border-white/10">
         <div className="max-w-5xl mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
             <div>
@@ -238,7 +238,7 @@ export default function TermsPage() {
 
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* Quick Navigation */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-white/5 rounded-lg p-4 mb-6 border border-gray-200 dark:border-white/10">
           <h2 className="font-semibold text-gray-900 dark:text-white mb-3">Quick Navigation</h2>
           <div className="flex flex-wrap gap-2">
             {sections.map((section) => (
@@ -248,7 +248,7 @@ export default function TermsPage() {
                   setExpandedSection(section.id);
                   document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
-                className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-white/5 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 rounded-lg transition-colors"
               >
                 <span className="text-yellow-600 dark:text-yellow-400">{section.icon}</span>
                 <span>{section.title}</span>
@@ -288,11 +288,11 @@ export default function TermsPage() {
             <div
               key={section.id}
               id={section.id}
-              className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-yellow-300 dark:hover:border-yellow-600 transition-colors"
+              className="bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden hover:border-yellow-300 dark:hover:border-yellow-600 transition-colors"
             >
               <button
                 onClick={() => toggleSection(section.id)}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex items-center justify-center w-8 h-8 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 rounded-lg">
@@ -320,7 +320,7 @@ export default function TermsPage() {
               
               {expandedSection === section.id && (
                 <div className="px-4 pb-4">
-                  <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+                  <div className="pt-3 border-t border-gray-200 dark:border-white/10">
                     {section.content}
                   </div>
                 </div>
@@ -358,7 +358,7 @@ export default function TermsPage() {
             </a>
             <a
               href="/contact"
-              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-lg border border-gray-300 dark:border-gray-600 transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-lg border border-gray-300 dark:border-white/10 transition-colors"
             >
               <Building className="w-4 h-4" />
               Contact Support

@@ -100,12 +100,12 @@ export default function ShippingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-[#f7f7f8] dark:bg-black">
       {/* Simple Header */}
-      <div className="border-b border-gray-200 dark:border-gray-800">
+      <div className="border-b border-gray-200 dark:border-white/10">
         <div className="max-w-4xl mx-auto px-4 py-12">
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-full mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-50 dark:bg-yellow-900/30 rounded-full mb-4">
               <Package className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
               <span className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
                 Shipping & Delivery
@@ -131,7 +131,7 @@ export default function ShippingPage() {
             {shippingMethods.map((method, index) => (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:border-yellow-300 dark:hover:border-yellow-600 transition-colors"
+                className="bg-white dark:bg-white/5 rounded-xl p-6 border border-gray-200 dark:border-white/10 hover:border-yellow-300 dark:hover:border-yellow-600 transition-colors"
               >
                 <div className={`${method.color} w-12 h-12 rounded-lg flex items-center justify-center text-white mb-4`}>
                   {method.icon}
@@ -160,9 +160,9 @@ export default function ShippingPage() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* How It Works */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+            <div className="bg-white dark:bg-white/5 rounded-xl p-6 border border-gray-200 dark:border-white/10">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
                   <Package className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                 </div>
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -173,7 +173,7 @@ export default function ShippingPage() {
                 {processSteps.map((step, index) => (
                   <div key={index} className="flex gap-3">
                     <div className="flex-shrink-0">
-                      <div className="w-8 h-8 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center text-yellow-600 dark:text-yellow-400 font-bold">
+                      <div className="w-8 h-8 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center text-yellow-600 dark:text-yellow-400 font-bold">
                         {step.number}
                       </div>
                     </div>
@@ -194,9 +194,9 @@ export default function ShippingPage() {
             </div>
 
             {/* Returns & Refunds */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+            <div className="bg-white dark:bg-white/5 rounded-xl p-6 border border-gray-200 dark:border-white/10">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
                   <RefreshCcw className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                 </div>
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -266,7 +266,7 @@ export default function ShippingPage() {
             </div>
 
             {/* International Info */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+            <div className="bg-white dark:bg-white/5 rounded-xl p-6 border border-gray-200 dark:border-white/10">
               <div className="flex items-center gap-3 mb-4">
                 <Globe className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                 <h3 className="font-medium text-gray-900 dark:text-white">International Orders</h3>
@@ -288,7 +288,7 @@ export default function ShippingPage() {
             </div>
 
             {/* Contact */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+            <div className="bg-white dark:bg-white/5 rounded-xl p-6 border border-gray-200 dark:border-white/10">
               <div className="flex items-center gap-3 mb-4">
                 <Support className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                 <h3 className="font-medium text-gray-900 dark:text-white">Need Help?</h3>
@@ -320,11 +320,11 @@ export default function ShippingPage() {
             {faqs.map((faq, index) => (
               <div
                 key={index}
-                className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden hover:border-yellow-300 dark:hover:border-yellow-600 transition-colors"
+                className="border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden hover:border-yellow-300 dark:hover:border-yellow-600 transition-colors"
               >
                 <button
                   onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                  className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                  className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                 >
                   <span className="font-medium text-gray-900 dark:text-white pr-4">
                     {faq.question}
@@ -346,7 +346,7 @@ export default function ShippingPage() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-6 border border-yellow-100 dark:border-yellow-800">
+        <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-6 border border-gray-200 dark:border-white/10">
           <div className="text-center">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
               Ready to start shopping?

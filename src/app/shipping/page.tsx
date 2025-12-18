@@ -35,7 +35,7 @@ export default function ShippingPage() {
       icon: <Plane className="w-6 h-6" />,
       title: "Express Shipping",
       time: "2-3 business days",
-      price: "From $25",
+      price: "From $5",
       description: "Priority delivery for urgent orders",
       color: "bg-yellow-600"
     },

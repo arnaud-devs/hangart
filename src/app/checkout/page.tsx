@@ -148,9 +148,9 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-[#f7f7f8] dark:bg-black">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">{t('checkout.empty_cart')}</h1>
+          <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">{t('checkout.empty_cart')}</h1>
           <button
             onClick={() => router.push("/")}
             className="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700"
@@ -163,9 +163,9 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+    <div className="min-h-screen bg-[#f7f7f8] dark:bg-black py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-gray-100">{t('checkout.title')}</h1>
+        <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">{t('checkout.title')}</h1>
 
         {/* Toast Notifications */}
         {showToast && toastType === 'success' && (
@@ -188,8 +188,8 @@ export default function CheckoutPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Checkout Form */}
-          <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-md p-6 border border-black/5 dark:border-white/10">
-            <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">{t('checkout.shipping_information')}</h2>
+          <div className="bg-white dark:bg-white/5 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-white/10">
+            <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">{t('checkout.shipping_information')}</h2>
             
             <form onSubmit={handlePlaceOrder} className="space-y-4">
               <div>
@@ -204,7 +204,7 @@ export default function CheckoutPage() {
                   value={formData.address}
                   onChange={handleInputChange}
                   placeholder="123 Main Street"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-white/10 rounded-md focus:ring-2 focus:ring-yellow-500 bg-white dark:bg-black text-gray-900 dark:text-white"
                 />
               </div>
 
@@ -221,7 +221,7 @@ export default function CheckoutPage() {
                     value={formData.city}
                     onChange={handleInputChange}
                     placeholder="Kigali"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-white/10 rounded-md focus:ring-2 focus:ring-yellow-500 bg-white dark:bg-black text-gray-900 dark:text-white"
                   />
                 </div>
                 <div>
@@ -235,7 +235,7 @@ export default function CheckoutPage() {
                     value={formData.postalCode}
                     onChange={handleInputChange}
                     placeholder="10101"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-white/10 rounded-md focus:ring-2 focus:ring-yellow-500 bg-white dark:bg-black text-gray-900 dark:text-white"
                   />
                 </div>
               </div>
@@ -252,7 +252,7 @@ export default function CheckoutPage() {
                   value={formData.country}
                   onChange={handleInputChange}
                   placeholder="Rwanda"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-white/10 rounded-md focus:ring-2 focus:ring-yellow-500 bg-white dark:bg-black text-gray-900 dark:text-white"
                 />
               </div>
 
@@ -268,7 +268,7 @@ export default function CheckoutPage() {
                   min="0"
                   value={formData.shippingFee}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-yellow-500 dark:bg-gray-700 dark:text-gray-100"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-white/10 rounded-md focus:ring-2 focus:ring-yellow-500 bg-white dark:bg-black text-gray-900 dark:text-white"
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Default: $10.00</p>
               </div>
@@ -289,8 +289,8 @@ export default function CheckoutPage() {
             </form>
           </div>
           {/* Order Summary */}
-          <div className="bg-white/90 dark:bg-white/5 dark:backdrop-blur-lg rounded-2xl shadow-md p-6 h-fit border border-black/5 dark:border-white/10">
-            <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">{t('checkout.order_summary')}</h2>
+          <div className="bg-white dark:bg-white/5 rounded-2xl shadow-sm p-6 h-fit border border-gray-200 dark:border-white/10">
+            <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">{t('checkout.order_summary')}</h2>
 
             <div className="space-y-4 mb-6">
               {items.map((item) => {
@@ -300,7 +300,7 @@ export default function CheckoutPage() {
                 
                 return (
                   <div key={item.id} className="flex gap-4">
-                    <div className="w-20 h-20 relative rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+                    <div className="w-20 h-20 relative rounded-md overflow-hidden bg-gray-100 dark:bg-white/5 flex-shrink-0">
                       <Image
                         src={imageSrc}
                         alt={item.title}
@@ -310,11 +310,11 @@ export default function CheckoutPage() {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">{item.title}</h3>
+                      <h3 className="font-medium text-sm text-gray-900 dark:text-white truncate">{item.title}</h3>
                       <p className="text-xs text-gray-600 dark:text-gray-400">{artistDisplay}</p>
                       <div className="flex justify-between items-center mt-2">
                         <span className="text-sm text-gray-600 dark:text-gray-400">Qty: {item.quantity}</span>
-                        <span className="font-medium text-gray-900 dark:text-gray-100">{currencySymbol}{(item.price * item.quantity).toFixed(2)}</span>
+                        <span className="font-medium text-gray-900 dark:text-white">{currencySymbol}{(item.price * item.quantity).toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
@@ -322,18 +322,18 @@ export default function CheckoutPage() {
               })}
             </div>
 
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
+            <div className="border-t border-gray-200 dark:border-white/10 pt-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
-                <span className="font-medium text-gray-900 dark:text-gray-100">${subtotal.toFixed(2)}</span>
+                <span className="font-medium text-gray-900 dark:text-white">${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Shipping</span>
-                <span className="font-medium text-gray-900 dark:text-gray-100">${shippingCost.toFixed(2)}</span>
+                <span className="font-medium text-gray-900 dark:text-white">${shippingCost.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-lg font-bold border-t border-gray-200 dark:border-gray-700 pt-2 mt-2">
-                <span className="text-gray-900 dark:text-gray-100">Total</span>
-                <span className="text-gray-900 dark:text-gray-100">${total.toFixed(2)}</span>
+              <div className="flex justify-between text-lg font-bold border-t border-gray-200 dark:border-white/10 pt-2 mt-2">
+                <span className="text-gray-900 dark:text-white">Total</span>
+                <span className="text-gray-900 dark:text-white">${total.toFixed(2)}</span>
               </div>
             </div>
 

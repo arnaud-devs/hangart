@@ -206,10 +206,10 @@ export default function MyRefundsPage() {
 
   if (!user) {
     return (
-      <div className="h-full mt-30 bg-gray-50 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Login Required</h2>
-          <p className="text-gray-600 mb-6">Please log in to view your refund requests</p>
+      <div className="h-full mt-30 bg-[#f7f7f8] dark:bg-black flex items-center justify-center">
+        <div className="max-w-md w-full bg-white dark:bg-white/5 rounded-lg shadow-lg p-8 text-center border border-gray-200 dark:border-white/10">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Login Required</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">Please log in to view your refund requests</p>
           <button 
             onClick={() => window.location.href = '/login'}
             className="bg-[#634bc1] text-white px-6 py-3 rounded-lg hover:bg-[#5340a0] transition-colors"
@@ -223,26 +223,26 @@ export default function MyRefundsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-6 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+      <div className="min-h-screen bg-[#f7f7f8] dark:bg-black py-6 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white dark:bg-white/5 rounded-lg shadow-lg p-8 text-center border border-gray-200 dark:border-white/10">
           <FiRefreshCw className="w-8 h-8 text-gray-400 animate-spin mx-auto mb-4" />
-          <p className="text-gray-500">Loading refunds...</p>
+          <p className="text-gray-500 dark:text-gray-400">Loading refunds...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6">
+    <div className="min-h-screen bg-[#f7f7f8] dark:bg-black py-6">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+              <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
                 My Refund Requests
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 Track and manage your refund requests
               </p>
             </div>
@@ -267,7 +267,7 @@ export default function MyRefundsPage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search by order number, reason..."
-                className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-sm"
+                className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 dark:border-white/10 rounded-lg bg-white dark:bg-black text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-sm"
               />
               {query && (
                 <button 
@@ -280,7 +280,7 @@ export default function MyRefundsPage() {
             </div>
             <button
               onClick={loadRefunds}
-              className="flex items-center space-x-2 px-4 py-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium text-gray-700 transition-colors"
+              className="flex items-center space-x-2 px-4 py-2.5 bg-white dark:bg-black border border-gray-300 dark:border-white/10 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors"
             >
               <FiRefreshCw className="w-4 h-4" />
               <span>Refresh</span>
@@ -295,12 +295,12 @@ export default function MyRefundsPage() {
                 className={`inline-flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   statusFilter === status
                     ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                    : 'bg-white dark:bg-black text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'
                 }`}
               >
                 <span className="mr-2">{getStatusIcon(status)}</span>
                 {statusLabels[status]}
-                <span className="ml-1.5 bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded text-xs">
+                <span className="ml-1.5 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-1.5 py-0.5 rounded text-xs">
                   {statusCounts[status] || 0}
                 </span>
               </button>
@@ -318,19 +318,19 @@ export default function MyRefundsPage() {
         {/* Refunds List */}
         <div className="space-y-4">
           {filtered.map((refund) => (
-            <div key={refund.id} className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+            <div key={refund.id} className="bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden hover:shadow-md transition-shadow">
               {/* Refund Header - Always Visible */}
-              <div className="p-4 border-b border-gray-100">
+              <div className="p-4 border-b border-gray-100 dark:border-white/10">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
-                      <FiFileText className="w-4 h-4 text-blue-600" />
+                    <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/20 rounded flex items-center justify-center">
+                      <FiFileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-gray-900 text-sm">
+                      <h3 className="font-medium text-gray-900 dark:text-white text-sm">
                         Refund for Order {refund.order.order_number}
                       </h3>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         Requested on {formatDate(refund.created_at)}
                       </p>
                     </div>
@@ -338,10 +338,10 @@ export default function MyRefundsPage() {
                   <div className="flex items-center space-x-3">
                     <StatusBadge status={refund.status} />
                     <div className="text-right">
-                      <div className="font-semibold text-gray-900 text-sm">
+                      <div className="font-semibold text-gray-900 dark:text-white text-sm">
                         ${parseFloat(refund.refund_amount).toFixed(2)}
                       </div>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         Refund Amount
                       </p>
                     </div>
@@ -357,17 +357,17 @@ export default function MyRefundsPage() {
               </div>
 
               {/* Quick Summary - Always Visible */}
-              <div className="p-4 bg-gray-50 border-b border-gray-100">
+              <div className="p-4 bg-gray-50 dark:bg-white/5 border-b border-gray-100 dark:border-white/10">
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
                       <FiPackage className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600 capitalize">
+                      <span className="text-gray-600 dark:text-gray-400 capitalize">
                         {reasonLabels[refund.reason] || refund.reason}
                       </span>
                     </div>
-                    <div className="text-gray-300">•</div>
-                    <div className="text-gray-600">
+                    <div className="text-gray-300 dark:text-gray-600">•</div>
+                    <div className="text-gray-600 dark:text-gray-400">
                       Last updated {formatDate(refund.updated_at)}
                     </div>
                   </div>
@@ -376,36 +376,36 @@ export default function MyRefundsPage() {
 
               {/* Expanded Details */}
               {openId === refund.id && (
-                <div className="bg-white border-t-4 border-yellow-600">
+                <div className="bg-white dark:bg-black border-t-4 border-yellow-600">
                   <div className="p-6">
                     <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                       {/* Refund Details - Wider Column */}
                       <div className="xl:col-span-2">
-                        <div className="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-200">
-                          <FiFileText className="w-5 h-5 text-blue-600" />
-                          <h3 className="text-lg font-semibold text-gray-900">Refund Details</h3>
+                        <div className="flex items-center space-x-2 mb-4 pb-3 border-b border-gray-200 dark:border-white/10">
+                          <FiFileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Refund Details</h3>
                         </div>
                         
                         {/* Status Message */}
                         <div className={`rounded-lg border p-4 mb-4 ${
-                          refund.status === 'pending' ? 'bg-amber-50 border-amber-200' :
-                          refund.status === 'approved' ? 'bg-blue-50 border-blue-200' :
-                          refund.status === 'rejected' ? 'bg-red-50 border-red-200' :
-                          'bg-green-50 border-green-200'
+                          refund.status === 'pending' ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' :
+                          refund.status === 'approved' ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' :
+                          refund.status === 'rejected' ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' :
+                          'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
                         }`}>
                           <div className="flex items-start space-x-3">
-                            {refund.status === 'pending' && <FiClock className="w-5 h-5 text-amber-600 mt-0.5" />}
-                            {refund.status === 'approved' && <FiThumbsUp className="w-5 h-5 text-blue-600 mt-0.5" />}
-                            {refund.status === 'rejected' && <FiAlertCircle className="w-5 h-5 text-red-600 mt-0.5" />}
-                            {refund.status === 'processed' && <FiCheckCircle className="w-5 h-5 text-green-600 mt-0.5" />}
+                            {refund.status === 'pending' && <FiClock className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />}
+                            {refund.status === 'approved' && <FiThumbsUp className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" />}
+                            {refund.status === 'rejected' && <FiAlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5" />}
+                            {refund.status === 'processed' && <FiCheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5" />}
                             <div>
-                              <h4 className="font-medium text-gray-900 mb-1">
+                              <h4 className="font-medium text-gray-900 dark:text-white mb-1">
                                 {refund.status === 'pending' && "Under Review"}
                                 {refund.status === 'approved' && "Approved"}
                                 {refund.status === 'rejected' && "Declined"}
                                 {refund.status === 'processed' && "Completed"}
                               </h4>
-                              <p className="text-sm text-gray-700">
+                              <p className="text-sm text-gray-700 dark:text-gray-300">
                                 {getStatusDescription(refund.status)}
                               </p>
                             </div>
@@ -414,24 +414,24 @@ export default function MyRefundsPage() {
                         
                         {/* Reason and Description */}
                         <div className="space-y-4">
-                          <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
-                            <h4 className="font-medium text-gray-900 mb-2">Refund Reason</h4>
-                            <p className="text-gray-700">
+                          <div className="bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 p-4">
+                            <h4 className="font-medium text-gray-900 dark:text-white mb-2">Refund Reason</h4>
+                            <p className="text-gray-700 dark:text-gray-300">
                               {reasonLabels[refund.reason] || refund.reason}
                             </p>
                           </div>
 
                           {refund.description && (
-                            <div className="bg-gray-50 rounded-lg border border-gray-200 p-4">
-                              <h4 className="font-medium text-gray-900 mb-2">Your Message</h4>
-                              <p className="text-gray-700">{refund.description}</p>
+                            <div className="bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 p-4">
+                              <h4 className="font-medium text-gray-900 dark:text-white mb-2">Your Message</h4>
+                              <p className="text-gray-700 dark:text-gray-300">{refund.description}</p>
                             </div>
                           )}
 
                           {refund.admin_response && (
-                            <div className="bg-blue-50 rounded-lg border border-blue-200 p-4">
-                              <h4 className="font-medium text-blue-900 mb-2">Admin Response</h4>
-                              <p className="text-blue-800">{refund.admin_response}</p>
+                            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800 p-4">
+                              <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Admin Response</h4>
+                              <p className="text-blue-800 dark:text-blue-200">{refund.admin_response}</p>
                             </div>
                           )}
                         </div>
@@ -440,35 +440,35 @@ export default function MyRefundsPage() {
                       {/* Order Information & Timeline */}
                       <div className="space-y-6">
                         {/* Order Details Card */}
-                        <div className="bg-gray-50 rounded-lg border border-gray-200 p-5">
+                        <div className="bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 p-5">
                           <div className="flex items-center space-x-2 mb-4">
-                            <FiPackage className="w-5 h-5 text-blue-600" />
-                            <h3 className="text-lg font-semibold text-gray-900">Order Information</h3>
+                            <FiPackage className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Order Information</h3>
                           </div>
                           <div className="space-y-4">
-                            <div className="flex items-center justify-between py-2 border-b border-gray-200">
-                              <div className="flex items-center space-x-2 text-gray-600">
+                            <div className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-white/10">
+                              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
                                 <FiFileText className="w-4 h-4" />
                                 <span className="font-medium">Order Number</span>
                               </div>
-                              <span className="font-mono text-gray-900">{refund.order.order_number}</span>
+                              <span className="font-mono text-gray-900 dark:text-white">{refund.order.order_number}</span>
                             </div>
-                            <div className="flex items-center justify-between py-2 border-b border-gray-200">
-                              <div className="flex items-center space-x-2 text-gray-600">
+                            <div className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-white/10">
+                              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
                                 <FiCalendar className="w-4 h-4" />
                                 <span className="font-medium">Request Date</span>
                               </div>
-                              <span className="text-gray-900">{formatDate(refund.created_at)}</span>
+                              <span className="text-gray-900 dark:text-white">{formatDate(refund.created_at)}</span>
                             </div>
-                            <div className="flex items-center justify-between py-2 border-b border-gray-200">
-                              <div className="flex items-center space-x-2 text-gray-600">
+                            <div className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-white/10">
+                              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
                                 <FiDollarSign className="w-4 h-4" />
                                 <span className="font-medium">Refund Amount</span>
                               </div>
-                              <span className="font-bold text-lg text-gray-900">${parseFloat(refund.refund_amount).toFixed(2)}</span>
+                              <span className="font-bold text-lg text-gray-900 dark:text-white">${parseFloat(refund.refund_amount).toFixed(2)}</span>
                             </div>
                             <div className="flex items-center justify-between py-2">
-                              <div className="flex items-center space-x-2 text-gray-600">
+                              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
                                 <FiCheckCircle className="w-4 h-4" />
                                 <span className="font-medium">Status</span>
                               </div>
@@ -478,8 +478,8 @@ export default function MyRefundsPage() {
                         </div>
 
                         {/* Timeline */}
-                        <div className="bg-white rounded-lg border border-gray-200 p-5">
-                          <h3 className="font-semibold text-gray-900 mb-4">Timeline</h3>
+                        <div className="bg-white dark:bg-black rounded-lg border border-gray-200 dark:border-white/10 p-5">
+                          <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Timeline</h3>
                           <div className="space-y-4">
                             {getRefundTimeline(refund).map((item, index) => (
                               <div key={index} className="flex items-start space-x-3">
@@ -498,15 +498,15 @@ export default function MyRefundsPage() {
 
                         {/* Actions */}
                         {refund.status === 'processed' && (
-                          <div className="bg-green-50 rounded-lg border border-green-200 p-4">
+                          <div className="bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800 p-4">
                             <div className="flex items-center space-x-2 mb-2">
-                              <FiCheckCircle className="w-5 h-5 text-green-600" />
-                              <h4 className="font-medium text-green-900">Refund Completed</h4>
+                              <FiCheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                              <h4 className="font-medium text-green-900 dark:text-green-100">Refund Completed</h4>
                             </div>
-                            <p className="text-sm text-green-800 mb-3">
+                            <p className="text-sm text-green-800 dark:text-green-200 mb-3">
                               Your refund has been successfully processed.
                             </p>
-                            <div className="text-xs text-green-700">
+                            <div className="text-xs text-green-700 dark:text-green-300">
                               {refund.reviewed_at && (
                                 <p>
                                   Processed on: {formatDate(refund.reviewed_at)}
@@ -526,10 +526,10 @@ export default function MyRefundsPage() {
           {/* Empty State */}
           {filtered.length === 0 && (
             <div className="text-center py-12">
-              <div className="bg-white rounded-lg border border-gray-200 p-8 max-w-md mx-auto">
+              <div className="bg-white dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/10 p-8 max-w-md mx-auto">
                 <FiFileText className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No refund requests found</h3>
-                <p className="text-gray-600 mb-4 text-sm">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No refund requests found</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4 text-sm">
                   {query || statusFilter !== 'all' 
                     ? "No refund requests match your filters. Try clearing them." 
                     : "You haven't requested any refunds yet."}

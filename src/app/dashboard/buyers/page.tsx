@@ -96,7 +96,7 @@ export default function BuyersPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-blue-500">
+        <div className="bg-white dark:bg-white/5 rounded-lg shadow p-6 border-l-4 border-blue-500">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Buyers</p>
@@ -106,7 +106,7 @@ export default function BuyersPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-green-500">
+        <div className="bg-white dark:bg-white/5 rounded-lg shadow p-6 border-l-4 border-green-500">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">With Profile Photo</p>
@@ -116,7 +116,7 @@ export default function BuyersPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-purple-500">
+        <div className="bg-white dark:bg-white/5 rounded-lg shadow p-6 border-l-4 border-purple-500">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Buyers</p>
@@ -126,7 +126,7 @@ export default function BuyersPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-orange-500">
+        <div className="bg-white dark:bg-white/5 rounded-lg shadow p-6 border-l-4 border-orange-500">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">New This Month</p>
@@ -138,8 +138,8 @@ export default function BuyersPage() {
       </div>
 
       {/* Search Bar */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <div className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg">
+      <div className="bg-white dark:bg-white/5 rounded-lg shadow p-4">
+        <div className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-white/10 rounded-lg">
           <span className="text-gray-400">🔍</span>
           <input
             type="text"
@@ -157,7 +157,7 @@ export default function BuyersPage() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-600"></div>
         </div>
       ) : filteredBuyers.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-white/5 rounded-lg shadow p-12 text-center border border-gray-200 dark:border-white/10">
           <Users className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
             {searchTerm ? 'No buyers found' : 'No buyers yet'}
@@ -175,12 +175,12 @@ export default function BuyersPage() {
           </button>
         </div>
       ) : (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-white/5 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-white/10">
           <div className="overflow-x-auto">
             <table className="w-full">
               {/* Table Header */}
               <thead>
-                <tr className="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
+                <tr className="bg-gray-50 dark:bg-white/5 border-b border-gray-200 dark:border-white/10">
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
                     Username
                   </th>
@@ -200,11 +200,11 @@ export default function BuyersPage() {
               </thead>
 
               {/* Table Body */}
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="divide-y divide-gray-200 dark:divide-white/10">
                 {filteredBuyers.map((buyer) => (
                   <tr
                     key={buyer.id}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
                   >
                     {/* Username */}
                     <td className="px-6 py-4">
@@ -278,7 +278,7 @@ export default function BuyersPage() {
           </div>
 
           {/* Table Footer */}
-          <div className="px-6 py-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
+          <div className="px-6 py-4 bg-gray-50 dark:bg-white/5 border-t border-gray-200 dark:border-white/10">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Showing {filteredBuyers.length} of {buyers.length} buyers
               {searchTerm && ` (filtered)`}

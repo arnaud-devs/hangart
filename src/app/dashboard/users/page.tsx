@@ -87,10 +87,10 @@ export default function UsersPage() {
         {loading ? (
           <div>Loading users...</div>
         ) : (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+          <div className="bg-white dark:bg-white/5 rounded-lg shadow-sm overflow-hidden border border-gray-200 dark:border-white/10">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-900">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-white/10">
+                <thead className="bg-gray-50 dark:bg-white/5">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Username</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
@@ -99,9 +99,9 @@ export default function UsersPage() {
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="divide-y divide-gray-200 dark:divide-white/10">
                   {users.map(u => (
-                    <tr key={u.id}>
+                    <tr key={u.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                       <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{u.username}</td>
                       <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{u.email}</td>
                       <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{u.role}</td>

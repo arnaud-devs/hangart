@@ -268,8 +268,8 @@ export default function AdminDashboardView() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="sticky top-0 z-40 bg-white/80 dark:bg-black backdrop-blur-lg border-b border-gray-200 dark:border-gray-700 mb-8 p-6">
+    <div className="min-h-screen bg-[#f7f7f8] dark:bg-black space-y-6">
+      <div className="sticky top-0 z-40 bg-white/80 dark:bg-black backdrop-blur-lg border-b border-gray-200 dark:border-white/10 mb-8 p-6">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Admin Dashboard</h1>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Welcome back, {user?.first_name}! Here's your marketplace overview.</p>
       </div>
@@ -351,7 +351,7 @@ export default function AdminDashboardView() {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Recent Artworks</h3>
             <div className="space-y-3">
               {stats?.recent_artworks?.map((artwork: any) => (
-                <div key={artwork.id} className="flex items-center justify-between p-3 border border-gray-200 dark:border-white/10 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors cursor-pointer" onClick={() => handleViewArtwork(artwork.id)}>
+                <div key={artwork.id} className="flex items-center justify-between p-3 border border-gray-200 dark:border-white/10 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer" onClick={() => handleViewArtwork(artwork.id)}>
                   <div className="flex items-center space-x-3 flex-1">
                     <img
                       src={artwork.main_image || '/placeholder.jpg'}
@@ -379,7 +379,7 @@ export default function AdminDashboardView() {
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Top Artists</h3>
             <div className="space-y-3">
               {stats?.top_artists?.map((artist: any, index: number) => (
-                <div key={artist.id} className="flex items-center justify-between p-3 border border-gray-200 dark:border-white/10 rounded-lg hover:bg-gray-50 dark:hover:bg-white/10 transition-colors">
+                <div key={artist.id} className="flex items-center justify-between p-3 border border-gray-200 dark:border-white/10 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                   <div className="flex items-center space-x-3 flex-1">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-yellow-600 flex items-center justify-center text-white font-semibold">
                       {index + 1}

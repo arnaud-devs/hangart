@@ -307,7 +307,7 @@ export default function Page() {
         {user?.role === 'artist' && (
           <button
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
+            className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors"
           >
             Add Artwork
           </button>
@@ -362,7 +362,7 @@ export default function Page() {
 
       {/* Empty State */}
       {artworks.length === 0 && !loading && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+        <div className="bg-white dark:bg-white/5 rounded-lg shadow-sm border border-gray-200 dark:border-white/10 p-12 text-center">
           <Image className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">No Artworks Found</h3>
           <p className="text-gray-600 dark:text-gray-400 mb-4">
@@ -371,7 +371,7 @@ export default function Page() {
           {user?.role === 'artist' && (
             <button
               onClick={() => setShowModal(true)}
-              className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+              className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors"
             >
               Upload Your First Artwork
             </button>

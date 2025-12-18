@@ -93,19 +93,38 @@ export default function ArtistsPage() {
   ) => {
     try {
       setLoading(true);
-      const params: any = { page: pageNumber };
+      // Fetch all artists from all pages
+      let allArtists: Artist[] = [];
+      let nextUrl: string | null = null;
+      let firstPage = await artistService.listArtists();
+      allArtists = firstPage.results ? [...firstPage.results] : [];
+      nextUrl = firstPage.next;
+      while (nextUrl) {
+        const url = nextUrl.replace('https://hangart.pythonanywhere.com/api', '');
+        const page = await artistService.listArtists({ page: url.split('page=')[1] });
+        if (page.results) allArtists = allArtists.concat(page.results);
+        nextUrl = page.next;
+      }
 
-      if (status === 'verified') params.verified_by_admin = true;
-      if (status === 'pending') params.verified_by_admin = false;
+      // Filter artists by status
+      let filteredArtists: Artist[] = [];
+      if (status === 'all') {
+        filteredArtists = allArtists;
+      } else if (status === 'verified') {
+        filteredArtists = allArtists.filter((a: Artist) => a.verified_by_admin === true);
+      } else if (status === 'pending') {
+        filteredArtists = allArtists.filter((a: Artist) => a.verified_by_admin === false);
+      }
 
-      const response = await artistService.listArtists(params);
-      const artistsData = response.results || response || [];
-      const count = response.count ?? artistsData.length ?? 0;
+      // Pagination logic (if needed)
+      const startIdx = (pageNumber - 1) * pageSize;
+      const endIdx = startIdx + pageSize;
+      const paginatedArtists = filteredArtists.slice(startIdx, endIdx);
 
-      setArtists(artistsData);
-      setTotalCount(count);
+      setArtists(paginatedArtists);
+      setTotalCount(filteredArtists.length);
       setPage(pageNumber);
-      setPageSize(artistsData.length || pageSize || 20);
+      setPageSize(pageSize);
     } catch (err: any) {
       setError(err.message || 'Failed to load artists');
       console.error('Error loading artists:', err);
